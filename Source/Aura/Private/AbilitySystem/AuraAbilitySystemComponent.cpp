@@ -3,10 +3,15 @@
 
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 
-void UAuraAbilitySystemComponent::AbilityActorInfoSet()
+void UAuraAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+
 	/* Listen to gameplay effect applied event */
-	OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+	if (!EffectAppliedDelegateHandle.IsValid())
+	{
+		EffectAppliedDelegateHandle = OnGameplayEffectAppliedDelegateToSelf.AddUObject(this, &UAuraAbilitySystemComponent::EffectApplied);
+	}
 }
 
 void UAuraAbilitySystemComponent::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,

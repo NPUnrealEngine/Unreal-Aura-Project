@@ -17,10 +17,16 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 	GENERATED_BODY()
 
 public:
+	/**
+	 * Call when gameplay effect applied with its tags
+	 */
 	FEffectAssetTags EffectAssetTags;
 	
 public:
-	void AbilityActorInfoSet();
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
+protected:
+	FDelegateHandle EffectAppliedDelegateHandle;
 	
 protected:
 	void EffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
