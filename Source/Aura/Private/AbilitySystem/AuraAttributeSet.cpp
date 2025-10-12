@@ -32,14 +32,14 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	Super::PreAttributeChange(Attribute, NewValue);
 
 	/* Not a good place to clamping attributes */
-	/*if (Attribute == GetHealthAttribute())
+	if (Attribute == GetHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxHealth());
 	}
 	if (Attribute == GetManaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
-	}*/
+	}
 }
 
 void UAuraAttributeSet::SetEffectPorperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
