@@ -40,14 +40,29 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
+
+	/**
+	 * Character's default secondary attributes
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Attributes")
+	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
 
 	/**
-	 * Initialize character primary attributes through applying
-	 * instant effect which is **DefaultPrimaryAttributes** property
+	 * Apply gameplay effect to character itself
+	 * 
+	 * @param GameplayEffectClass class of gameplay effect
+	 * @param Level level
 	 */
-	void InitializePrimaryAttributes() const;
+	void ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;
+
+	/**
+	 * Initialize default attributes:
+	 *   - Primary attributes
+	 *   - Secondary attributes
+	 */
+	void InitializeDefaultAttributes() const;
 };
