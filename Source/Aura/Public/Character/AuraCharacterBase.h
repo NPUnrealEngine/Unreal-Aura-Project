@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "AuraCharacterBase.generated.h"
 
+class UGameplayEffect;
+
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface
 {
@@ -29,9 +31,23 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	/**
+	 * Character's default primary attributes
+	 *
+	 * Note: The effect must be type of instant effect in order
+	 * to change attributes permanently 
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Attributes")
+	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 	
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void InitAbilityActorInfo();
+
+	/**
+	 * Initialize character primary attributes through applying
+	 * instant effect which is **DefaultPrimaryAttributes** property
+	 */
+	void InitializePrimaryAttributes() const;
 };
