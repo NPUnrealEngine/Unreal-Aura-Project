@@ -14,13 +14,21 @@ void UAttributeMenuWidgetController::BroadcastInitialValues()
 	UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
 
 	check(AttributeInformation);
+
+	for (auto& Pair : AS->TagsToAttributes)
+	{
+		FAuraAttributeInfo Info = AttributeInformation->FindAttributeInfoForTag(
+			Pair.Key
+			);
+		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
+		AttributeInfoDelegate.Broadcast(Info);
+	}
 	
-	FAuraAttributeInfo Info = AttributeInformation->FindAttributeInfoForTag(
+	/*FAuraAttributeInfo Info = AttributeInformation->FindAttributeInfoForTag(
 		FAuraGameplayTags::Get().Attributes_Primary_Strength
 		);
 	Info.AttributeValue = AS->GetStrength();
-	AttributeInfoDelegate.Broadcast(Info);
-	
+	AttributeInfoDelegate.Broadcast(Info);*/
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()

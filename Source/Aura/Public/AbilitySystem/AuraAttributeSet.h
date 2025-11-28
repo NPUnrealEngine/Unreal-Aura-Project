@@ -57,6 +57,9 @@ struct FEffectProperties
 	AController* TargetController = nullptr;
 };
 
+template<class T>
+using TStaticFuncPtr = TBaseStaticDelegateInstance<T, FDefaultDelegateUserPolicy>::FFuncPtr;
+
 UCLASS()
 class AURA_API UAuraAttributeSet : public UAttributeSet
 {
@@ -66,6 +69,8 @@ public:
 	UAuraAttributeSet();
 
 public:
+	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
+	
 	/*
 	 * Primary attributes
 	 */
