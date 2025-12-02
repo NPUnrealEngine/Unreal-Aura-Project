@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AttributeSet.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "AttributeInfo.generated.h"
+
 
 USTRUCT(BlueprintType)
 struct FAuraAttributeInfo
@@ -23,10 +25,13 @@ struct FAuraAttributeInfo
 
 	UPROPERTY(BlueprintReadOnly)
 	float AttributeValue = 0.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameplayAttribute GameplayAttribute;
 };
 
 /**
- * 
+ * A collection of Aura gameplay attribute information
  */
 UCLASS()
 class AURA_API UAttributeInfo : public UDataAsset
@@ -34,6 +39,10 @@ class AURA_API UAttributeInfo : public UDataAsset
 	GENERATED_BODY()
 	
 public:
+	/**
+	 * A list of pre-defined Aura gameplay attribute
+	 * information
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TArray<FAuraAttributeInfo> AttributeInformaiton;
 

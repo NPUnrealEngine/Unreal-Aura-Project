@@ -69,7 +69,13 @@ public:
 	UAuraAttributeSet();
 
 public:
-	TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
+	/**
+	 * Hard code mapping tags to gameplay attributes
+	 *
+	 * A better way is to declare gameplay attributes in FAuraAttributeInfo in AttributeInfo.h
+	 * then set gameplay attributes in editor
+	 * /
+	//TMap<FGameplayTag, TStaticFuncPtr<FGameplayAttribute()>> TagsToAttributes;
 	
 	/*
 	 * Primary attributes

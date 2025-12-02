@@ -10,28 +10,65 @@
 void UAttributeMenuWidgetController::BroadcastInitialValues()
 {
 	Super::BroadcastInitialValues();
+	check(AttributeInfo);
 
-	UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
+	for (auto& Attribute : AttributeInfo->AttributeInformaiton)
+	{
+		BroadcastAttributeInfo(Attribute.AttributeTag, Attribute.GameplayAttribute);
+	}
 
-	check(AttributeInformation);
-
+	/**
+	 * Use hard code tags to gameplay attribute to
+	 * brocast attribute info to widget
+	 *
+	 * Look TagsToAttributes in AuraAttributeSet.h
+	 */
+	/*UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
 	for (auto& Pair : AS->TagsToAttributes)
 	{
-		FAuraAttributeInfo Info = AttributeInformation->FindAttributeInfoForTag(
-			Pair.Key
-			);
-		Info.AttributeValue = Pair.Value().GetNumericValue(AS);
-		AttributeInfoDelegate.Broadcast(Info);
-	}
-	
-	/*FAuraAttributeInfo Info = AttributeInformation->FindAttributeInfoForTag(
-		FAuraGameplayTags::Get().Attributes_Primary_Strength
-		);
-	Info.AttributeValue = AS->GetStrength();
-	AttributeInfoDelegate.Broadcast(Info);*/
+		BroadcastAttributeInfo(Pair.Key, Pair.Value());
+	}*/
 }
 
 void UAttributeMenuWidgetController::BindCallbacksToDependencies()
 {
 	Super::BindCallbacksToDependencies();
+	check(AttributeInfo);
+
+	for (auto& Attribute : AttributeInfo->AttributeInformaiton)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Attribute.GameplayAttribute)
+		.AddLambda(
+			[this, Attribute](const FOnAttributeChangeData& Data)
+			{
+				BroadcastAttributeInfo(Attribute.AttributeTag, Attribute.GameplayAttribute);
+			}
+		);
+	}
+
+	/**
+	 * Use hard code tags to gameplay attribute to
+	 * brocast attribute info to widget
+	 *
+	 * Look TagsToAttributes in AuraAttributeSet.h
+	 */
+	/*UAuraAttributeSet* AS = Cast<UAuraAttributeSet>(AttributeSet);
+	for (auto& Pair : AS->TagsToAttributes)
+	{
+		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(Pair.Value())
+		.AddLambda(
+				[this, Pair](const FOnAttributeChangeData& Data)
+				{
+					BroadcastAttributeInfo(Pair.Key, Pair.Value());
+				}
+			);
+	}*/
+}
+
+void UAttributeMenuWidgetController::BroadcastAttributeInfo(const FGameplayTag& GameplayTag,
+	const FGameplayAttribute& Attribute) const
+{
+	FAuraAttributeInfo Info = AttributeInfo->FindAttributeInfoForTag(GameplayTag);
+	Info.AttributeValue = Attribute.GetNumericValue(AttributeSet);
+	AttributeInfoDelegate.Broadcast(Info);
 }
