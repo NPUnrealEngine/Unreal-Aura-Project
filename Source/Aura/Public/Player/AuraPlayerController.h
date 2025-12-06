@@ -36,6 +36,7 @@ private:
 
 	TScriptInterface<class IEnemyInterface> LastActor;
 	TScriptInterface<IEnemyInterface> ThisActor;
+	FHitResult CursorHit;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UAuraInputConfig> InputConfig;
@@ -105,4 +106,6 @@ private:
 	 * @return UAuraAbilitySystemComponent
 	 */
 	UAuraAbilitySystemComponent* GetASC();
+
+	void AutoRun();
 };
