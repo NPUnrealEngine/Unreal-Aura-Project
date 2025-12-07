@@ -28,6 +28,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
+	UPROPERTY(EditAnywhere, Category="Properties | Combat")
+	FName WeaponTipSocketName;
+
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
@@ -55,6 +58,7 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
+	virtual FVector GetCombatSocketLocation() override;
 
 	/**
 	 * Apply gameplay effect to character itself
