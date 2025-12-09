@@ -12,8 +12,12 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
                                            const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
 
-	const bool IsServer = HasAuthority(&ActivationInfo);
+void UAuraProjectileSpell::SpawnProjectile()
+{
+	const AActor* Actor = GetAvatarActorFromActorInfo();
+	const bool IsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!IsServer) return;
 
 	ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
@@ -38,6 +42,4 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		
 		Projectile->FinishSpawning(SpawnTransform);
 	}
-	
-	
 }
