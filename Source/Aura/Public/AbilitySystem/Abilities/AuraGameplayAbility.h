@@ -15,6 +15,10 @@ class AURA_API UAuraGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
+	/**
+	 * Input tag associated with this gameplay ability
+	 * in AbilitySystemComponent
+	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	FGameplayTag StartupInputTag;
 };

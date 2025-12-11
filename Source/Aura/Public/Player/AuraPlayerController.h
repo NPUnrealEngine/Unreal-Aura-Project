@@ -34,6 +34,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> MoveAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<class UInputAction> ShiftAction;
+
 	TScriptInterface<class IEnemyInterface> LastActor;
 	TScriptInterface<IEnemyInterface> ThisActor;
 	FHitResult CursorHit;
@@ -91,9 +94,13 @@ private:
 	 */
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> Spline;
+
+	bool bShiftKeyDown = false;
 	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);
+	void ShiftPressed() { bShiftKeyDown = true; };
+	void ShiftReleased() { bShiftKeyDown = false; };
 	void CursorTrace();
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);

@@ -25,5 +25,16 @@ public:
 
 private:
 	virtual void Activate() override;
-	void SendMouseCursorData();
+
+	/**
+	 * Send mouse cursor data to server
+	 */
+	void SendMouseCursorData() const;
+
+	/**
+	 * A callback for the event happen when target data arrive at server from client 
+	 * @param DataHandle A handle contain target data 
+	 * @param ActivationTag Ability Gameplay tag
+	 */
+	void OnTargetDataReplicateCallback(const FGameplayAbilityTargetDataHandle& DataHandle, FGameplayTag ActivationTag) const;
 };

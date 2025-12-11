@@ -7,6 +7,11 @@
 #include "Engine/DataAsset.h"
 #include "AuraInputConfig.generated.h"
 
+/**
+ * Struct that associate InputAction with Gameplay Tag
+ * 
+ * Used for binding input action to activate specific ability
+ */
 USTRUCT(BlueprintType)
 struct FAuraInputAction
 {

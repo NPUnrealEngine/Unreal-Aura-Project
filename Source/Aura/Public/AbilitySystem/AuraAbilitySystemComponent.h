@@ -24,9 +24,26 @@ public:
 	
 public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
+	/**
+	 * Add startup abilities
+	 * 
+	 * @param StartupAbilities List of abilities 
+	 */
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 
+	/**
+	 * Tell AbilitySystemComponent a key associated gameplay tag
+	 * had held and need to activate ability
+	 * @param InputTag Gameplay tag
+	 */
 	void AbilityInputTagHeld(const FGameplayTag& InputTag);
+
+	/**
+	 * Tell AbilitySystemComponent a key associated gameplay tag
+	 * had released
+	 * @param InputTag Gameplay tag
+	 */
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	
 protected:
