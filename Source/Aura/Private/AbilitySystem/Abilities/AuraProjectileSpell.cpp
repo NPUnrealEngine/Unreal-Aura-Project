@@ -16,7 +16,6 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 void UAuraProjectileSpell::SpawnProjectile()
 {
-	const AActor* Actor = GetAvatarActorFromActorInfo();
 	const bool IsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!IsServer) return;
 
