@@ -7,7 +7,7 @@
 #include "CombatInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType)
 class UCombatInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -27,5 +27,23 @@ public:
 	 * @return level
 	 */
 	virtual int32 GetPlayerLevel();
+
+	/**
+	 * Fire position of socket location from the weapon
+	 * held by character
+	 * 
+	 * @return Location
+	 */
 	virtual FVector GetCombatSocketLocation();
+
+	/**
+	 * Related to motion wrapping component
+	 * Tell character to rotate and facing target while in motion wrapping state
+	 *
+	 * e.g: Casting spell while rotate toward target
+	 * 
+	 * @param TargetLocation target in which character need to face to
+	 */
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void UpdateFacingTarget(const FVector& TargetLocation);
 };
