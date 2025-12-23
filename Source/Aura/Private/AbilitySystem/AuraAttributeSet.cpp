@@ -98,7 +98,7 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	}
 }
 
-void UAuraAttributeSet::SetEffectPorperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
+void UAuraAttributeSet::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props)
 {
 	Props.EffectContextHandle =  Data.EffectSpec.GetContext();
 	Props.SourceASC = Props.EffectContextHandle.GetOriginalInstigatorAbilitySystemComponent();
@@ -145,13 +145,17 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 	Super::PostGameplayEffectExecute(Data);
 
 	FEffectProperties Props;
-	SetEffectPorperties(Data, Props);
+	SetEffectProperties(Data, Props);
 
 	/* Clamp attributes after effect executed */
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		const float NewValue = FMath::Clamp(GetHealth(), 0.f, GetMaxHealth());
 		SetHealth(NewValue);
+		UE_LOG(LogTemp, Warning, TEXT("Change health on %s, Health: %f"),
+			*Props.TargetAvatarActor->GetName(),
+			GetHealth()
+		);
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
