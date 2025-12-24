@@ -31,9 +31,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
 	FName WeaponTipSocketName;
 
+	/**
+	 * Ability System Component of the character
+	 */
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
 
+	/**
+	 * AttributeSet of the character 
+	 */
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
