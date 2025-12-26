@@ -79,9 +79,9 @@ protected:
 	 *   - Primary attributes
 	 *   - Secondary attributes
 	 */
-	void InitializeDefaultAttributes() const;
+	virtual void InitializeDefaultAttributes() const;
 
-	void AddChracterAbilities();
+	void AddCharacterAbilities();
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")

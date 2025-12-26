@@ -68,7 +68,7 @@ void AAuraCharacterBase::InitializeDefaultAttributes() const
 	ApplyGameplayEffectToSelf(DefaultVitalAttributes, 1.f);
 }
 
-void AAuraCharacterBase::AddChracterAbilities()
+void AAuraCharacterBase::AddCharacterAbilities()
 {
 	if (!HasAuthority()) return;
 	
