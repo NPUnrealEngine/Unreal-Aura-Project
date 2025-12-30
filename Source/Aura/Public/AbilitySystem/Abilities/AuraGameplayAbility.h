@@ -21,4 +21,12 @@ public:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	FGameplayTag StartupInputTag;
+
+	/**
+	 * Gameplay Ability's damage
+	 * 
+	 * Is a scalable float can be assigned a curve table
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	FScalableFloat Damage;
 };

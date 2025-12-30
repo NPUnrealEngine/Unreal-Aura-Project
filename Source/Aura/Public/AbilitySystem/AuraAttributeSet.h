@@ -152,6 +152,20 @@ public:
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_MaxMana, Category="Max Mana Attributes")
 	FGameplayAttributeData MaxMana;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, MaxMana);
+	
+	/*
+	 * Meta attributes 
+	 * 
+	 * Similar to attributes but act as a placeholder attributes/Temporary attributes. And
+	 * it is reset between each gameplay effect. These meta attributes are not replicatable.
+	 * 
+	 * For example we don't apply incoming damage directly to health from gameplay effect,
+	 * instead we use meta attribute to damage health. This way is more flexible 
+	 */
+	
+	UPROPERTY(BlueprintReadOnly, Category="Meta Attributes")
+	FGameplayAttributeData IncomingDamage;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, IncomingDamage);
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;

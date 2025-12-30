@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "Actors/AuraProjectile.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -35,7 +36,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		SpawnTransform.SetLocation(SocketLocation);
 		SpawnTransform.SetRotation(ProjectileRotation.Quaternion());
 
-		// Spawn projectile
+		// Spawn projectile but not immediately since we are going to configure projectile properties
 		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 			ProjectileClass,
 			SpawnTransform,
@@ -44,15 +45,34 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn	
 		);
 
-		// Give the projectile a gameplay effect for causing damage
+		/* 
+		 * Give the projectile a gameplay effect for causing damage
+		 */
+		
+		// Get Ability System Component
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(
 			GetAvatarActorFromActorInfo()
 		);
+		
+		// Create a SpecHandle
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(
 			DamageEffectClass,
 			GetAbilityLevel(),
 			SourceASC->MakeEffectContext()
 		);
+		
+		// Applying damage with tag, where damage is scalable float(curve table) and 
+		// base on ability's level.
+		// The GameplayAbility modifier must set to `Set By Caller`
+		const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
+		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
+			SpecHandle,
+			GameplayTags.Damage,
+			ScaledDamage
+		);
+		
+		// Set projectile's SpecHandle
 		Projectile->DamageSpecEffectHandle = SpecHandle;
 
 		Projectile->FinishSpawning(SpawnTransform);

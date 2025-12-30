@@ -38,6 +38,8 @@ public:
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
 	
+	FGameplayTag Damage;
+	
 public:
 	static const FAuraGameplayTags& Get() {return GameplayTags;}
 
