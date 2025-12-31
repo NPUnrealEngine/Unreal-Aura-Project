@@ -40,6 +40,8 @@ public:
 	
 	FGameplayTag Damage;
 	
+	FGameplayTag Effects_HitReact;
+	
 public:
 	static const FAuraGameplayTags& Get() {return GameplayTags;}
 

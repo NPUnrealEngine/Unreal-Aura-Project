@@ -27,9 +27,20 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnMaxHealthChanged;
 	
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	bool bHitReacting = false;
+	
+	UPROPERTY(BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 250.f;
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	float LifeSpan = 5.f;
+	
 public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
+	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	virtual void Die() override;
 
 #pragma region InterfaceOverride
 	/* CombatInterface */

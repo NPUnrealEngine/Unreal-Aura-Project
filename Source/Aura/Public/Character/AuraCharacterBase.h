@@ -23,6 +23,11 @@ public:
 	class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual void Die() override;
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void MulticastHandleDeath();
 
 protected:
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
@@ -86,4 +91,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;
+	
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 };

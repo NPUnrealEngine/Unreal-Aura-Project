@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Character Class Defaults")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Character Class Defaults")
+	static void GiveStartupAbilitie(const UObject* WorldContextObject, UAbilitySystemComponent* ASC);
+	
 private:
 	/**
 	 * Create a GameplayEffectContextHandle with SourceObject
