@@ -63,13 +63,57 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Attributes")
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
 
+	/**
+	 * Character's default vital attributes
+	 * 
+	 * Normally Health, MaxHealth, Mana, MaxMana 
+	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
+
+	/**
+	 * Material instance for dissolving character
+	 */
+	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+	
+	/**
+	 * Material instance for dissolving character's weapon
+	 */
+	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
 	virtual FVector GetCombatSocketLocation() override;
+
+	/**
+	 * Dissolve character
+	 * 
+	 * Changing character mesh's material
+	 */
+	void Dissolve();
+
+	/**
+	 * Start dissolve effect on character 
+	 * 
+	 * Blueprint implemented only
+	 * 
+	 * @param DynamicMaterialInstance Material instance
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	
+	/**
+	 * Start dissolve effect on character's weapon 
+	 * 
+	 * Blueprint implemented only
+	 * 
+	 * @param DynamicMaterialInstance Material instance
+	 */
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
 
 	/**
 	 * Apply gameplay effect to character itself

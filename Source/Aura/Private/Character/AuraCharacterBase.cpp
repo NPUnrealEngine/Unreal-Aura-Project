@@ -61,6 +61,8 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Block);
+	
+	Dissolve();
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -77,6 +79,36 @@ FVector AAuraCharacterBase::GetCombatSocketLocation()
 {
 	check(Weapon);
 	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
+
+void AAuraCharacterBase::Dissolve()
+{
+	/*
+	 * Creating dynamic material instance for character and weapon
+	 * then set it to material of character's and weapon's mesh. Finally
+	 * start dissolving timeline which is implemented in blueprint
+	 */
+	
+	if (IsValid(DissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatIns = UMaterialInstanceDynamic::Create(
+			DissolveMaterialInstance,
+			this
+		);
+		
+		GetMesh()->SetMaterial(0, DynamicMatIns);
+		StartDissolveTimeline(DynamicMatIns);
+	}
+	if (IsValid(WeaponDissolveMaterialInstance))
+	{
+		UMaterialInstanceDynamic* DynamicMatIns = UMaterialInstanceDynamic::Create(
+			WeaponDissolveMaterialInstance,
+			this
+		);
+		
+		Weapon->SetMaterial(0, DynamicMatIns);
+		StartWeaponDissolveTimeline(DynamicMatIns);
+	}
 }
 
 void AAuraCharacterBase::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const
