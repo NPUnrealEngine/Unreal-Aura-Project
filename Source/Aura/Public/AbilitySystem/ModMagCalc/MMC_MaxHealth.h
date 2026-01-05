@@ -7,7 +7,9 @@
 #include "MMC_MaxHealth.generated.h"
 
 /**
+ * Max health modifier magnitude calculation
  * 
+ * https://github.com/tranek/GASDocumentation?tab=readme-ov-file#4511-modifier-magnitude-calculation
  */
 UCLASS()
 class AURA_API UMMC_MaxHealth : public UGameplayModMagnitudeCalculation

@@ -7,7 +7,9 @@
 #include "MMC_MaxMana.generated.h"
 
 /**
+ * Max mana modifier magnitude calculation
  * 
+ * https://github.com/tranek/GASDocumentation?tab=readme-ov-file#4511-modifier-magnitude-calculation
  */
 UCLASS()
 class AURA_API UMMC_MaxMana : public UGameplayModMagnitudeCalculation
