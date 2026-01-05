@@ -14,11 +14,13 @@
 struct AuraDamageStatic
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ArmorPenetration);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	
 	AuraDamageStatic()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArmorPenetration, Source, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
 	}
 };
@@ -35,7 +37,9 @@ static const AuraDamageStatic& DamageStatic()
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
+	RelevantAttributesToCapture.Add(DamageStatic().ArmorDef);
 	RelevantAttributesToCapture.Add(DamageStatic().BlockChanceDef);
+	RelevantAttributesToCapture.Add(DamageStatic().ArmorPenetrationDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -66,13 +70,12 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 	// Get damage from SetByCallerMagnitude
 	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
-	
-	// Block chance
-	float TargetBlockChance = 0.f;
-	
+
 	/*
 	 * Capture block chance
 	 */
+	// Block chance
+	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
 		DamageStatic().BlockChanceDef,
 		EvaluateAggregatorParameters,
@@ -81,20 +84,48 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	TargetBlockChance = FMath::Max(TargetBlockChance, 0.f);
 	
 	/*
+	 * Capture armor penetration
+	 */
+	// Armor penetration
+	float SourceArmorPenetration = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatic().ArmorPenetrationDef,
+		EvaluateAggregatorParameters,
+		SourceArmorPenetration
+	);
+	SourceArmorPenetration = FMath::Max(SourceArmorPenetration, 0.f);
+	
+	/*
+	 * Capture armor
+	 */
+	// Armor
+	float TargetArmor = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatic().ArmorDef,
+		EvaluateAggregatorParameters,
+		TargetArmor
+	);
+	TargetArmor = FMath::Max(TargetArmor, 0.f);
+	
+	/*
 	 * Do calculation
 	 */
 	// Whether damage is blocked
 	bool bBlocked = FMath::RandRange(0, 100) < TargetBlockChance;
 	
-	// Cut damage in half
+	// Cut damage in half if blocked damage
 	Damage = bBlocked ? Damage / 2.f : Damage;
 	
+	// Calculate damage for armor penetration
+	const float EffectiveArmor = TargetArmor *= (100.f - SourceArmorPenetration * 0.25f) / 100.f;
+	Damage *= (100.f - EffectiveArmor * 0.333f) / 100.f;
+	
 	/*
-	 * Add evaluated data to the output modifier
+	 * Add modifier evaluated data to the output modifier
 	 */
 	FGameplayModifierEvaluatedData EvaluateData(
 		UAuraAttributeSet::GetIncomingDamageAttribute(),
-		EGameplayModOp::AddFinal,
+		EGameplayModOp::AddBase,
 		Damage
 	);
 	OutExecutionOutput.AddOutputModifier(EvaluateData);
