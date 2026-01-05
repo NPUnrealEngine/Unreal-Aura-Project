@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 
 /**
@@ -13,10 +14,12 @@
 struct AuraDamageStatic
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(Armor);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(BlockChance);
 	
 	AuraDamageStatic()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, Armor, Target, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, BlockChance, Target, false);
 	}
 };
 
@@ -32,7 +35,7 @@ static const AuraDamageStatic& DamageStatic()
 
 UExecCalc_Damage::UExecCalc_Damage()
 {
-	RelevantAttributesToCapture.Add(DamageStatic().ArmorDef);
+	RelevantAttributesToCapture.Add(DamageStatic().BlockChanceDef);
 }
 
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
@@ -57,33 +60,42 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	 * set its Source and Target Tags
 	 */
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
-	FAggregatorEvaluateParameters EvaluateParameters;
-	EvaluateParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
-	EvaluateParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	FAggregatorEvaluateParameters EvaluateAggregatorParameters;
+	EvaluateAggregatorParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
+	EvaluateAggregatorParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 	
-	// Armor value we want to calculate on
-	float Armor = 0.f;
+	// Get damage from SetByCallerMagnitude
+	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
 	
-	// Attempting to calculate captured attribute value
+	// Block chance
+	float TargetBlockChance = 0.f;
+	
+	/*
+	 * Capture block chance
+	 */
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
-		DamageStatic().ArmorDef,
-		EvaluateParameters,
-		Armor
+		DamageStatic().BlockChanceDef,
+		EvaluateAggregatorParameters,
+		TargetBlockChance
 	);
+	TargetBlockChance = FMath::Max(TargetBlockChance, 0.f);
 	
 	/*
 	 * Do calculation
 	 */
-	Armor = FMath::Max(0.f, Armor);
-	++Armor;
+	// Whether damage is blocked
+	bool bBlocked = FMath::RandRange(0, 100) < TargetBlockChance;
+	
+	// Cut damage in half
+	Damage = bBlocked ? Damage / 2.f : Damage;
 	
 	/*
 	 * Add evaluated data to the output modifier
 	 */
 	FGameplayModifierEvaluatedData EvaluateData(
-		DamageStatic().ArmorProperty,
+		UAuraAttributeSet::GetIncomingDamageAttribute(),
 		EGameplayModOp::AddFinal,
-		Armor
+		Damage
 	);
 	OutExecutionOutput.AddOutputModifier(EvaluateData);
 }
