@@ -50,15 +50,11 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 
 void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC)
 {
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(
-		UGameplayStatics::GetGameMode(WorldContextObject)
-	);
-	if (AuraGameMode == nullptr) return;
-
-	UCharacterClassInfo* ClassInfo= AuraGameMode->CharacterClassInfo;
+	UCharacterClassInfo* ClassInfo= GetCharacterClassInfo(WorldContextObject);
+	if (ClassInfo == nullptr) return;
 	
 	// Get character class info data asset
-	FCharacterClassDefaultInfo ClassDefaultInfo = AuraGameMode->CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	FCharacterClassDefaultInfo ClassDefaultInfo = ClassInfo->GetClassDefaultInfo(CharacterClass);
 
 	// Use for source object in gameplay effect context handle
 	AActor* AvatarActor = ASC->GetAvatarActor();
@@ -90,12 +86,8 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const UObject* World
 
 void UAuraAbilitySystemLibrary::GiveStartupAbilitie(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(
-		UGameplayStatics::GetGameMode(WorldContextObject)
-	);
-	if (AuraGameMode == nullptr) return;
-
-	UCharacterClassInfo* ClassInfo= AuraGameMode->CharacterClassInfo;
+	UCharacterClassInfo* ClassInfo= GetCharacterClassInfo(WorldContextObject);
+	if (ClassInfo == nullptr) return;
 	
 	for (auto Ability : ClassInfo->CommonAbilities)
 	{
@@ -103,6 +95,17 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilitie(const UObject* WorldContextO
 		ASC->GiveAbility(AbilitySpec);
 	}
 	
+}
+
+UCharacterClassInfo* UAuraAbilitySystemLibrary::GetCharacterClassInfo(const UObject* WorldContextObject)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(
+		UGameplayStatics::GetGameMode(WorldContextObject)
+	);
+	
+	if (AuraGameMode == nullptr) return nullptr;
+
+	return AuraGameMode->CharacterClassInfo;
 }
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::MakeEffectContextHandle(UAbilitySystemComponent* ASC,

@@ -3,9 +3,13 @@
 
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Interface/CombatInterface.h"
 
 /**
  * Damage static that
@@ -56,8 +60,14 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	/*
 	 * Get Avatar actor for source and target
 	 */
-	const AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
-	const AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
+	AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
+	
+	/*
+	 * Get ICombatInterface for source and target
+	 */
+	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
+	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
 	
 	/*
 	 * Create FAggregatorEvaluateParameters and
@@ -116,9 +126,30 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	// Cut damage in half if blocked damage
 	Damage = bBlocked ? Damage / 2.f : Damage;
 	
+	// Get curve table for ArmorPenetrationCoefficient
+	UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
+	FRealCurve* ArmorPenetrationCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(
+		FName("ArmorPenetration"), 
+		FString()
+	);
+	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(
+		SourceCombatInterface->GetPlayerLevel()
+	);
+	
 	// Calculate damage for armor penetration
-	const float EffectiveArmor = TargetArmor *= (100.f - SourceArmorPenetration * 0.25f) / 100.f;
-	Damage *= (100.f - EffectiveArmor * 0.333f) / 100.f;
+	const float EffectiveArmor = TargetArmor * (100.f - SourceArmorPenetration * ArmorPenetrationCoefficient) / 100.f;
+	
+	// Get curve table for EffectiveArmorCoefficient
+	FRealCurve* EffectiveArmorCurve = CharacterClassInfo->DamageCalculationCoefficient->FindCurve(
+		FName("EffectiveArmor"), 
+		FString()
+	);
+	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(
+		TargetCombatInterface->GetPlayerLevel()	
+	);
+	
+	// Calculate damage
+	Damage *= (100.f - EffectiveArmor * EffectiveArmorCoefficient) / 100.f;
 	
 	/*
 	 * Add modifier evaluated data to the output modifier
