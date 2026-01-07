@@ -15,7 +15,7 @@ public:
 	void SetIsBlockedHit(bool bInIsBlockedHit) { bIsBlockedHit = bInIsBlockedHit; }
 	virtual UScriptStruct* GetScriptStruct() const override;
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
-	virtual FAuraGameplayEffectContext* Duplicate() const override;
+	virtual FGameplayEffectContext* Duplicate() const override;
 	
 protected:
 	/**

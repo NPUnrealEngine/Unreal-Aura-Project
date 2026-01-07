@@ -142,7 +142,7 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	return true;
 }
 
-FAuraGameplayEffectContext* FAuraGameplayEffectContext::Duplicate() const
+FGameplayEffectContext* FAuraGameplayEffectContext::Duplicate() const
 {
 	FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
 	*NewContext = *this;
