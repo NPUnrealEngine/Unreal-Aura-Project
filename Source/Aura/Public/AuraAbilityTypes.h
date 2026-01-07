@@ -25,6 +25,19 @@ protected:
 	bool bIsCriticalHit = false;
 };
 
+
+/**
+* Specific to USTRUCT
+* 
+* https://stackoverflow.com/questions/53228877/when-i-should-define-operations-type-traits-for-a-ustruct
+* 
+* Tell Unreal Engine about FAuraGameplayEffectContext's traits/capabilities
+* so Unreal Engine can invoke proper methods without compilation error.
+* 
+* Here we tell Unreal Engine FAuraGameplayEffectContext is capable of following
+* - NetSerializer : Overriding NetSerializer method
+* - Copy : Overriding Duplicate method
+*/
 template<>
 struct TStructOpsTypeTraits<FAuraGameplayEffectContext> : public TStructOpsTypeTraitsBase2<FAuraGameplayEffectContext>
 {
