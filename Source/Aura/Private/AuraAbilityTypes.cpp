@@ -2,7 +2,7 @@
 
 UScriptStruct* FAuraGameplayEffectContext::GetScriptStruct() const
 {
-	return FAuraGameplayEffectContext::GetScriptStruct();
+	return StaticStruct();
 }
 
 bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess)
@@ -106,4 +106,16 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	
 	bOutSuccess = true;
 	return true;
+}
+
+FAuraGameplayEffectContext* FAuraGameplayEffectContext::Duplicate() const
+{
+	FAuraGameplayEffectContext* NewContext = new FAuraGameplayEffectContext();
+	*NewContext = *this;
+	if (GetHitResult())
+	{
+		// Does a deep copy of the hit result
+		NewContext->AddHitResult(*GetHitResult(), true);
+	}
+	return NewContext;
 }
