@@ -55,10 +55,13 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		);
 		
 		// Create a SpecHandle
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+		EffectContextHandle.SetAbility(this);
+		
 		const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(
 			DamageEffectClass,
 			GetAbilityLevel(),
-			SourceASC->MakeEffectContext()
+			EffectContextHandle
 		);
 		
 		// Applying damage with tag, where damage is scalable float(curve table) and 
