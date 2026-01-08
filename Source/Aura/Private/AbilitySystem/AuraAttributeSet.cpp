@@ -8,6 +8,7 @@
 #include "AuraGameplayTags.h"
 #include "Net/UnrealNetwork.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -194,19 +195,22 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			
 			if (Props.SourceCharacter != Props.TargetCharacter)
 			{
-				ShowFloatingText(Props, LocalIncomingDamage);
+				const bool bBlocked = UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle);
+				const bool bCritical = UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle);
+				
+				ShowFloatingText(Props, LocalIncomingDamage, bBlocked, bCritical);
 			}
 		}
 	}
 }
 
-void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage) const
+void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
 	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(
 		UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0))
 	)
 	{
-		PC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 	}
 }
 
