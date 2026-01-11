@@ -95,17 +95,10 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 	/*
 	 * Sum all value from each damage type
-	 * 
-	 * Iterate over all child gameplay tags(represent damage type) under Damage gameplay tag
-	 * and use GetSetByCallerMagnitude to get damage value for the damage type then add it
-	 * to damage
 	 */
-	FGameplayTagContainer GameplayTagContainer = UGameplayTagsManager::Get().RequestGameplayTagChildren(
-		FAuraGameplayTags::Get().Damage
-	);
-	for (auto DamageTypeTag : GameplayTagContainer)
+	for (auto Pair : FAuraGameplayTags::Get().DamageTypesToResistances)
 	{
-		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(Pair.Key);
 		Damage += DamageTypeValue;
 	}
 
