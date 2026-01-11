@@ -64,16 +64,18 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 			EffectContextHandle
 		);
 		
-		// Applying damage with tag, where damage is scalable float(curve table) and 
-		// base on ability's level.
-		// The GameplayAbility modifier must set to `Set By Caller`
-		const float ScaledDamage = Damage.GetValueAtLevel(10.f);
-		FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
-			SpecHandle,
-			GameplayTags.Damage,
-			ScaledDamage
-		);
+		for (auto Pair : DamageTypes)
+		{
+			// Applying damage with tag, where damage is scalable float(curve table) and 
+			// base on ability's level.
+			// The GameplayAbility modifier must set to `Set By Caller`
+			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
+				SpecHandle,
+				Pair.Key,
+				ScaledDamage
+			);
+		}
 		
 		// Set projectile's SpecHandle
 		Projectile->DamageSpecEffectHandle = SpecHandle;

@@ -7,6 +7,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
+#include "GameplayTagsManager.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSet.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
@@ -89,8 +90,24 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	EvaluateAggregatorParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluateAggregatorParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
 	
-	// Get damage from SetByCallerMagnitude
-	float Damage = Spec.GetSetByCallerMagnitude(FAuraGameplayTags::Get().Damage);
+	// Initial damage value
+	float Damage = 0.f;
+	
+	/*
+	 * Sum all value from each damage type
+	 * 
+	 * Iterate over all child gameplay tags(represent damage type) under Damage gameplay tag
+	 * and use GetSetByCallerMagnitude to get damage value for the damage type then add it
+	 * to damage
+	 */
+	FGameplayTagContainer GameplayTagContainer = UGameplayTagsManager::Get().RequestGameplayTagChildren(
+		FAuraGameplayTags::Get().Damage
+	);
+	for (auto DamageTypeTag : GameplayTagContainer)
+	{
+		const float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag);
+		Damage += DamageTypeValue;
+	}
 
 	/*
 	 * Capture block chance

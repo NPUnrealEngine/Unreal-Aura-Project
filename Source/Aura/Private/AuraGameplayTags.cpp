@@ -120,9 +120,17 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Input tag 4 key")
 	);
 	
+	/*
+	 * Damage and types
+	 */
 	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Damage"),
 		FString("Damage")
+	);
+	
+	GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage.Fire"),
+		FString("Fire damage type")
 	);
 	
 	/*

@@ -37,8 +37,17 @@ public:
 	FGameplayTag InputTag_2;
 	FGameplayTag InputTag_3;
 	FGameplayTag InputTag_4;
-	
+
+	/**
+	 * Parent Damage gameplay tag
+	 * contain a list of damage type
+	 * 
+	 * E.g:
+	 * 
+	 * Damage.Fire, Damage.Ice
+	 */
 	FGameplayTag Damage;
+	FGameplayTag Damage_Fire;
 	
 	FGameplayTag Effects_HitReact;
 	
