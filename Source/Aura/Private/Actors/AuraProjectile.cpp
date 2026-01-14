@@ -84,13 +84,16 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	// Ignore actor if actor is the instigator
 	if (GetInstigator() == OtherActor) return;
 	
-	UGameplayStatics::PlaySoundAtLocation(
-		this,
-		ImpactSound,
-		GetActorLocation(),
-		FRotator::ZeroRotator
-	);
-
+	if (!bHit)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			ImpactSound,
+			GetActorLocation(),
+			FRotator::ZeroRotator
+		);
+	}
+	
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 		this,
 		ImpactEffect,

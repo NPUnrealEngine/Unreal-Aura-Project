@@ -55,7 +55,12 @@ void AAuraEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	InitAbilityActorInfo();
-	UAuraAbilitySystemLibrary::GiveStartupAbilitie(this, AbilitySystemComponent);
+	
+	// Only server side can give startup abilities
+	if (HasAuthority())
+	{
+		UAuraAbilitySystemLibrary::GiveStartupAbilitie(this, AbilitySystemComponent);
+	}
 
 	// Set widget controller
 	if (UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject()))
@@ -112,7 +117,12 @@ void AAuraEnemy::InitAbilityActorInfo()
 	Super::InitAbilityActorInfo();
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	InitializeDefaultAttributes();
+	
+	// Only server side can initialize default attributes
+	if (HasAuthority())
+	{
+		InitializeDefaultAttributes();
+	}
 }
 
 void AAuraEnemy::InitializeDefaultAttributes() const

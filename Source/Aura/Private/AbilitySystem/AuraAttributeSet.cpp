@@ -217,9 +217,8 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 void UAuraAttributeSet::ShowFloatingText(const FEffectProperties& Props, const float Damage, bool bBlockedHit, bool bCriticalHit) const
 {
-	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(
-		UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0))
-	)
+	// Tell client side who cause damage to show damage number
+	if (AAuraPlayerController* PC = Cast<AAuraPlayerController>(Props.SourceCharacter->Controller))
 	{
 		PC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 	}
@@ -245,7 +244,7 @@ void UAuraAttributeSet::OnRep_Vigor(const FGameplayAttributeData& OldVigor) cons
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Vigor, OldVigor);
 }
 
-void UAuraAttributeSet::Onrep_Armor(const FGameplayAttributeData& OldArmor) const
+void UAuraAttributeSet::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, Armor, OldArmor);
 }

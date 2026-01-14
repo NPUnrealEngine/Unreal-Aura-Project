@@ -178,7 +178,7 @@ public:
 	 * Similar to attributes but act as a placeholder attributes/Temporary attributes. And
 	 * it is reset between each gameplay effect. These meta attributes are not replicatable.
 	 * 
-	 * For example we don't apply incoming damage directly to health from gameplay effect,
+	 * For example, we don't apply incoming damage directly to health from gameplay effect,
 	 * instead we use meta attribute to damage health. This way is more flexible 
 	 */
 	
@@ -205,7 +205,7 @@ public:
 	void OnRep_Vigor(const FGameplayAttributeData& OldVigor) const;
 
 	UFUNCTION()
-	void Onrep_Armor(const FGameplayAttributeData& OldArmor) const;
+	void OnRep_Armor(const FGameplayAttributeData& OldArmor) const;
 
 	UFUNCTION()
 	void OnRep_ArmorPenetration(const FGameplayAttributeData& OldArmorPenetration) const;
