@@ -64,6 +64,11 @@ void AAuraPlayerController::AutoRun()
 
 		ControlledPawn->AddMovementInput(Direction);
 		
+		/*
+		 * Stop auto running when distance between current location on 
+		 * spline curve line and final destination is less or equal to
+		 * auto run accepting radius
+		 */
 		const float DistanceToDestination = (LocationOnSpline - CachedDestination).Length();
 		if (DistanceToDestination <= AutoRunAcceptanceRadius)
 		{
@@ -201,6 +206,12 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 	if (!bTargeting && !bShiftKeyDown)
 	{
 		const APawn* ControlledPawn = GetPawn();
+		
+		/*
+		 * Only auto running when we have pawn and time spend
+		 * between LMB held down and LMB released is less or equal
+		 * to short press threshold
+		 */
 		if (FollowTime <= ShortPressThreshold && ControlledPawn)
 		{
 			/**
@@ -215,17 +226,26 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 				CachedDestination
 			))
 			{
+				/*
+				 * Add nav path points to spline in order for spline
+				 * to generate a spline curve line
+				 */
 				Spline->ClearSplinePoints();
 				for (const auto& PointLoc : NavPath->PathPoints)
 				{
 					Spline->AddSplinePoint(PointLoc, ESplineCoordinateSpace::World);
 				}
-				/**
-				 * Change destination to the last found path point
-				 * to prevent character endless auto running to the cursor point 
-				 */
-				CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
-				bAutoRunning = true;
+				
+				// Start auto run when we have at least 1 path point
+				if (NavPath->PathPoints.Num() > 0)
+				{
+					/*
+					 * Change destination to the last found path point
+					 * to prevent character endless auto running to the cursor point 
+					 */
+					CachedDestination = NavPath->PathPoints[NavPath->PathPoints.Num() - 1];
+					bAutoRunning = true;
+				}
 			}
 		}
 		FollowTime = 0.f;

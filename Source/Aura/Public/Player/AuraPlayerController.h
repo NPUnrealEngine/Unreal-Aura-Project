@@ -108,7 +108,6 @@ private:
 	void Move(const struct FInputActionValue& InputActionValue);
 	void ShiftPressed() { bShiftKeyDown = true; };
 	void ShiftReleased() { bShiftKeyDown = false; };
-	void CursorTrace();
 
 	void AbilityInputTagPressed(FGameplayTag InputTag);
 	void AbilityInputTagReleased(FGameplayTag InputTag);
@@ -121,5 +120,17 @@ private:
 	 */
 	UAuraAbilitySystemComponent* GetASC();
 
+	/**
+	 * Monitoring cursor hit
+	 * 
+	 * Called every ticks
+	 */
+	void CursorTrace();
+	
+	/**
+	 * Auto run for character
+	 * 
+	 * Called every ticks
+	 */
 	void AutoRun();
 };
