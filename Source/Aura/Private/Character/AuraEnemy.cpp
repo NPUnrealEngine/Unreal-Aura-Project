@@ -68,7 +68,11 @@ void AAuraEnemy::BeginPlay()
 	// Only server side can give startup abilities
 	if (HasAuthority())
 	{
-		UAuraAbilitySystemLibrary::GiveStartupAbilitie(this, AbilitySystemComponent);
+		UAuraAbilitySystemLibrary::GiveStartupAbilities(
+			this, 
+			AbilitySystemComponent, 
+			CharacterClass
+		);
 	}
 
 	// Set widget controller

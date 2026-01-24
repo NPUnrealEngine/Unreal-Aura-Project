@@ -116,6 +116,8 @@ public:
 	FGameplayTag Attributes_Resistance_Lightning;
 	FGameplayTag Attributes_Resistance_Arcane;
 	FGameplayTag Attributes_Resistance_Physical;*/
+	
+	FGameplayTag Abilities_Attack;
 
 	/**
 	 * A mapper for DamageTypes to Resistances
