@@ -34,7 +34,8 @@ public:
 	 * 
 	 * @return Location
 	 */
-	virtual FVector GetCombatSocketLocation();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetCombatSocketLocation();
 
 	/**
 	 * Related to motion wrapping component
