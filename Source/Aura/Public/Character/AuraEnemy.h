@@ -38,12 +38,17 @@ public:
 	UPROPERTY(EditAnywhere, Category="Combat")
 	float LifeSpan = 5.f;
 	
+	UPROPERTY(BlueprintReadWrite, Category="Combat")
+	TObjectPtr<AActor> CombatTarget;
+	
 public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	virtual void Die() override;
 	virtual void PossessedBy(AController* NewController) override;
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 
 #pragma region InterfaceOverride
 	/* CombatInterface */

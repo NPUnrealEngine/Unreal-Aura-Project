@@ -150,6 +150,16 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	);
 }
 
+void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
+{
+	CombatTarget = InCombatTarget;
+}
+
+AActor* AAuraEnemy::GetCombatTarget_Implementation() const
+{
+	return CombatTarget;
+}
+
 void AAuraEnemy::InitAbilityActorInfo()
 {
 	Super::InitAbilityActorInfo();
