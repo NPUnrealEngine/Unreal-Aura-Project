@@ -13,6 +13,15 @@ UCLASS()
 class AURA_API UAuraDamageGameplayAbility : public UAuraGameplayAbility
 {
 	GENERATED_BODY()
+	
+public:
+	/**
+	 * Apply damage effect to target actor directly
+	 * 
+	 * @param TargetActor 
+	 */
+	UFUNCTION(BlueprintCallable)
+	void CauseDamage(AActor* TargetActor);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
