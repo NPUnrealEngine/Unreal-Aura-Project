@@ -22,14 +22,29 @@ public:
 public:
 	class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 public:
+	/* IAbilitySystemInterface */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	/* IAbilitySystemInterface */
+	
+	/* ICombatInterface */
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die() override;
-	
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
+	/* ICombatInterface */
+
+	/**
+	 * Handle the character death
+	 * 
+	 * Run on server and all clients
+	 */
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath();
 
 protected:
+	
+	bool bDead = false;
+	
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 

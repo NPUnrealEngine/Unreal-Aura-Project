@@ -47,9 +47,30 @@ public:
 	 */
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& TargetLocation);
-	
+
+	/**
+	 * Get animation montage for hit react
+	 * @return Animation montage
+	 */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
-	
+
+	/**
+	 * Make character die
+	 */
 	virtual void Die() = 0;
+
+	/**
+	 * Check whether the character is dead or not
+	 * @return 
+	 */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsDead() const;
+
+	/**
+	 * Get the actor of this character
+	 * @return 
+	 */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetAvatar();
 };

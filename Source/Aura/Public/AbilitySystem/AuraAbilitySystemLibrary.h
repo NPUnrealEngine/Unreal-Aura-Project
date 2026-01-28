@@ -45,7 +45,19 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsCritical);
-	
+
+	/**
+	 * Get all actors who is alive within a sphere radius
+	 * 
+	 * @param WorldContextObject 
+	 * @param OutOverlappingActors 
+	 * @param ActorsToIgnore 
+	 * @param Radius 
+	 * @param SphereOrigin 
+	 */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
+
 private:
 	/**
 	 * Create a GameplayEffectContextHandle with SourceObject

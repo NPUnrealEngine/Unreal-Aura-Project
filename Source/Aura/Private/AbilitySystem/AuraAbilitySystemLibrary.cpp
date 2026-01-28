@@ -154,6 +154,49 @@ void UAuraAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& E
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
+	TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const float Radius,
+	const FVector& SphereOrigin)
+{
+	/*
+	 * Create a collision query params
+	 */
+	FCollisionQueryParams SphereQueryParams;
+	SphereQueryParams.AddIgnoredActors(ActorsToIgnore);
+	
+	/*
+	 * Create a sphere collision radius and find all overlapped actors
+	 * then add them to output actors
+	 */
+	TArray<FOverlapResult> Overlaps;
+	if (const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull))
+	{
+		// Find all overlapped actors
+		World->OverlapMultiByObjectType(
+			Overlaps, SphereOrigin, FQuat::Identity, 
+			FCollisionObjectQueryParams(FCollisionObjectQueryParams::InitType::AllDynamicObjects), 
+			FCollisionShape::MakeSphere(Radius),
+			SphereQueryParams
+		);
+		
+		/*
+		 * Only add the actors that has ICombatInterface implemented and
+		 * the actor is alive
+		 */
+		for (FOverlapResult& Overlap : Overlaps)
+		{
+			if (Overlap.GetActor()->Implements<UCombatInterface>() && 
+				!ICombatInterface::Execute_IsDead(Overlap.GetActor()))
+			{
+				OutOverlappingActors.AddUnique(
+					ICombatInterface::Execute_GetAvatar(Overlap.GetActor())
+				);
+			}
+			
+		}
+	}
+}
+
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::MakeEffectContextHandle(UAbilitySystemComponent* ASC,
                                                                                 const UObject* SourceObject)
 {
