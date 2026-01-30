@@ -20,7 +20,12 @@ public:
 	AAuraCharacterBase();
 
 public:
+	UPROPERTY(EditAnywhere, Category="Combat")
+	TArray<FTaggedMontage> AttackMontages;
+	
+public:
 	class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
+
 public:
 	/* IAbilitySystemInterface */
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -31,6 +36,7 @@ public:
 	virtual void Die() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	/* ICombatInterface */
 
 	/**
