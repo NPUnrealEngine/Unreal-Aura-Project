@@ -21,8 +21,6 @@ AAuraEnemy::AAuraEnemy()
 		ECollisionChannel::ECC_Visibility,
 		ECollisionResponse::ECR_Block
 		);
-	
-	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
 	AbilitySystemComponent = CreateDefaultSubobject<UAuraAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetIsReplicated(true);
@@ -62,6 +60,8 @@ int32 AAuraEnemy::GetPlayerLevel()
 void AAuraEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 
 	InitAbilityActorInfo();
 	
