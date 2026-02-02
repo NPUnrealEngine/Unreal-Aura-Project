@@ -56,6 +56,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
 	FName WeaponTipSocketName;
+	
+	UPROPERTY(EditAnywhere, Category="Properties | Combat")
+	FName RightHandSocketName;
+	
+	UPROPERTY(EditAnywhere, Category="Properties | Combat")
+	FName LeftHandSocketName;
 
 	/**
 	 * Ability System Component of the character
@@ -107,7 +113,7 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
-	virtual FVector GetCombatSocketLocation_Implementation() override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
 
 	/**
 	 * Dissolve character
