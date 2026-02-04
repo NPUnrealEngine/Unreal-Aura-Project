@@ -197,6 +197,13 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondActor)
+{
+	const bool Friends = (FirstActor->ActorHasTag("Player") && SecondActor->ActorHasTag("Player")) || 
+		(FirstActor->ActorHasTag("Enemy") && SecondActor->ActorHasTag("Enemy"));
+	return !Friends;
+}
+
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::MakeEffectContextHandle(UAbilitySystemComponent* ASC,
                                                                                 const UObject* SourceObject)
 {
