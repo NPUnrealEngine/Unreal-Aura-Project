@@ -8,6 +8,7 @@
 #include "Interface/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UGameplayEffect;
 
@@ -109,11 +110,18 @@ protected:
 	 */
 	UPROPERTY(editAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	/**
+	 * Blood effect when impact
+	 */
+	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	TObjectPtr<UNiagaraSystem> BloodEffect;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 
 	/**
 	 * Dissolve character
