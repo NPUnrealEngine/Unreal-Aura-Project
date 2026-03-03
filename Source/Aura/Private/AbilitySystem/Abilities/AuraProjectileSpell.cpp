@@ -29,7 +29,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		FAuraGameplayTags::Get().CombatSocket_Weapon
 	);
 	FRotator ProjectileRotation = (ProjectileTargetLocation - SocketLocation).Rotation();
-	ProjectileRotation.Pitch = 0.f;
+	
+	// Uncomment if your want project to fly straight line
+	//ProjectileRotation.Pitch = 0.f;
 
 	// Set projectile location & rotation
 	FTransform SpawnTransform;

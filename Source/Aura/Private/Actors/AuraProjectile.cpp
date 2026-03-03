@@ -74,6 +74,7 @@ void AAuraProjectile::Destroyed()
 			ImpactEffect,
 			GetActorLocation()
 		);
+		bHit = true;
 	}
 	
 	Super::Destroyed();
@@ -96,14 +97,14 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			GetActorLocation(),
 			FRotator::ZeroRotator
 		);
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			ImpactEffect,
+			GetActorLocation()
+		);
+		bHit = true;
 	}
 	
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		this,
-		ImpactEffect,
-		GetActorLocation()
-	);
-
 	/**
 	 * Destroy projectile only if we are the owner
 	 */
