@@ -103,20 +103,26 @@ protected:
 	/**
 	 * Material instance for dissolving character
 	 */
-	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
 	
 	/**
 	 * Material instance for dissolving character's weapon
 	 */
-	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 
 	/**
 	 * Blood effect when impact
 	 */
-	UPROPERTY(editAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<UNiagaraSystem> BloodEffect;
+
+	/**
+	 * Death sound to play when character die
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	TObjectPtr<USoundBase> DeathSound;
 	
 protected:
 	virtual void BeginPlay() override;
