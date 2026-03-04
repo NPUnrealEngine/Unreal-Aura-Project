@@ -17,7 +17,7 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation)
+void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocation, const FGameplayTag& SocketTag)
 {
 	// We only spawn projectile on server
 	const bool IsServer = GetAvatarActorFromActorInfo()->HasAuthority();
@@ -26,9 +26,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	// Get weapon socket location & rotation
 	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(
 		GetAvatarActorFromActorInfo(),
-		FAuraGameplayTags::Get().CombatSocket_Weapon
+		SocketTag
 	);
-	FRotator ProjectileRotation = (ProjectileTargetLocation - SocketLocation).Rotation();
+	FRotator ProjectileRotation = (ProjectileTargetLocation - SocketLocation ).Rotation();
 	
 	// Uncomment if your want project to fly straight line
 	//ProjectileRotation.Pitch = 0.f;
