@@ -58,7 +58,7 @@ public:
 	 * @return Location
 	 */
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	FVector GetCombatSocketLocation(const FGameplayTag& MontageTag);
+	FVector GetCombatSocketLocation(const FGameplayTag& SocketTag);
 
 	/**
 	 * Related to motion wrapping component

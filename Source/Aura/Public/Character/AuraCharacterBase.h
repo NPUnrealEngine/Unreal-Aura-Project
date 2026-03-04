@@ -64,7 +64,10 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Properties | Combat")
 	FName LeftHandSocketName;
-
+	
+	UPROPERTY(EditAnywhere, Category="Properties | Combat")
+	FName TailSocketName;
+	
 	/**
 	 * Ability System Component of the character
 	 */
@@ -127,7 +130,7 @@ protected:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
-	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& MontageTag) override;
+	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 
 	/**
