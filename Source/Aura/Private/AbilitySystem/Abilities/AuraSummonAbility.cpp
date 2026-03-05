@@ -23,21 +23,38 @@ TArray<FVector> UAuraSummonAbility::GetSummonLocations()
 		const FVector Direction = LeftSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
 		
 		// Calculate location and add it to spawned location
-		const FVector ChosenSpawnLocation = Location + Direction * FMath::RandRange(MinSpawnDistance, MaxSpawnDistance);
+		FVector ChosenSpawnLocation = Location + Direction * FMath::RandRange(MinSpawnDistance, MaxSpawnDistance);
+		
+		// Calculate Z axis
+		FHitResult HitResult;
+		GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			ChosenSpawnLocation + FVector(0.f, 0.f, 400.f),
+			ChosenSpawnLocation - FVector(0.f, 0.f, 400.f),
+			ECollisionChannel::ECC_Visibility
+		);
+		if (HitResult.bBlockingHit)
+		{
+			ChosenSpawnLocation.Z = HitResult.ImpactPoint.Z;
+		}
+		
 		SpawnLocations.Add(ChosenSpawnLocation);
 		
 		/* Draw debug */
-		DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 15.f, 12, FColor::Blue, false, 5.f);
-		UKismetSystemLibrary::DrawDebugArrow(
-			GetAvatarActorFromActorInfo(),
-			Location,
-			Location + Direction * MaxSpawnDistance,
-			4.f,
-			FColor::Green,
-			3.f
-		);
-		DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.f, 12, FColor::Red, false, 5.f);
-		DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 5.f);
+		if (DrawDebug)
+		{
+			DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 15.f, 12, FColor::Blue, false, 5.f);
+			UKismetSystemLibrary::DrawDebugArrow(
+				GetAvatarActorFromActorInfo(),
+				Location,
+				Location + Direction * MaxSpawnDistance,
+				4.f,
+				FColor::Green,
+				3.f
+			);
+			DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5.f, 12, FColor::Red, false, 5.f);
+			DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5.f, 12, FColor::Red, false, 5.f);
+		}
 	}
 	
 	return SpawnLocations;

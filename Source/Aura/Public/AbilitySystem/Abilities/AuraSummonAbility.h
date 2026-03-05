@@ -53,4 +53,11 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSummonLocations();
+	
+protected:
+	/**
+	 * Enable to draw debug for visualization of spawn 
+	 */
+	UPROPERTY(EditAnywhere, Category="Summon")
+	bool DrawDebug = false;
 };
