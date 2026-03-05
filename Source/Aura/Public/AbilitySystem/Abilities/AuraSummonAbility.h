@@ -22,7 +22,9 @@ public:
 	int32 NumMinions = 5;
 
 	/**
-	 * Classes of minion to summon
+	 * A list of possible classes of minion to summon
+	 * 
+	 * A class will be selected randomly from this list to spawn
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="Summon")
 	TArray<TSubclassOf<APawn>> MinionClasses;
@@ -53,6 +55,13 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSummonLocations();
+
+	/**
+	 * Get random minion class
+	 * @return 
+	 */
+	UFUNCTION(blueprintCallable, BlueprintPure)
+	TSubclassOf<APawn> GetRandomMinionClass();
 	
 protected:
 	/**
