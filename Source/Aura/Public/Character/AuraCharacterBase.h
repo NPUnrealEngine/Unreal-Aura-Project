@@ -126,12 +126,18 @@ protected:
 	 */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
 	TObjectPtr<USoundBase> DeathSound;
+
+	/**
+	 * Number of minion we are holding currently 
+	 */
+	int32 MinionCount = 0;
 	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
+	virtual int32 GetMinionCount_Implementation() override;
 
 	/**
 	 * Dissolve character
