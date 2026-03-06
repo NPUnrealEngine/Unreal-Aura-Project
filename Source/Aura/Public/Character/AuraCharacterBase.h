@@ -138,6 +138,8 @@ protected:
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& SocketTag) override;
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override;
 	virtual int32 GetMinionCount_Implementation() override;
+	virtual void IncrementMinionCount_Implementation(int32 Amount) override;
+	virtual void DecrementMinionCount_Implementation(int32 Amount) override;
 
 	/**
 	 * Dissolve character
