@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "OcclusionAwarePlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
@@ -15,7 +16,7 @@ class UAuraInputConfig;
  * 
  */
 UCLASS()
-class AURA_API AAuraPlayerController : public APlayerController
+class AURA_API AAuraPlayerController : public AOcclusionAwarePlayerController
 {
 	GENERATED_BODY()
 
