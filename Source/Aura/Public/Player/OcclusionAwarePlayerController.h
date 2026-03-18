@@ -32,16 +32,16 @@ struct FOccludedActorInfo
 };
 
 /**
- * Detect obstruction between player controller's current camera and controlled pawn,
- * it manages all occluded actors who have implemented IOcclusionInterface. And tell
- * those actors to do occlusion or none-occlusion 
+ * Detect obstruction between player controller's current camera and controlled pawn 
+ * using box trace, it manages all occluded actors who have implemented IOcclusionInterface. 
+ * And tell those actors to do occlusion or none-occlusion 
  * 
  * It required any actors who want to receive notification for occlusion/none-occlusion 
  * to implemented IOcclusionInterface and those actor must implement its own occlusion/
  * none-occlusion procedure for example hide / show actor
  * 
  * Any subclass of this controller have to call SyncOccludedActors() in interval 
- * in order to make it works.
+ * in order to make it work.
  */
 UCLASS()
 class AURA_API AOcclusionAwarePlayerController : public APlayerController
@@ -59,13 +59,24 @@ public:
 	void SyncOccludedActors();
 	
 protected:
+
 	/**
-	 * Percentage for pawn's capsule radius and half height
-	 * 
-	 * Note: Pawn's capsule will be used for tracing
+	 * HalfSize for box trace
 	 */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Occlusion", meta=(ClampMin=0.1))
-	float CapsulePercentageForTrace = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Occlusion")
+	FVector BoxTraceHalfSize = FVector(100.f, 100.f, 100.f);
+
+	/**
+	 * Offset for tracing start and end
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Occlusion")
+	FVector Offset = FVector::ZeroVector;
+
+	/**
+	 * Percentage of distance from camera to pawn should be used for trace
+	 */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Occlusion", meta=(ClampMin=0.0, ClampMax=1.0))
+	float DistancePercentageForTrace = 1.f;
 
 	/**
 	 * True to test against complex collision, false to test against simplified collision
@@ -104,13 +115,6 @@ protected:
 	TArray<TEnumAsByte<EObjectTypeQuery>> CollisionObjectTypes;
 
 	/**
-	 * Capsule component that attached to pawn. The pawn which is controlled by
-	 * this player controller
-	 */
-	UPROPERTY(BlueprintReadOnly, Category="Occlusion")
-	TObjectPtr<UCapsuleComponent> PawnCapsuleComponent;
-
-	/**
 	 * A map that mapping occluded actor to their occluded information
 	 * 
 	 * This is for tracking occluded actors
@@ -120,14 +124,12 @@ protected:
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual void AcknowledgePossession(class APawn* P) override;
 	bool HideActor(AActor* Actor, FOccludedActorInfo& OutInfo);
-	void ShowActor(FOccludedActorInfo& OccludedActorInfo);
+	void ShowActor(FOccludedActorInfo& OccludedActorInfo) const;
 
 private:
 	int32 DebugPrintScreenKey = 0;
 	
 private:
-	void UpdateCapsuleComponent(const APawn* InPawn);
 	EDrawDebugTrace::Type GetDrawDebugTraceType() const;
 };

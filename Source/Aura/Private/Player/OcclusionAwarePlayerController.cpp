@@ -18,27 +18,6 @@ void AOcclusionAwarePlayerController::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AOcclusionAwarePlayerController::AcknowledgePossession(class APawn* P)
-{
-	Super::AcknowledgePossession(P);
-	
-	// Update cached pawn capsule component when possessing a new pawn
-	UpdateCapsuleComponent(P);
-}
-
-void AOcclusionAwarePlayerController::UpdateCapsuleComponent(const APawn* InPawn)
-{
-	// Find capsule component from the pawn and then cache it
-	if (UCapsuleComponent* FoundCapsuleComp = InPawn->FindComponentByClass<UCapsuleComponent>())
-	{
-		PawnCapsuleComponent = FoundCapsuleComp;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Unable to find UCapsuleComponent from pawn %s"), *InPawn->GetName());
-	}
-}
-
 bool AOcclusionAwarePlayerController::HideActor(AActor* Actor, FOccludedActorInfo& OutInfo)
 {
 	if (!Actor->Implements<UOcclusionInterface>()) return false;
@@ -89,7 +68,7 @@ bool AOcclusionAwarePlayerController::HideActor(AActor* Actor, FOccludedActorInf
 	return true;
 }
 
-void AOcclusionAwarePlayerController::ShowActor(FOccludedActorInfo& OccludedActorInfo)
+void AOcclusionAwarePlayerController::ShowActor(FOccludedActorInfo& OccludedActorInfo) const
 {
 	OccludedActorInfo.bIsOccluded = false;
 	
@@ -109,11 +88,14 @@ EDrawDebugTrace::Type AOcclusionAwarePlayerController::GetDrawDebugTraceType() c
 
 void AOcclusionAwarePlayerController::SyncOccludedActors()
 {
-	if (PawnCapsuleComponent == nullptr || GetPawn() == nullptr) return;
+	if (GetPawn() == nullptr) return;
 	
 	/* Get tracing start and end location */
-	const FVector TraceStart = PlayerCameraManager->GetCameraLocation();
-	const FVector TraceEnd = GetPawn()->GetActorLocation();
+	FVector TraceStart = PlayerCameraManager->GetCameraLocation() + Offset;
+	FVector TraceEnd = GetPawn()->GetActorLocation() + Offset;
+	FVector DirectionToTrace = (TraceEnd - TraceStart).GetSafeNormal();
+	float DistanceToTrace = (TraceEnd - TraceStart).Length() * DistancePercentageForTrace;
+	TraceEnd = TraceStart + DirectionToTrace * DistanceToTrace;
 	
 	/* Do tracing */
 	TArray<FHitResult> HitResults;
@@ -125,12 +107,12 @@ void AOcclusionAwarePlayerController::SyncOccludedActors()
 		DebugTraceType= GetDrawDebugTraceType();
 	}
 	
-	const bool bHits = UKismetSystemLibrary::CapsuleTraceMultiForObjects(
+	const bool bHits = UKismetSystemLibrary::BoxTraceMultiForObjects(
 		GetWorld(),
 		TraceStart,
 		TraceEnd,
-		PawnCapsuleComponent->GetScaledCapsuleRadius() * CapsulePercentageForTrace,
-		PawnCapsuleComponent->GetScaledCapsuleHalfHeight() * CapsulePercentageForTrace,
+		BoxTraceHalfSize,
+		PlayerCameraManager->GetCameraRotation(),
 		CollisionObjectTypes,
 		bTraceComplex,
 		ActorsToIgnore,
