@@ -6,6 +6,8 @@
 #include "UI/WidgetController/AuraWidgetController.h"
 #include "OverlayWidgetController.generated.h"
 
+class UAbilityInfo;
+
 USTRUCT(BlueprintType)
 struct FUIWidgetRow : public  FTableRowBase
 {
@@ -61,6 +63,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
 	TObjectPtr<UDataTable> MessageWidgetDataTable;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Widget Data")
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 protected:
 	template<typename T>
