@@ -68,25 +68,45 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		}
 	);
 
-	/*
-	 * Register event for gameplay effect applied to ASC with tags
-	 */
-	Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent)->EffectAssetTags.AddLambda(
-		[this](const FGameplayTagContainer& AssetTags)
+	
+	if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(AbilitySystemComponent))
+	{
+		if (AuraASC->bStartupAbilityGiven)
 		{
-			// Get all tags under Message tag
-			FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
-			for (const FGameplayTag& Tag : AssetTags)
+			OnInitializeStartupAbilities(AuraASC);
+		}
+		else
+		{
+			AuraASC->AbilityGivenDelegate.AddUObject(this, &ThisClass::OnInitializeStartupAbilities);
+		}
+		
+		/*
+		* Register event for gameplay effect applied to ASC with tags
+		*/
+		AuraASC->EffectAssetTags.AddLambda(
+		[this](const FGameplayTagContainer& AssetTags)
 			{
-				/*
-				 * Broadcast tag with information to widget if the tag is type of Message tag
-				 */
-				if (Tag.MatchesTag(MessageTag))
+				// Get all tags under Message tag
+				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
+				for (const FGameplayTag& Tag : AssetTags)
 				{
-					const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
-					MessageWidgetRowDelegate.Broadcast(*Row);
+					/*
+					 * Broadcast tag with information to widget if the tag is type of Message tag
+					 */
+					if (Tag.MatchesTag(MessageTag))
+					{
+						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
+						MessageWidgetRowDelegate.Broadcast(*Row);
+					}
 				}
 			}
-		}
-	);
+		);
+	}
+	
+}
+
+void UOverlayWidgetController::OnInitializeStartupAbilities(UAuraAbilitySystemComponent* AuraAbilitySystemComponent)
+{
+	//TODO: Get information about all given abilities, look up their ability info and broadcast it to widget
+	if (!AuraAbilitySystemComponent->bStartupAbilityGiven) return;
 }

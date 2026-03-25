@@ -7,7 +7,7 @@
 #include "AuraAbilitySystemComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer&);
-
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGiven, UAuraAbilitySystemComponent*, AuraAbilitySystemComponent);
 /**
  * 
  */
@@ -18,9 +18,16 @@ class AURA_API UAuraAbilitySystemComponent : public UAbilitySystemComponent
 
 public:
 	/**
-	 * Call when gameplay effect applied with its tags
+	 * Delegate for gameplay effect applied with its tags
 	 */
 	FEffectAssetTags EffectAssetTags;
+
+	/**
+	 * Call when startup abilities has given
+	 */
+	FAbilityGiven AbilityGivenDelegate;
+	
+	bool bStartupAbilityGiven = false;
 	
 public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
