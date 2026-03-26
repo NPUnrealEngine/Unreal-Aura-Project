@@ -7,7 +7,8 @@
 #include "AuraAbilitySystemComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer&);
-DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGiven, UAuraAbilitySystemComponent*, AuraAbilitySystemComponent);
+DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGiven, UAuraAbilitySystemComponent*);
+DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
 /**
  * 
  */
@@ -52,6 +53,27 @@ public:
 	 * @param InputTag Gameplay tag
 	 */
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
+
+	/**
+	 * Loop through all activatable abilities and notify
+	 * the given delegate
+	 * @param Delegate For callback
+	 */
+	void ForEachAbility(const FForEachAbility& Delegate);
+
+	/**
+	 * Get ability tag from the ability spec
+	 * @param AbilitySpec 
+	 * @return FGameplayTag
+	 */
+	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	/**
+	 * Get ability input tag from the ability space
+	 * @param AbilitySpec 
+	 * @return FGameplayTag
+	 */
+	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
