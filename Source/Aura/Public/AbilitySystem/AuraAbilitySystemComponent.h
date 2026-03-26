@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "AuraAbilitySystemComponent.generated.h"
 
+class UAuraAbilitySystemComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer&);
 DECLARE_MULTICAST_DELEGATE_OneParam(FAbilityGiven, UAuraAbilitySystemComponent*);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
@@ -79,6 +80,8 @@ protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
 	
 protected:
+	virtual void OnRep_ActivateAbilities() override;
+	
 	/**
 	 * Remote Procedure Call to apply gameplay effect
 	 *

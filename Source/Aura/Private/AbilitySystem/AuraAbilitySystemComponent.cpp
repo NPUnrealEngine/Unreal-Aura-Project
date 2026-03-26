@@ -23,6 +23,8 @@ void UAuraAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAc
 
 void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities)
 {
+	// On Server
+	
 	for (const TSubclassOf<UGameplayAbility> AbilityClass : StartupAbilities)
 	{
 		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
@@ -33,6 +35,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 		}
 		GiveAbility(AbilitySpec);
 	}
+	
 	bStartupAbilityGiven = true;
 	AbilityGivenDelegate.Broadcast(this);
 }
@@ -108,6 +111,18 @@ FGameplayTag UAuraAbilitySystemComponent::GetInputTagFromSpec(const FGameplayAbi
 		}
 	}
 	return FGameplayTag();
+}
+
+void UAuraAbilitySystemComponent::OnRep_ActivateAbilities()
+{
+	Super::OnRep_ActivateAbilities();
+	
+	// On client
+	if (!bStartupAbilityGiven)
+	{
+		bStartupAbilityGiven = true;
+		AbilityGivenDelegate.Broadcast(this);
+	}
 }
 
 void UAuraAbilitySystemComponent::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,
