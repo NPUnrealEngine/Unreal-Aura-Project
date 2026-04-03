@@ -13,6 +13,7 @@ class UAbilitySystemComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChangeSignature, float, TimeRemaining);
 
 /**
+ * Asynchronous task for blueprint
  * 
  */
 UCLASS(BlueprintType, meta=(ExposedAsyncProxy = "AsyncTask"))
@@ -21,13 +22,29 @@ class AURA_API UWaitCooldownChange : public UBlueprintAsyncActionBase
 	GENERATED_BODY()
 	
 public:
+	/**
+	 * The delegate for ability cooldown has started
+	 */
 	UPROPERTY(BlueprintAssignable)
 	FCooldownChangeSignature CooldownStart;
-	
+
+	/**
+	 * The delegate for ability cooldown has end
+	 */
 	UPROPERTY(BlueprintAssignable)
 	FCooldownChangeSignature CooldownEnd;
 	
 public:
+	/**
+	 * Asynchronous task
+	 * 
+	 * Listen for particular ability's cooldown in ability system component 
+	 * then notify the corresponding delegate
+	 * 
+	 * @param AbilitySystemComponent 
+	 * @param InCooldownTag Ability's cooldown tag 
+	 * @return 
+	 */
 	UFUNCTION(BlueprintCallable, DisplayName="WaitForCooldownChange", meta=(BlueprintInternalUseOnly = true))
 	static UWaitCooldownChange* WaitForCooldownChange(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayTag& InCooldownTag);
 
