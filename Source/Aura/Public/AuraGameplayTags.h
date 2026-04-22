@@ -68,6 +68,11 @@ public:
 	FGameplayTag Attributes_Secondary_CriticalHitResistance;
 	FGameplayTag Attributes_Secondary_HealthRegeneration;
 	FGameplayTag Attributes_Secondary_ManaRegeneration;
+	
+	/*
+	 * Meta attributes
+	 */
+	FGameplayTag Attributes_Meta_IncomingXP;
 
 	/*
 	 * Game ability startup/initial input tag

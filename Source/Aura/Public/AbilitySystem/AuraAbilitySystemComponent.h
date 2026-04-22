@@ -42,6 +42,12 @@ public:
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
 
 	/**
+	 * Add startup passive abilities
+	 * @param StartupAbilities 
+	 */
+	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& StartupAbilities);
+
+	/**
 	 * Tell AbilitySystemComponent a key associated gameplay tag
 	 * had held and need to activate ability
 	 * @param InputTag Gameplay tag
