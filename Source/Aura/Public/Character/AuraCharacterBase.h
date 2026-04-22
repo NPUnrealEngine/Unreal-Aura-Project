@@ -39,6 +39,7 @@ public:
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
+	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	/* ICombatInterface */
 
 	/**
@@ -131,6 +132,9 @@ protected:
 	 * Number of minion we are holding currently 
 	 */
 	int32 MinionCount = 0;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	ECharacterClass CharacterClass = ECharacterClass::Warrior;
 	
 protected:
 	virtual void BeginPlay() override;
