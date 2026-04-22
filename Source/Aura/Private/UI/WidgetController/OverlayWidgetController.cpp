@@ -143,7 +143,7 @@ void UOverlayWidgetController::OnXPChanged(int32 NewXP) const
 {
 	const AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
 	const ULevelUpInfo* LevelUpInfo = AuraPlayerState->LevelUpInfo;
-	check(LevelUpInfo, TEXT("Unable to find LevelUpInfo, please fill out LevelUpInfo property in AuraPlayerState blueprint"));
+	checkf(LevelUpInfo, TEXT("Unable to find LevelUpInfo, please fill out LevelUpInfo property in AuraPlayerState blueprint"));
 	
 	// Find current level
 	const int32 Level = LevelUpInfo->FindLevelForXP(NewXP);
