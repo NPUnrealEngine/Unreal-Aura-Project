@@ -108,8 +108,16 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	/*
 	 * Get ICombatInterface for source and target
 	 */
-	ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-	ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
+	int32 SourcePlayerLevel = 1;
+	if (SourceAvatar->Implements<UCombatInterface>())
+	{
+		SourcePlayerLevel = ICombatInterface::Execute_GetPlayerLevel(SourceAvatar);
+	}
+	int32 TargetPlayerLevel = 1;
+	if (TargetAvatar->Implements<UCombatInterface>())
+	{
+		TargetPlayerLevel = ICombatInterface::Execute_GetPlayerLevel(TargetAvatar);
+	}
 	
 	/*
 	 * Create FAggregatorEvaluateParameters and
@@ -239,7 +247,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		FString()
 	);
 	const float ArmorPenetrationCoefficient = ArmorPenetrationCurve->Eval(
-		SourceCombatInterface->GetPlayerLevel()
+		SourcePlayerLevel
 	);
 	
 	// Calculate damage for armor penetration
@@ -251,7 +259,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		FString()
 	);
 	const float EffectiveArmorCoefficient = EffectiveArmorCurve->Eval(
-		TargetCombatInterface->GetPlayerLevel()	
+		TargetPlayerLevel
 	);
 	
 	// Calculate damage
@@ -263,7 +271,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		FString()
 	);
 	const float CriticalHitResistanceCoefficient = CriticalHitResistanceCurve->Eval(
-		TargetCombatInterface->GetPlayerLevel()	
+		TargetPlayerLevel
 	);
 	
 	// Calculate critical hit chance

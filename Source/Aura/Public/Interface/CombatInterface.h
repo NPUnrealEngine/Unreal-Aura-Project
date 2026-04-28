@@ -50,7 +50,8 @@ public:
 	 * Get player level
 	 * @return level
 	 */
-	virtual int32 GetPlayerLevel();
+	UFUNCTION(BlueprintNativeEvent)
+	int32 GetPlayerLevel();
 
 	/**
 	 * Fire position of socket location from the weapon
