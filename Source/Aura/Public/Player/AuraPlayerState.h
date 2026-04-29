@@ -21,7 +21,7 @@ class AURA_API AAuraPlayerState : public APlayerState, public IAbilitySystemInte
 public:
 	AAuraPlayerState();
 	
-public:
+public: // Delegates
 	FOnPlayerStatChanged OnXPChangedDelegate;
 	FOnPlayerStatChanged OnLevelChangedDelegate;
 
@@ -31,12 +31,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
 
-public:
-#pragma region Getter
+public: // Getter & Setter
 	FORCEINLINE class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 	FORCEINLINE int32 GetPlayerLevel() const { return Level; }
 	FORCEINLINE int32 GetXP() const {return XP; }
-#pragma endregion  
 	
 public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
