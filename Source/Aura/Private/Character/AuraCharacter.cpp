@@ -8,6 +8,7 @@
 #include "NiagaraSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
+#include "Aura/AuraLogChannel.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -105,11 +106,13 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 void AAuraCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
 {
 	// TODO: Add spell points to player state
+	UE_LOG(LogAura, Log, TEXT("Add spell points %d"), InSpellPoints);
 }
 
 void AAuraCharacter::AddToAttributePoints_Implementation(int32 InAttributePoints)
 {
 	// TODO: Add attribute points to player state
+	UE_LOG(LogAura, Log, TEXT("Add attribute points %d"), InAttributePoints);
 }
 
 void AAuraCharacter::PossessedBy(AController* NewController)
