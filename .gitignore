@@ -9,3 +9,5 @@ Assets/*
 .idea/
 *.sln
 .vsconfig
+*.sln.DotSettings.*.user
+*.uproject.DotSettings.*.user

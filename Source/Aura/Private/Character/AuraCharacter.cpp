@@ -6,26 +6,19 @@
 #include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
-#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "Aura/AuraLogChannel.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/GameplayCameraComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(FName("CameraBoom"));
-	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->SetUsingAbsoluteRotation(true);
-	CameraBoom->bDoCollisionTest = true;
-	
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>(FName("CameraComponent"));
-	CameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	CameraComponent->bUsePawnControlRotation = false;
+	GameplayCameraComponent = CreateDefaultSubobject<UGameplayCameraComponent>(FName("GameplayCameraComponent"));
+	GameplayCameraComponent->SetupAttachment(GetRootComponent());
 	
 	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(FName("LevelUpNiagaraSystem"));
 	LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
@@ -59,7 +52,7 @@ void AAuraCharacter::LevelUpParticlesMulticast_Implementation() const
 {
 	if (IsValid(LevelUpNiagaraComponent))
 	{
-		const FVector CameraLocation = CameraComponent->GetComponentLocation();
+		const FVector CameraLocation = GameplayCameraComponent->GetComponentLocation();
 		const FVector LevelUpNiagaraLocation = LevelUpNiagaraComponent->GetComponentLocation();
 		const FRotator ToCameraRotation = (CameraLocation - LevelUpNiagaraLocation).Rotation();
 		
@@ -122,6 +115,9 @@ void AAuraCharacter::PossessedBy(AController* NewController)
 	/* Init ability actor info for server */
 	InitAbilityActorInfo();
 	AddCharacterAbilities();
+	
+	// Activate camera
+	ActivateCamera(Cast<APlayerController>(NewController));
 }
 
 void AAuraCharacter::OnRep_PlayerState()
@@ -130,6 +126,9 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	/* Init ability actor info for client */
 	InitAbilityActorInfo();
+	
+	// Activate camera
+	ActivateCamera(Cast<APlayerController>(GetController()));
 }
 
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
@@ -159,6 +158,11 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	/* Initialize character default attributes*/
 	InitializeDefaultAttributes();
+}
+
+void AAuraCharacter::ActivateCamera_Implementation(APlayerController* PlayerController)
+{
+	GameplayCameraComponent->ActivateCameraForPlayerController(PlayerController);
 }
 
 

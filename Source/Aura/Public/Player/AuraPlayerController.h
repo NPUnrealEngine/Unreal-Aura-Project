@@ -7,6 +7,9 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomInSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomOutSignature);
+
 class UDamageTextComponent;
 class USplineComponent;
 class UAuraAbilitySystemComponent;
@@ -22,6 +25,15 @@ class AURA_API AAuraPlayerController : public AOcclusionAwarePlayerController
 
 public:
 	AAuraPlayerController();
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FZoomInSignature ZoomInDelegate;
+	
+	UPROPERTY(BlueprintAssignable)
+	FZoomOutSignature ZoomOutDelegate;
+	
+public:
 	virtual void PlayerTick(float DeltaTime) override;
 	
 	UFUNCTION(Client, Reliable)
@@ -41,6 +53,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<class UInputAction> ShiftAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<class UInputAction> ZoomAction;
 
 	TScriptInterface<class IEnemyInterface> LastActor;
 	TScriptInterface<IEnemyInterface> ThisActor;
@@ -107,6 +122,7 @@ private:
 	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);
+	void Zoom(const FInputActionValue& InputActionValue);
 	void ShiftPressed() { bShiftKeyDown = true; };
 	void ShiftReleased() { bShiftKeyDown = false; };
 

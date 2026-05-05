@@ -7,6 +7,7 @@
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+class UGameplayCameraComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UNiagaraComponent;
@@ -43,14 +44,19 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LevelUp")
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 	
-	UPROPERTY(visibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UCameraComponent> CameraComponent;
-	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<USpringArmComponent> CameraBoom;
+	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
 	
 protected:
 	virtual void InitAbilityActorInfo() override;
+
+	/**
+	 * Call to activate camera system
+	 * 
+	 * @param PlayerController 
+	 */
+	UFUNCTION(BlueprintNativeEvent)
+	void ActivateCamera(APlayerController* PlayerController);
 	
 private:
 	UFUNCTION(NetMulticast, Reliable)

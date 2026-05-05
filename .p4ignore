@@ -26,3 +26,5 @@ obj/
 *.vsconfig
 *.-Debug.*
 .gitignore
+*.sln.DotSettings.*.user
+*.uproject.DotSettings.*.user

@@ -10,6 +10,7 @@
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Aura/AuraLogChannel.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
 #include "Input/AuraInputComponent.h"
@@ -108,18 +109,31 @@ void AAuraPlayerController::SetupInputComponent()
 	UAuraInputComponent* AuraInputComponent = CastChecked<UAuraInputComponent>(InputComponent);
 
 	AuraInputComponent->BindAction(
-		MoveAction, ETriggerEvent::Triggered,
-		this, &AAuraPlayerController::Move
+		MoveAction, 
+		ETriggerEvent::Triggered,
+		this, 
+		&AAuraPlayerController::Move
+	);
+	
+	AuraInputComponent->BindAction(
+		ZoomAction, 
+		ETriggerEvent::Triggered,
+		this, 
+		&AAuraPlayerController::Zoom
 	);
 
 	AuraInputComponent->BindAction(
-		ShiftAction, ETriggerEvent::Started,
-		this, &AAuraPlayerController::ShiftPressed
+		ShiftAction, 
+		ETriggerEvent::Started,
+		this, 
+		&AAuraPlayerController::ShiftPressed
 	);
 
 	AuraInputComponent->BindAction(
-		ShiftAction, ETriggerEvent::Completed,
-		this, &AAuraPlayerController::ShiftReleased
+		ShiftAction, 
+		ETriggerEvent::Completed,
+		this, 
+		&AAuraPlayerController::ShiftReleased
 	);
 
 	AuraInputComponent->BindAbilityActions(
@@ -150,6 +164,20 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	}
 }
 
+void AAuraPlayerController::Zoom(const FInputActionValue& InputActionValue)
+{
+	const float InputAxisZoom = InputActionValue.Get<float>();
+	//UE_LOG(LogAura, Log, TEXT("Mouse wheel %f"), InputAxisZoom);
+	if (InputAxisZoom > 0.f)
+	{
+		ZoomInDelegate.Broadcast();
+	}
+	else
+	{
+		ZoomOutDelegate.Broadcast();
+	}
+}
+
 void AAuraPlayerController::CursorTrace()
 {
 	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
@@ -177,6 +205,8 @@ void AAuraPlayerController::CursorTrace()
 		if (ThisActor) ThisActor->HighlightActor();
 	}
 }
+
+
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 {
