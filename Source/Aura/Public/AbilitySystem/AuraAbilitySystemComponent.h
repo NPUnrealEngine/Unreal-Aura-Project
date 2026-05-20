@@ -31,9 +31,10 @@ public:
 	
 	bool bStartupAbilityGiven = false;
 	
-public:
+public: // Override
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 
+public:
 	/**
 	 * Add startup abilities
 	 * 
@@ -81,6 +82,15 @@ public:
 	 * @return FGameplayTag
 	 */
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	/**
+	 * Upgrade an attribute
+	 * @param AttributeTag 
+	 */
+	void UpgradeAttribute(const FGameplayTag& AttributeTag);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
