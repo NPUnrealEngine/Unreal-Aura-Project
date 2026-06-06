@@ -6,6 +6,7 @@
 #include "UI/Widget/AuraUserWidget.h"
 #include "UI/WidgetController/AttributeMenuWidgetController.h"
 #include "UI/WidgetController/OverlayWidgetController.h"
+#include "UI/WidgetController/SpellMenuWidgetController.h"
 
 UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetControllerParams& WCParams)
 {
@@ -14,7 +15,7 @@ UOverlayWidgetController* AAuraHUD::GetOverlayWidgetController(const FWidgetCont
 		OverlayWidgetController = CreateWidgetController<UOverlayWidgetController>(
 			OverlayWidgetControllerClass,
 			WCParams
-			);
+		);
 		/*OverlayWidgetController = NewObject<UOverlayWidgetController>(this, OverlayWidgetControllerClass);
 		OverlayWidgetController->SetWidgetControllerParams(WCParams);
 		OverlayWidgetController->BindCallbacksToDependencies();*/
@@ -29,12 +30,24 @@ UAttributeMenuWidgetController* AAuraHUD::GetAttributeMenuWidgetController(const
 		AttributeMenuWidgetController = CreateWidgetController<UAttributeMenuWidgetController>(
 			AttributeMenuWidgetControllerClass,
 			WCParams
-			);
+		);
 		/*AttributeMenuWidgetController = NewObject<UAttributeMenuWidgetController>(this, AttributeMenuWidgetControllerClass);
 		AttributeMenuWidgetController->SetWidgetControllerParams(WCParams);
 		AttributeMenuWidgetController->BindCallbacksToDependencies();*/
 	}
 	return AttributeMenuWidgetController;
+}
+
+USpellMenuWidgetController* AAuraHUD::GetSpellMenuWidgetController(const FWidgetControllerParams& WCParams)
+{
+	if (SpellMenuWidgetController == nullptr)
+	{
+		SpellMenuWidgetController = CreateWidgetController<USpellMenuWidgetController>(
+			SpellMenuWidgetControllerClass,
+			WCParams
+		);
+	}
+	return SpellMenuWidgetController;
 }
 
 void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySystemComponent* ASC, UAttributeSet* AS)
@@ -60,13 +73,13 @@ void AAuraHUD::InitOverlay(APlayerController* PC, APlayerState* PS, UAbilitySyst
 }
 
 template <typename T>
-T* AAuraHUD::CreateWidgetController(TSubclassOf<UAuraWidgetController> WidgetControllerClass,
+T* AAuraHUD::CreateWidgetController(TSubclassOf<T> WidgetControllerClass,
 	const FWidgetControllerParams& WCParams)
 {
 	check(WidgetControllerClass);
 	
-	UAuraWidgetController* WidgetController = NewObject<UAuraWidgetController>(this, WidgetControllerClass);
+	T* WidgetController = NewObject<T>(this, WidgetControllerClass);
 	WidgetController->SetWidgetControllerParams(WCParams);
 	WidgetController->BindCallbacksToDependencies();
-	return Cast<T>(WidgetController);
+	return WidgetController;
 }
