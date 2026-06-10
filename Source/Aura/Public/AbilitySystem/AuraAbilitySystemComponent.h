@@ -77,11 +77,18 @@ public:
 	static FGameplayTag GetAbilityTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	/**
-	 * Get ability input tag from the ability space
+	 * Get ability input tag from the ability spec
 	 * @param AbilitySpec 
 	 * @return FGameplayTag
 	 */
 	static FGameplayTag GetInputTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
+
+	/**
+	 * Get ability status tag from the ability spec
+	 * @param AbilitySpec 
+	 * @return 
+	 */
+	static FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	/**
 	 * Upgrade an attribute

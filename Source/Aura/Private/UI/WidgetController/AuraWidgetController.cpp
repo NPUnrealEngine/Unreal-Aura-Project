@@ -40,6 +40,9 @@ void UAuraWidgetController::BroadcastAbilityInfo()
 			// Set the ability info's input tag
 			Info.InputTag = GetAuraASC()->GetInputTagFromSpec(AbilitySpec);
 			
+			// Set the ability info's status tag
+			Info.StatusTag = GetAuraASC()->GetStatusTagFromSpec(AbilitySpec);
+			
 			// Notify the delegate about the ability info
 			AbilityInfoDelegate.Broadcast(Info);
 		}
