@@ -91,6 +91,13 @@ public:
 	static FGameplayTag GetStatusTagFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 
 	/**
+	 * Get ability spec by ability tag
+	 * @param AbilityTag Ability tag for searching
+	 * @return 
+	 */
+	FGameplayAbilitySpec* GetAbilitySpecFromAbilityTag(const FGameplayTag& AbilityTag);
+
+	/**
 	 * Upgrade an attribute
 	 * @param AttributeTag 
 	 */
@@ -98,6 +105,12 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
+
+	/**
+	 * Update ability status
+	 * @param Level player level
+	 */
+	void UpdateAbilityStatus(int32 Level);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
