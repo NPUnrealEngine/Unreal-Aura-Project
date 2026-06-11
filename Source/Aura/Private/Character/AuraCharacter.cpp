@@ -6,6 +6,7 @@
 #include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
 #include "Aura/AuraLogChannel.h"
 #include "Camera/CameraComponent.h"
@@ -94,6 +95,12 @@ void AAuraCharacter::AddToPlayerLevel_Implementation(int32 InPlayerLevel)
 	AAuraPlayerState* AuraPlayerState = Cast<AAuraPlayerState>(GetPlayerState());
 	check(AuraPlayerState);
 	AuraPlayerState->AddToLevel(InPlayerLevel);
+	
+	UAuraAbilitySystemComponent* ASC = Cast<UAuraAbilitySystemComponent>(GetAbilitySystemComponent());
+	if (ASC)
+	{
+		ASC->UpdateAbilityStatus(AuraPlayerState->GetPlayerLevel());
+	}
 }
 
 void AAuraCharacter::AddToSpellPoints_Implementation(int32 InSpellPoints)
