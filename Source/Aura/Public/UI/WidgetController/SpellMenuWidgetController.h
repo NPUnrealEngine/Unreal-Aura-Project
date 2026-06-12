@@ -15,6 +15,13 @@ class AURA_API USpellMenuWidgetController : public UAuraWidgetController
 	GENERATED_BODY()
 	
 public:
+	/**
+	 * Call when spell points changed
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FOnPlayerStatChangedSignature SpellPointsChanged;
+	
+public:
 	virtual void BroadcastInitialValues() override;
 	virtual void BindCallbacksToDependencies() override;
 };
