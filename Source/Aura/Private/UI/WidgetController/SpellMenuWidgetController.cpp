@@ -3,6 +3,8 @@
 
 #include "UI/WidgetController/SpellMenuWidgetController.h"
 
+#include "AuraGameplayTags.h"
+#include "../../../../../../../Epic Games/Games/UE_5.7/Engine/Plugins/Editor/GameplayTagsEditor/Source/GameplayTagsEditor/Private/GameplayTagEditorUtilities.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Player/AuraPlayerState.h"
@@ -39,4 +41,68 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 			SpellPointsChanged.Broadcast(Points);
 		}
 	);
+}
+
+void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
+{
+	int32 SpellPoints = GetAuraPS()->GetSpellPoints();
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	FGameplayTag AbilityStatus;
+	FGameplayAbilitySpec* AbilitySpec = GetAuraASC()->GetAbilitySpecFromAbilityTag(AbilityTag);
+	
+	if (!AbilityTag.IsValid() || AbilitySpec == nullptr)
+	{
+		AbilityStatus = GameplayTags.Abilities_Status_Locked;
+	}
+	else
+	{
+		AbilityStatus = GetAuraASC()->GetStatusTagFromSpec(*AbilitySpec);
+	}
+	
+	bool bEnableSpellPointsButton = false;
+	bool bEnableEquipButton = false;
+	
+	ShouldEnableButtons(
+		AbilityStatus, 
+		SpellPoints, 
+		bEnableSpellPointsButton, 
+		bEnableEquipButton
+	);
+	
+	SpellGlobeSelectedDelegate.Broadcast(bEnableSpellPointsButton, bEnableEquipButton);
+}
+
+void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)
+{
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	
+	if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Equipped))
+	{
+		bShouldEnableEquipButton = true;
+		if (SpellPoints > 0)
+		{
+			bShouldEnableSpellPointsButton = true;
+		}
+	}
+	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+	{
+		bShouldEnableEquipButton = false;
+		if (SpellPoints > 0)
+		{
+			bShouldEnableSpellPointsButton = true;
+		}
+	}
+	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+	{
+		bShouldEnableEquipButton = true;
+		if (SpellPoints > 0)
+		{
+			bShouldEnableSpellPointsButton = true;
+		}
+	}
+	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Locked))
+	{
+		bShouldEnableEquipButton = false;
+		bShouldEnableSpellPointsButton = false;
+	}
 }
