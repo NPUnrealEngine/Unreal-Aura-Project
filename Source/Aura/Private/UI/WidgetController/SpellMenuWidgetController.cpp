@@ -26,7 +26,7 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 	
 	// Bind callback to ability status changed
 	GetAuraASC()->AbilityStatusChanged.AddLambda(
-		[this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag)
+		[this](const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel)
 		{
 			if (SelectedAbility.AbilityTag.MatchesTagExact(AbilityTag))
 			{
@@ -99,6 +99,15 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	);
 	
 	SpellGlobeSelectedDelegate.Broadcast(bEnableSpellPointsButton, bEnableEquipButton);
+}
+
+void USpellMenuWidgetController::SpendPointButtonPressed()
+{
+	if (GetAuraASC() && SelectedAbility.AbilityTag.IsValid())
+	{
+		// Call server side Aura Ability System Component to spend a point in spell
+		GetAuraASC()->ServerSpendSpellPoint(SelectedAbility.AbilityTag);
+	}
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)

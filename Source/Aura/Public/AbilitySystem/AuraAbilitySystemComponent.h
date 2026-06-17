@@ -16,7 +16,7 @@ DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
  * @param First-FGameplayTag is Ability Tag
  * @param Second-FGameplayTag is Status Tag
  */
-DECLARE_MULTICAST_DELEGATE_TwoParams(FAbilityStatusChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status Tag*/);
+DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status Tag*/, int32 AbilityLevel /* Ability level*/);
 
 /**
  * 
@@ -124,6 +124,13 @@ public:
 	 * @param Level player level
 	 */
 	void UpdateAbilityStatus(int32 Level);
+
+	/**
+	 * Spend a point in a spell on server side
+	 * @param AbilityTag ability tag
+	 */
+	UFUNCTION(Server, Reliable)
+	void ServerSpendSpellPoint(const FGameplayTag& AbilityTag);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
@@ -146,5 +153,5 @@ protected:
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
 	
 	UFUNCTION(Client, Reliable)
-	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag);
+	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel);
 };
