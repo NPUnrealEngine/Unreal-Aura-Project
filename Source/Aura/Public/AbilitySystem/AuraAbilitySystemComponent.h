@@ -121,6 +121,10 @@ public:
 
 	/**
 	 * Update ability status
+	 * 
+	 * Loop through all abilities in AbilityInfo table and see if an ability need to be given to
+	 * the player then inform client who own the ability about an ability had been updated
+	 * 
 	 * @param Level player level
 	 */
 	void UpdateAbilityStatus(int32 Level);
@@ -153,7 +157,14 @@ protected:
 	 */
 	UFUNCTION(Client, Reliable)
 	void ClientEffectApplied(UAbilitySystemComponent* AbilitySystemComponent, const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveEffectHandle);
-	
+
+	/**
+	 * RPC to client who own ability about an ability had been updated
+	 * 
+	 * @param AbilityTag 
+	 * @param StatusTag 
+	 * @param AbilityLevel 
+	 */
 	UFUNCTION(Client, Reliable)
 	void ClientUpdateAbilityStatus(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, int32 AbilityLevel);
 };

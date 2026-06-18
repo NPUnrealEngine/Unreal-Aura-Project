@@ -10,6 +10,42 @@
 #include "Interface/CombatInterface.h"
 #include "Kismet/KismetSystemLibrary.h"
 
+FString UAuraProjectileSpell::GetDescription(int32 Level)
+{
+	FScalableFloat* DamageScale =  DamageTypes.Find(FAuraGameplayTags::Get().Damage_Fire);
+	float Damage =  DamageScale->GetValueAtLevel(Level);
+	
+	if (Level == 1)
+	{
+		return FString::Printf(TEXT(
+			"<Title>Fire Bolt</>\n\n"
+			"<Default>Launch a bolt of fire, exploding on impact and dealing:</> <Damage>%d</> "
+			"<Default>fire damage with a chance to burn</>\n\n"
+			"<Small>Level</> <Level>%d</>"), 
+			static_cast<int32>(Damage), Level);
+	}
+	
+	return FString::Printf(TEXT(
+		"<Title>Fire Bolt</>\n\n"
+		"<Default>Launch %d bolts of fire, exploding on impact and dealing:</> <Damage>%d</> "
+		"<Default>fire damage with a chance to burn</>\n\n"
+		"<Small>Level</> <Level>%d</>"), 
+		FMath::Min(Level, NumProjectiles), static_cast<int32>(Damage), Level);
+}
+
+FString UAuraProjectileSpell::GetNextLevelDescription(int32 Level)
+{
+	FScalableFloat* DamageScale =  DamageTypes.Find(FAuraGameplayTags::Get().Damage_Fire);
+	float Damage =  DamageScale->GetValueAtLevel(Level);
+	
+	return FString::Printf(TEXT(
+		"<Title>Next Level</>\n\n"
+		"<Default>Launch %d bolts of fire, exploding on impact and dealing:</> <Damage>%d</> "
+		"<Default>fire damage with a chance to burn</>\n\n"
+		"<Small>Level</> <Level>%d</>"), 
+		FMath::Min(Level, NumProjectiles), static_cast<int32>(Damage), Level);
+}
+
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                            const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
                                            const FGameplayEventData* TriggerEventData)
