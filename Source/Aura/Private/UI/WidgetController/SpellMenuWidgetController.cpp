@@ -41,7 +41,19 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 				bEnableSpellPointsButton, 
 				bEnableEquipButton
 			);
-			SpellGlobeSelectedDelegate.Broadcast(bEnableSpellPointsButton, bEnableEquipButton);
+			FString Description;
+			FString NextLevelDescription;
+			GetAuraASC()->GetDescriptionsByAbilityTag(
+				AbilityTag, 
+				Description, 
+				NextLevelDescription
+			);
+			SpellGlobeSelectedDelegate.Broadcast(
+				bEnableSpellPointsButton, 
+				bEnableEquipButton, 
+				Description, 
+				NextLevelDescription
+			);
 			
 			FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
 			Info.StatusTag = StatusTag;
@@ -64,7 +76,19 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 				bEnableSpellPointsButton, 
 				bEnableEquipButton
 			);
-			SpellGlobeSelectedDelegate.Broadcast(bEnableSpellPointsButton, bEnableEquipButton);
+			FString Description;
+			FString NextLevelDescription;
+			GetAuraASC()->GetDescriptionsByAbilityTag(
+				SelectedAbility.AbilityTag, 
+				Description, 
+				NextLevelDescription
+			);
+			SpellGlobeSelectedDelegate.Broadcast(
+				bEnableSpellPointsButton, 
+				bEnableEquipButton, 
+				Description, 
+				NextLevelDescription
+			);
 		}
 	);
 }
@@ -97,8 +121,19 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 		bEnableSpellPointsButton, 
 		bEnableEquipButton
 	);
-	
-	SpellGlobeSelectedDelegate.Broadcast(bEnableSpellPointsButton, bEnableEquipButton);
+	FString Description;
+	FString NextLevelDescription;
+	GetAuraASC()->GetDescriptionsByAbilityTag(
+		AbilityTag, 
+		Description, 
+		NextLevelDescription
+	);
+	SpellGlobeSelectedDelegate.Broadcast(
+		bEnableSpellPointsButton, 
+		bEnableEquipButton, 
+		Description, 
+		NextLevelDescription
+	);
 }
 
 void USpellMenuWidgetController::SpendPointButtonPressed()
