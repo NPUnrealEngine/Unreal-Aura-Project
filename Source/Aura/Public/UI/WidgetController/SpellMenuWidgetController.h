@@ -10,6 +10,14 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature, 
 	bool, bSpendPointsEnabled, bool, bEquipButonEnabled, FString, Description, FString, NextLevelDescription);
 
+/**
+ * Wait for equip selection signature
+ * 
+ * @param  FGamePlayTag AbilityType -Offensive or -Passive
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, 
+	const FGameplayTag&, AbilityType);
+
 struct FSelectedAbility
 {
 	FGameplayTag AbilityTag = FGameplayTag();
@@ -38,6 +46,18 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
  	FSpellGlobeSelectedSignature SpellGlobeSelectedDelegate;
+
+	/**
+	 * Call when entering equipping ability state
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FWaitForEquipSelectionSignature WaitForEquipSelectionDelegate;
+	
+	/**
+	 * Call when leave equipping ability state
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FWaitForEquipSelectionSignature StopWaitForEquipSelectionDelegate;
 	
 public: // Override
 	virtual void BroadcastInitialValues() override;
@@ -50,16 +70,40 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void SpellGlobeSelected(const FGameplayTag& AbilityTag);
-	
+
+	/**
+	 * Call this when spend point button clicked on UI
+	 */
 	UFUNCTION(BlueprintCallable)
 	void SpendPointButtonPressed();
 	
+	/**
+	 * Call this when a spell globe deselected on UI
+	 */
 	UFUNCTION(BlueprintCallable)
 	void SpellGlobeDeselected();
+	
+	/**
+	 * Call this when equip button clicked on UI
+	 */
+	UFUNCTION(BlueprintCallable)
+	void EquipButtonPressed();
 
 private:
+	/**
+	 * Tracing selected ability on UI
+	 */
 	FSelectedAbility SelectedAbility = {FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
+
+	/**
+	 * For storing spell points temporary
+	 */
 	int32 CurrentSpellPoints = 0;
+
+	/**
+	 * Whether we are waiting for equipping an ability state
+	 */
+	bool bWaitForEquipSelection = false;
 	
 private:
 	/**

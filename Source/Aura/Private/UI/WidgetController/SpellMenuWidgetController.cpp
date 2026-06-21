@@ -95,6 +95,14 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 
 void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityTag)
 {
+	// If we are in wait for equipping ability state then we need to leave the state
+	if (bWaitForEquipSelection)
+	{
+		FGameplayTag SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(AbilityTag).AbilityType;
+		StopWaitForEquipSelectionDelegate.Broadcast(SelectedAbilityType);
+		bWaitForEquipSelection = false;
+	}
+	
 	int32 SpellPoints = GetAuraPS()->GetSpellPoints();
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 	FGameplayTag AbilityStatus;
@@ -147,6 +155,15 @@ void USpellMenuWidgetController::SpendPointButtonPressed()
 
 void USpellMenuWidgetController::SpellGlobeDeselected()
 {
+	// If we are in wait for equipping ability state then we need to leave the state
+	if (bWaitForEquipSelection)
+	{
+		FGameplayTag SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.AbilityTag).AbilityType;
+		StopWaitForEquipSelectionDelegate.Broadcast(SelectedAbilityType);
+		bWaitForEquipSelection = false;
+	}
+	
+	
 	SelectedAbility.AbilityTag = FAuraGameplayTags::Get().Abilities_None;
 	SelectedAbility.AbilityStatus = FAuraGameplayTags::Get().Abilities_Status_Locked;
 	SpellGlobeSelectedDelegate.Broadcast(
@@ -155,6 +172,13 @@ void USpellMenuWidgetController::SpellGlobeDeselected()
 		FString(),
 		FString()
 	);
+}
+
+void USpellMenuWidgetController::EquipButtonPressed()
+{
+	const FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.AbilityTag).AbilityType;
+	WaitForEquipSelectionDelegate.Broadcast(AbilityType);
+	bWaitForEquipSelection = true;
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)
