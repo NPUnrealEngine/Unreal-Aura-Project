@@ -16,9 +16,7 @@ class AURA_API UAuraProjectileSpell : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
 
-public: // Override
-	virtual FString GetDescription(int32 Level) override;
-	virtual FString GetNextLevelDescription(int32 Level) override;
+
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
