@@ -53,6 +53,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void SpendPointButtonPressed();
+	
+	UFUNCTION(BlueprintCallable)
+	void SpellGlobeDeselected();
 
 private:
 	FSelectedAbility SelectedAbility = {FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
