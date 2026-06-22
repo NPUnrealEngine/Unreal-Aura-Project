@@ -49,8 +49,7 @@ class AURA_API UAuraWidgetController : public UObject
 
 public:
 	/**
-	 * The delegate is called for each ability after
-	 * BroadcastAbilityInfo() is called 
+	 * The delegate is called when ability is updated
 	 */
 	UPROPERTY(BlueprintAssignable, Category="GAS|Ability Info")
 	FAbilityInfoSignature AbilityInfoDelegate;

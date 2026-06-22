@@ -10,6 +10,16 @@ class UAuraAbilitySystemComponent;
 DECLARE_MULTICAST_DELEGATE_OneParam(FEffectAssetTags, const FGameplayTagContainer&);
 DECLARE_MULTICAST_DELEGATE(FAbilityGiven);
 DECLARE_DELEGATE_OneParam(FForEachAbility, const FGameplayAbilitySpec&);
+/**
+ * Delegate for an ability equipped
+ * @param 1 Ability tag
+ * @param 2 Status tag
+ * @param 3 Slot/Input tag
+ * @param 4 Previous slot/input tag
+ */
+DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquipped, const FGameplayTag& /* Ability tag */, 
+	const FGameplayTag& /* Status tag*/, const FGameplayTag& /* Slot/Input tag */,
+	const FGameplayTag& /* Previous slot/input tag */)
 
 /**
  * Ability status changed delegate
@@ -41,6 +51,11 @@ public:
 	 * Call when ability status changed
 	 */
 	FAbilityStatusChanged AbilityStatusChanged;
+
+	/**
+	 * Call when an ability equipped
+	 */
+	FAbilityEquipped AbilityEquippedDelegate;
 	
 	bool bStartupAbilityGiven = false;
 	
@@ -111,6 +126,20 @@ public:
 	FGameplayAbilitySpec* GetAbilitySpecFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	/**
+	 * Get status tag from ability tag
+	 * @param AbilityTag 
+	 * @return 
+	 */
+	FGameplayTag GetStatusTagFromAbilityTag(const FGameplayTag& AbilityTag);
+
+	/**
+	 * Get input tag from ability tag
+	 * @param AbilityTag 
+	 * @return 
+	 */
+	FGameplayTag GetInputTagFromAbilityTag(const FGameplayTag& AbilityTag);
+
+	/**
 	 * Upgrade an attribute
 	 * @param AttributeTag 
 	 */
@@ -137,6 +166,46 @@ public:
 	void ServerSpendSpellPoint(const FGameplayTag& AbilityTag);
 	
 	bool GetDescriptionsByAbilityTag(const FGameplayTag& AbilityTag, FString& OutDescription, FString& OutNextLevelDescription);
+
+	/**
+	 * Equip an ability with slot/input tag server side
+	 * @param AbilityTag selected ability tag
+	 * @param SlotTag new input tag
+	 */
+	UFUNCTION(Server, Reliable)
+	void ServerEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& SlotTag);
+
+	/**
+	 * Call this on server side after server side finish equip an ability
+	 * to inform client
+	 * @param AbilityTag 
+	 * @param StatusTag 
+	 * @param SlotTag 
+	 * @param PreviousSlotTag 
+	 */
+	UFUNCTION(Client, Reliable)
+	void ClientEquipAbility(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag);
+
+	/**
+	 * Clear input tag of an ability spec
+	 * @param AbilitySpec 
+	 */
+	void ClearSlot(FGameplayAbilitySpec* AbilitySpec);
+
+	/**
+	 * Loop through all activable abilities and clear input tag from the ability
+	 * if the ability has the given input tag
+	 * @param SlotTag input tag
+	 */
+	void ClearAbilityOfSlot(const FGameplayTag& SlotTag);
+
+	/**
+	 * Check if ability spec has a specific input tag
+	 * @param AbilitySpec 
+	 * @param SlotTag input tag
+	 * @return 
+	 */
+	static bool AbilityHasSlot(FGameplayAbilitySpec* AbilitySpec, const FGameplayTag& SlotTag);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;

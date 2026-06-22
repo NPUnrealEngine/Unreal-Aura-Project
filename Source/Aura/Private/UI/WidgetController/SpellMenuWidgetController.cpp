@@ -61,6 +61,8 @@ void USpellMenuWidgetController::BindCallbacksToDependencies()
 		}
 	);
 	
+	GetAuraASC()->AbilityEquippedDelegate.AddUObject(this, &ThisClass::OnAbilityEquipped);
+	
 	// Bind callback to spell points changed
 	GetAuraPS()->OnSpellPointsChangedDelegate.AddLambda(
 		[this](int32 Points)
@@ -179,6 +181,50 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	const FGameplayTag AbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.AbilityTag).AbilityType;
 	WaitForEquipSelectionDelegate.Broadcast(AbilityType);
 	bWaitForEquipSelection = true;
+	
+	/*
+	 * Tracing selected ability's input tag
+	 */
+	const FGameplayTag SelectedStatusTag = GetAuraASC()->GetStatusTagFromAbilityTag(SelectedAbility.AbilityTag);
+	if (SelectedStatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
+	{
+		SelectedSlot = GetAuraASC()->GetInputTagFromAbilityTag(SelectedAbility.AbilityTag);
+	}
+}
+
+void USpellMenuWidgetController::SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType)
+{
+	// Do nothing if not in wait for equip selected ability state
+	if (!bWaitForEquipSelection) return;
+	
+	// Do nothing if equipping ability type is not as same as spell row globe ability type
+	// e.g -equpping ability type: Offensive and -spell row globe ability type: Passive 
+	const FGameplayTag& SelectedAbilityType = AbilityInfo->FindAbilityInfoForTag(SelectedAbility.AbilityTag).AbilityType;
+	if (!SelectedAbilityType.MatchesTagExact(AbilityType)) return;
+
+	GetAuraASC()->ServerEquipAbility(SelectedAbility.AbilityTag, SlotTag);
+}
+
+void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag,
+	const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag)
+{
+	bWaitForEquipSelection = false;
+	
+	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	
+	FAuraAbilityInfo LastSlotInfo;
+	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
+	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.InputTag = PreviousSlotTag;
+	// Broadcast empty info if previous slot is a valid slot, On if equipping on already equipped spell
+	AbilityInfoDelegate.Broadcast(LastSlotInfo);
+	
+	FAuraAbilityInfo Info = AbilityInfo->FindAbilityInfoForTag(AbilityTag);
+	Info.StatusTag = StatusTag;
+	Info.InputTag = SlotTag;
+	AbilityInfoDelegate.Broadcast(Info);
+	
+	StopWaitForEquipSelectionDelegate.Broadcast(Info.AbilityType);
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)

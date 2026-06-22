@@ -89,6 +89,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EquipButtonPressed();
 
+	/**
+	 * Call this when a globe in spell row clicked on UI 
+	 * @param SlotTag input tag
+	 * @param AbilityType type of ability -offensive, -passive
+	 */
+	UFUNCTION(BlueprintCallable)
+	void SpellRowGlobePressed(const FGameplayTag& SlotTag, const FGameplayTag& AbilityType);
+	
+	void OnAbilityEquipped(const FGameplayTag& AbilityTag, const FGameplayTag& StatusTag, const FGameplayTag& SlotTag, const FGameplayTag& PreviousSlotTag);
+
 private:
 	/**
 	 * Tracing selected ability on UI
@@ -104,6 +114,8 @@ private:
 	 * Whether we are waiting for equipping an ability state
 	 */
 	bool bWaitForEquipSelection = false;
+	
+	FGameplayTag SelectedSlot;
 	
 private:
 	/**
