@@ -10,6 +10,8 @@
 #include "AbilitySystem/Data/AbilityInfo.h"
 #include "Aura/AuraLogChannel.h"
 #include "Interface/PlayerInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Subsystem/AuraGameInstanceSubsystem.h"
 
 void UAuraAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
@@ -240,9 +242,16 @@ bool UAuraAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag
 	}
 	else
 	{
-		OutDescription = UAuraGameplayAbility::GetLockedDescription(
-			AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement
-		);
+		if (AbilityInfo)
+		{
+			OutDescription = UAuraGameplayAbility::GetLockedDescription(
+				AbilityInfo->FindAbilityInfoForTag(AbilityTag).LevelRequirement
+			);	
+		}else
+		{
+			OutDescription = FString();
+		}
+		
 		OutNextLevelDescription = FString();
 	}
 	

@@ -4,11 +4,14 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 #include "AuraAbilityTypes.h"
+#include "Aura/AuraLogChannel.h"
 #include "Engine/OverlapResult.h"
 #include "Game/AuraGameModeBase.h"
+#include "GameFramework/Character.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
+#include "Subsystem/AuraGameInstanceSubsystem.h"
 #include "UI/HUD/AuraHUD.h"
 #include "UI/WidgetController/AuraWidgetController.h"
 
@@ -145,9 +148,29 @@ UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldCont
 	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(
 		UGameplayStatics::GetGameMode(WorldContextObject)	
 	);
-	if (AuraGameMode == nullptr) return nullptr;
 	
-	return AuraGameMode->AbilityInfo;
+	/*
+	 * To use UAuraGameInstanceSubsystem
+	 * 1. Create a child blueprint derived from UAuraGameInstanceSubsystem
+	 * 2. Config AbilityInfo
+	 * 3. Create a new row under Primary AssetTypes to Scan in Project settings -> AssetManager
+	 * Note: 
+	 *	- Add searching directory first 
+	 *	- Check Has Blueprint Class
+	 *	- Choose your blueprint e.g BP_AuraGameInstanceSubsystem
+	 *	- 
+	 */
+	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
+	const UAuraGameInstanceSubsystem* SubSystem = GameInstance->GetSubsystem<UAuraGameInstanceSubsystem>();
+	
+	// if game mode exist, only server side
+	if (AuraGameMode)
+	{
+		return AuraGameMode->AbilityInfo;
+	}
+	
+	// return UAuraGameInstanceSubsystem ability info
+	return SubSystem->AbilityInfo;
 }
 
 bool UAuraAbilitySystemLibrary::IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle)
