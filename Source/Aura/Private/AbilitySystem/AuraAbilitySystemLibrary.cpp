@@ -149,27 +149,16 @@ UAbilityInfo* UAuraAbilitySystemLibrary::GetAbilityInfo(const UObject* WorldCont
 		UGameplayStatics::GetGameMode(WorldContextObject)	
 	);
 	
-	/*
-	 * To use UAuraGameInstanceSubsystem
-	 * 1. Create a child blueprint derived from UAuraGameInstanceSubsystem
-	 * 2. Config AbilityInfo
-	 * 3. Create a new row under Primary AssetTypes to Scan in Project settings -> AssetManager
-	 * Note: 
-	 *	- Add searching directory first 
-	 *	- Check Has Blueprint Class
-	 *	- Choose your blueprint e.g BP_AuraGameInstanceSubsystem
-	 *	- 
-	 */
 	const UGameInstance* GameInstance = UGameplayStatics::GetGameInstance(WorldContextObject);
 	const UAuraGameInstanceSubsystem* SubSystem = GameInstance->GetSubsystem<UAuraGameInstanceSubsystem>();
 	
-	// if game mode exist, only server side
+	// if game mode exist, only on server side
 	if (AuraGameMode)
 	{
 		return AuraGameMode->AbilityInfo;
 	}
 	
-	// return UAuraGameInstanceSubsystem ability info
+	// If on client side, we use UAuraGameInstanceSubsystem to access AbilityInfo
 	return SubSystem->AbilityInfo;
 }
 
