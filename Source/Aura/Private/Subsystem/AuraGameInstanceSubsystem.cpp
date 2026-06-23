@@ -32,12 +32,3 @@ void UAuraGameInstanceSubsystem::Deinitialize()
 	UE_LOG(LogAura, Warning, TEXT("%s Deinitialized"), *GetName());
 #endif
 }
-
-bool UAuraGameInstanceSubsystem::ShouldCreateSubsystem(UObject* Outer) const
-{
-	if (GetClass()->IsInBlueprint() && Super::ShouldCreateSubsystem(Outer))
-	{
-		return true;
-	}
-	return false;
-}

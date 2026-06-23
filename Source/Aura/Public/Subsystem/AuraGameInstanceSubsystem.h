@@ -26,7 +26,7 @@ class UAbilityInfo;
  *	- For Asset Base Class, choose your blueprint e.g BP_AuraGameInstanceSubsystem
  *	- For Primary Asset Type, give a name e.g AuraGameInstanceSubsystem
  */
-UCLASS(Blueprintable)
+UCLASS(Abstract, Blueprintable)
 class AURA_API UAuraGameInstanceSubsystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
@@ -38,5 +38,4 @@ public:
 public:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
 	virtual void Deinitialize() override;
-	virtual bool ShouldCreateSubsystem(UObject* Outer) const override;
 };
