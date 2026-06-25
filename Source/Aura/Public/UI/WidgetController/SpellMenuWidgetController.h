@@ -13,10 +13,16 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FSpellGlobeSelectedSignature,
 /**
  * Wait for equip selection signature
  * 
- * @param  FGamePlayTag AbilityType -Offensive or -Passive
+ * @param  1 AbilityType -Offensive or -Passive
  */
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, 
-	const FGameplayTag&, AbilityType);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitForEquipSelectionSignature, const FGameplayTag&, AbilityType);
+
+/**
+ * An Ability reassign
+ * 
+ * @param 1 Ability tag
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpellGlobeReassignSignature, const FGameplayTag&, AbilityTag);
 
 struct FSelectedAbility
 {
@@ -58,6 +64,12 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FWaitForEquipSelectionSignature StopWaitForEquipSelectionDelegate;
+	
+	/**
+	 * Call when a ability reassign 
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FSpellGlobeReassignSignature SpellGlobeReassignDelegate;
 	
 public: // Override
 	virtual void BroadcastInitialValues() override;

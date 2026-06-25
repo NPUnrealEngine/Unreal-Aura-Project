@@ -225,6 +225,8 @@ void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTa
 	AbilityInfoDelegate.Broadcast(Info);
 	
 	StopWaitForEquipSelectionDelegate.Broadcast(Info.AbilityType);
+	SpellGlobeReassignDelegate.Broadcast(AbilityTag);
+	SpellGlobeDeselected();
 }
 
 void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& AbilityStatus, const int32 SpellPoints, bool& bShouldEnableSpellPointsButton, bool& bShouldEnableEquipButton)
