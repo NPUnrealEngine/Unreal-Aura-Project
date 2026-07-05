@@ -142,6 +142,12 @@ public:
 	FGameplayTag Abilities_Fire_FireBolt;
 	FGameplayTag Abilities_Lightning_Electrocute;
 	
+	/* Debuff */
+	FGameplayTag Debuff_Burn;
+	FGameplayTag Debuff_Stun;
+	FGameplayTag Debuff_Arcane;
+	FGameplayTag Debuff_Physical;
+	
 	FGameplayTag Cooldown_Fire_FireBolt;
 	
 	/*
@@ -164,6 +170,11 @@ public:
 	 * A mapper for DamageTypes to Resistances
 	 */
 	TMap<FGameplayTag,FGameplayTag> DamageTypesToResistances;
+	
+	/*
+	 * A mapper for DamageTypes to Debuffs
+	 */
+	TMap<FGameplayTag,FGameplayTag> DamageTypesToDebuffs;
 	
 	/*
 	 * Tag for getting hit

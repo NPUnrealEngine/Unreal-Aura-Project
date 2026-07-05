@@ -7,9 +7,9 @@
 
 FString UAuraFireBolt::GetDescription(int32 Level)
 {
-	float Damage =  GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
-	float ManaCost = FMath::Abs(GetManaCost(Level));
-	float Cooldown = GetCooldown(Level);
+	const int32 ScalableDamage =  Damage.GetValueAtLevel(Level);
+	const float ManaCost = FMath::Abs(GetManaCost(Level));
+	const float Cooldown = GetCooldown(Level);
 	
 	if (Level == 1)
 	{
@@ -30,7 +30,7 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 			Level, 
 			ManaCost,
 			Cooldown,
-			static_cast<int32>(Damage));
+			ScalableDamage);
 	}
 	
 	return FString::Printf(TEXT(
@@ -51,14 +51,14 @@ FString UAuraFireBolt::GetDescription(int32 Level)
 		ManaCost,
 		Cooldown,
 		FMath::Min(Level, NumProjectiles), 
-		static_cast<int32>(Damage));
+		ScalableDamage);
 }
 
 FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 {
-	float Damage =  GetDamageByDamageType(Level, FAuraGameplayTags::Get().Damage_Fire);
-	float ManaCost = FMath::Abs(GetManaCost(Level));
-	float Cooldown = GetCooldown(Level);
+	const int32 ScalableDamage =  Damage.GetValueAtLevel(Level);
+	const float ManaCost = FMath::Abs(GetManaCost(Level));
+	const float Cooldown = GetCooldown(Level);
 	
 	return FString::Printf(TEXT(
 		// Title
@@ -78,5 +78,5 @@ FString UAuraFireBolt::GetNextLevelDescription(int32 Level)
 		ManaCost,
 		Cooldown,
 		FMath::Min(Level, NumProjectiles), 
-		static_cast<int32>(Damage));
+		ScalableDamage);
 }
