@@ -344,6 +344,26 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FString("Debuff for Lightning damage")
 	);
 	
+	GameplayTags.Debuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Chance"),
+		FString("Debuff chance")
+	);
+	
+	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Damage"),
+		FString("Debuff damage")
+	);
+	
+	GameplayTags.Debuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Duration"),
+		FString("Debuff duration")
+	);
+	
+	GameplayTags.Debuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Debuff.Frequency"),
+		FString("Debuff frequency")
+	);
+	
 	/**
 	 * Cooldown
 	 */

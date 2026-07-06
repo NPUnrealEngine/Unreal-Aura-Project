@@ -148,6 +148,12 @@ public:
 	FGameplayTag Debuff_Arcane;
 	FGameplayTag Debuff_Physical;
 	
+	FGameplayTag Debuff_Chance;
+	FGameplayTag Debuff_Damage;
+	FGameplayTag Debuff_Frequency;
+	FGameplayTag Debuff_Duration;
+	
+	/* Cooldown */
 	FGameplayTag Cooldown_Fire_FireBolt;
 	
 	/*
