@@ -23,6 +23,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	const bool IsServer = GetAvatarActorFromActorInfo()->HasAuthority();
 	if (!IsServer) return;
 
+	/*
+	 * Prepare projectile properties
+	 */
+	
 	// Get weapon socket location & rotation
 	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(
 		GetAvatarActorFromActorInfo(),
@@ -40,6 +44,10 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 	SpawnTransform.SetLocation(SocketLocation);
 	SpawnTransform.SetRotation(ProjectileRotation.Quaternion());
 
+	/*
+	 * Spawn projectile
+	 */
+	
 	// Spawn projectile but not immediately since we are going to configure projectile properties
 	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 		ProjectileClass,
@@ -48,38 +56,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& ProjectileTargetLocati
 		Cast<APawn>(GetAvatarActorFromActorInfo()),
 		ESpawnActorCollisionHandlingMethod::AlwaysSpawn	
 	);
-
-	/* 
-	 * Give the projectile a gameplay effect for causing damage
-	 */
-		
-	// Get Ability System Component
-	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(
-		GetAvatarActorFromActorInfo()
-	);
-		
-	// Create a SpecHandle
-	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-	EffectContextHandle.SetAbility(this);
-		
-	const FGameplayEffectSpecHandle SpecHandle = SourceASC->MakeOutgoingSpec(
-		DamageEffectClass,
-		GetAbilityLevel(),
-		EffectContextHandle
-	);
 	
-	// Applying damage with tag, where damage is scalable float(curve table) and 
-	// base on ability's level.
-	// The GameplayAbility modifier must set to `Set By Caller`
-	const float ScaledDamage = Damage.GetValueAtLevel(GetAbilityLevel());
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
-		SpecHandle,
-		DamageType,
-		ScaledDamage
-	);
-		
-	// Set projectile's SpecHandle
-	Projectile->DamageSpecEffectHandle = SpecHandle;
+	// Set damage effect params to projectile
+	Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults(nullptr);
 
 	Projectile->FinishSpawning(SpawnTransform);
 }

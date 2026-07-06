@@ -53,6 +53,23 @@ void AAuraProjectile::BeginPlay()
 	);
 }
 
+void AAuraProjectile::OnHit()
+{
+	UGameplayStatics::PlaySoundAtLocation(
+		this,
+		ImpactSound,
+		GetActorLocation(),
+		FRotator::ZeroRotator
+	);
+
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		this,
+		ImpactEffect,
+		GetActorLocation()
+	);
+	bHit = true;
+}
+
 void AAuraProjectile::Destroyed()
 {
 	/**
@@ -62,19 +79,7 @@ void AAuraProjectile::Destroyed()
 	 */
 	if (!bHit && !HasAuthority())
 	{
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			ImpactSound,
-			GetActorLocation(),
-			FRotator::ZeroRotator
-		);
-
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this,
-			ImpactEffect,
-			GetActorLocation()
-		);
-		bHit = true;
+		OnHit();
 	}
 	
 	Super::Destroyed();
@@ -85,25 +90,8 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 {
 	// Ignore actor if actor is the instigator
 	if (GetInstigator() == OtherActor) return;
-	if (!UAuraAbilitySystemLibrary::IsNotFriend(GetInstigator(), OtherActor))
-	{
-		return;
-	}
-	if (!bHit)
-	{
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			ImpactSound,
-			GetActorLocation(),
-			FRotator::ZeroRotator
-		);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this,
-			ImpactEffect,
-			GetActorLocation()
-		);
-		bHit = true;
-	}
+	if (!UAuraAbilitySystemLibrary::IsNotFriend(GetInstigator(), OtherActor)) return;
+	if (!bHit) OnHit();
 	
 	/**
 	 * Destroy projectile only if we are the owner
@@ -112,7 +100,8 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	{
 		if (UAbilitySystemComponent* TargetASC =  UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageSpecEffectHandle.Data.Get());
+			DamageEffectParams.TargetAbilitySystemComponent = TargetASC;
+			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 		}
 		
 		Destroy();
