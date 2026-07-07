@@ -112,34 +112,85 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	/*
 	 * New way doing it
 	 */
-	Super::NetSerialize(Ar, Map, bOutSuccess);
-	
-	uint8 RepBits = 0;
-	if (Ar.IsSaving())
+	if (Super::NetSerialize(Ar, Map, bOutSuccess))
 	{
-		if (bIsBlockedHit)
+		uint32 RepBits = 0;
+		if (Ar.IsSaving())
 		{
-			RepBits |= 1 << 0;
+			if (bIsBlockedHit)
+			{
+				RepBits |= 1 << 0;
+			}
+			if (bIsCriticalHit)
+			{
+				RepBits |= 1 << 1;
+			}
+			if (bIsSuccessfulDebuff)
+			{
+				RepBits |= 1 << 2;
+			}
+			if (DebuffDamage > 0.f)
+			{
+				RepBits |= 1 << 3;
+			}
+			if (DebuffDuration > 0.f)
+			{
+				RepBits |= 1 << 4;
+			}
+			if (DebuffFrequency > 0.f)
+			{
+				RepBits |= 1 << 5;
+			}
+			if (DamageType.IsValid())
+			{
+				RepBits |= 1 << 6;
+			}
 		}
-		if (bIsCriticalHit)
+	
+		Ar.SerializeBits(&RepBits, 7);
+	
+		if (RepBits & (1 << 0))
 		{
-			RepBits |= 1 << 1;
+			Ar << bIsBlockedHit;
 		}
+		if (RepBits & (1 << 1))
+		{
+			Ar << bIsCriticalHit;
+		}
+		if (RepBits & (1 << 2))
+		{
+			Ar << bIsSuccessfulDebuff;
+		}
+		if (RepBits & (1 << 3))
+		{
+			Ar << DebuffDamage;
+		}
+		if (RepBits & (1 << 4))
+		{
+			Ar << DebuffDuration;
+		}
+		if (RepBits & (1 << 5))
+		{
+			Ar << DebuffFrequency;
+		}
+		if (RepBits & (1 << 6))
+		{
+			if (Ar.IsLoading())
+			{
+				if (!DamageType.IsValid())
+				{
+					DamageType = MakeShared<FGameplayTag>();
+				}
+			}
+			DamageType->NetSerialize(Ar, Map, bOutSuccess);
+		}
+	
+		bOutSuccess = true;
+		return true;
 	}
 	
-	Ar.SerializeBits(&RepBits, 2);
-	
-	if (RepBits & (1 << 0))
-	{
-		Ar << bIsBlockedHit;
-	}
-	if (RepBits & (1 << 1))
-	{
-		Ar << bIsCriticalHit;
-	}
-	
-	bOutSuccess = true;
-	return true;
+	bOutSuccess = false;
+	return false;
 }
 
 FGameplayEffectContext* FAuraGameplayEffectContext::Duplicate() const
