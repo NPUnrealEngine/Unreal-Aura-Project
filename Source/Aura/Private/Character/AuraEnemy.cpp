@@ -105,7 +105,7 @@ void AAuraEnemy::BeginPlay()
 	
 	// Listen for gameplay tag changed event
 	AbilitySystemComponent->RegisterGameplayTagEvent(
-		FAuraGameplayTags::Get().Effects_HitReact,
+		Effects_HitReact,
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraEnemy::HitReactTagChanged);
 	

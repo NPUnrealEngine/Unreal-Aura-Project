@@ -40,9 +40,7 @@ void UAuraAbilitySystemComponent::AddCharacterAbilities(const TArray<TSubclassOf
 			AbilitySpec.GetDynamicSpecSourceTags().AddTag(AuraAbility->StartupInputTag);
 			
 			// Associate equipped tag with the ability
-			AbilitySpec.GetDynamicSpecSourceTags().AddTag(
-				FAuraGameplayTags::Get().Abilities_Status_Equipped
-			);
+			AbilitySpec.GetDynamicSpecSourceTags().AddTag(Abilities_Status_Equipped);
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -202,14 +200,12 @@ void UAuraAbilitySystemComponent::UpdateAbilityStatus(int32 Level)
 		if (GetAbilitySpecFromAbilityTag(Info.AbilityTag) == nullptr)
 		{
 			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(Info.Ability, 1);
-			AbilitySpec.GetDynamicSpecSourceTags().AddTag(
-				FAuraGameplayTags::Get().Abilities_Status_Eligible
-			);
+			AbilitySpec.GetDynamicSpecSourceTags().AddTag(Abilities_Status_Eligible);
 			GiveAbility(AbilitySpec);
 			MarkAbilitySpecDirty(AbilitySpec);
 			ClientUpdateAbilityStatus(
 				Info.AbilityTag, 
-				FAuraGameplayTags::Get().Abilities_Status_Eligible,
+				Abilities_Status_Eligible,
 				1
 			);
 		}
@@ -236,7 +232,7 @@ bool UAuraAbilitySystemComponent::GetDescriptionsByAbilityTag(const FGameplayTag
 	 * When ability is locked
 	 */
 	UAbilityInfo* AbilityInfo = UAuraAbilitySystemLibrary::GetAbilityInfo(GetAvatarActor());
-	if (!AbilityTag.IsValid() || AbilityTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_None))
+	if (!AbilityTag.IsValid() || AbilityTag.MatchesTagExact(Abilities_None))
 	{
 		OutDescription = FString();
 	}
@@ -302,8 +298,8 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 		const FGameplayTag& PreviousSlotTag = GetInputTagFromSpec(*AbilitySpec);
 		const FGameplayTag& StatusTag = GetStatusTagFromSpec(*AbilitySpec);
-		const bool bStatusValid = StatusTag == GameplayTags.Abilities_Status_Equipped || 
-			StatusTag == GameplayTags.Abilities_Status_Unlocked;
+		const bool bStatusValid = StatusTag == Abilities_Status_Equipped || 
+			StatusTag == Abilities_Status_Unlocked;
 		
 		if (bStatusValid)
 		{
@@ -316,14 +312,14 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 			AbilitySpec->GetDynamicSpecSourceTags().AddTag(SlotTag);
 			
 			// Change ability's unlocked status to equipped if necessary
-			if (StatusTag.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+			if (StatusTag.MatchesTagExact(Abilities_Status_Unlocked))
 			{
-				AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(GameplayTags.Abilities_Status_Unlocked);
-				AbilitySpec->GetDynamicSpecSourceTags().AddTag(GameplayTags.Abilities_Status_Equipped);
+				AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(Abilities_Status_Unlocked);
+				AbilitySpec->GetDynamicSpecSourceTags().AddTag(Abilities_Status_Equipped);
 			}
 			MarkAbilitySpecDirty(*AbilitySpec);
 		}
-		ClientEquipAbility(AbilityTag, GameplayTags.Abilities_Status_Equipped, SlotTag, PreviousSlotTag);
+		ClientEquipAbility(AbilityTag, Abilities_Status_Equipped, SlotTag, PreviousSlotTag);
 	}
 }
 
@@ -346,14 +342,14 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGa
 		 *	1. If eligible: change ability status tag to unlocked
 		 *	2. If equipped or unlocked: add 1 level to ability
 		 */
-		if (AbilityStatusTag.MatchesTagExact(GamePlayTags.Abilities_Status_Eligible))
+		if (AbilityStatusTag.MatchesTagExact(Abilities_Status_Eligible))
 		{
-			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(GamePlayTags.Abilities_Status_Eligible);
-			AbilitySpec->GetDynamicSpecSourceTags().AddTag(GamePlayTags.Abilities_Status_Unlocked);
-			AbilityStatusTag = GamePlayTags.Abilities_Status_Unlocked;
+			AbilitySpec->GetDynamicSpecSourceTags().RemoveTag(Abilities_Status_Eligible);
+			AbilitySpec->GetDynamicSpecSourceTags().AddTag(Abilities_Status_Unlocked);
+			AbilityStatusTag = Abilities_Status_Unlocked;
 		}
-		else if (AbilityStatusTag.MatchesTagExact(GamePlayTags.Abilities_Status_Equipped) ||
-			AbilityStatusTag.MatchesTagExact(GamePlayTags.Abilities_Status_Unlocked))
+		else if (AbilityStatusTag.MatchesTagExact(Abilities_Status_Equipped) ||
+			AbilityStatusTag.MatchesTagExact(Abilities_Status_Unlocked))
 		{
 			AbilitySpec->Level += 1;
 		}

@@ -112,7 +112,7 @@ void USpellMenuWidgetController::SpellGlobeSelected(const FGameplayTag& AbilityT
 	
 	if (!AbilityTag.IsValid() || AbilitySpec == nullptr)
 	{
-		AbilityStatus = GameplayTags.Abilities_Status_Locked;
+		AbilityStatus = Abilities_Status_Locked;
 	}
 	else
 	{
@@ -166,8 +166,8 @@ void USpellMenuWidgetController::SpellGlobeDeselected()
 	}
 	
 	
-	SelectedAbility.AbilityTag = FAuraGameplayTags::Get().Abilities_None;
-	SelectedAbility.AbilityStatus = FAuraGameplayTags::Get().Abilities_Status_Locked;
+	SelectedAbility.AbilityTag = Abilities_None;
+	SelectedAbility.AbilityStatus = Abilities_Status_Locked;
 	SpellGlobeSelectedDelegate.Broadcast(
 		false,
 		false,
@@ -186,7 +186,7 @@ void USpellMenuWidgetController::EquipButtonPressed()
 	 * Tracing selected ability's input tag
 	 */
 	const FGameplayTag SelectedStatusTag = GetAuraASC()->GetStatusTagFromAbilityTag(SelectedAbility.AbilityTag);
-	if (SelectedStatusTag.MatchesTagExact(FAuraGameplayTags::Get().Abilities_Status_Equipped))
+	if (SelectedStatusTag.MatchesTagExact(Abilities_Status_Equipped))
 	{
 		SelectedSlot = GetAuraASC()->GetInputTagFromAbilityTag(SelectedAbility.AbilityTag);
 	}
@@ -213,8 +213,8 @@ void USpellMenuWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTa
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 	
 	FAuraAbilityInfo LastSlotInfo;
-	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
-	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.AbilityTag = Abilities_None;
+	LastSlotInfo.StatusTag = Abilities_Status_Unlocked;
 	LastSlotInfo.InputTag = PreviousSlotTag;
 	// Broadcast empty info if previous slot is a valid slot, On if equipping on already equipped spell
 	AbilityInfoDelegate.Broadcast(LastSlotInfo);
@@ -233,7 +233,7 @@ void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& Ability
 {
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 	
-	if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Equipped))
+	if (AbilityStatus.MatchesTagExact(Abilities_Status_Equipped))
 	{
 		bShouldEnableEquipButton = true;
 		if (SpellPoints > 0)
@@ -241,7 +241,7 @@ void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& Ability
 			bShouldEnableSpellPointsButton = true;
 		}
 	}
-	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Eligible))
+	else if (AbilityStatus.MatchesTagExact(Abilities_Status_Eligible))
 	{
 		bShouldEnableEquipButton = false;
 		if (SpellPoints > 0)
@@ -249,7 +249,7 @@ void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& Ability
 			bShouldEnableSpellPointsButton = true;
 		}
 	}
-	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Unlocked))
+	else if (AbilityStatus.MatchesTagExact(Abilities_Status_Unlocked))
 	{
 		bShouldEnableEquipButton = true;
 		if (SpellPoints > 0)
@@ -257,7 +257,7 @@ void USpellMenuWidgetController::ShouldEnableButtons(const FGameplayTag& Ability
 			bShouldEnableSpellPointsButton = true;
 		}
 	}
-	else if (AbilityStatus.MatchesTagExact(GameplayTags.Abilities_Status_Locked))
+	else if (AbilityStatus.MatchesTagExact(Abilities_Status_Locked))
 	{
 		bShouldEnableEquipButton = false;
 		bShouldEnableSpellPointsButton = false;

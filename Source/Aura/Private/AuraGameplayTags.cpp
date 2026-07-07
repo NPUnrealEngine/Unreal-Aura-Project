@@ -2,419 +2,200 @@
 
 
 #include "AuraGameplayTags.h"
-#include "GameplayTagsManager.h"
 
 FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
+/* 
+ * Define necessary Gameplay Tags 
+ */
+
+/**
+ * Primary attributes
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Strength, "Attributes.Primary.Strength",
+	"Increase physical damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Intelligence, "Attributes.Primary.Intelligence",
+	"Increase magical damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Resilience, "Attributes.Primary.Resilience",
+	"Increase Armor and Armor Penetration");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Primary_Vigor, "Attributes.Primary.Vigor",
+	"Increase Health");
+
+/*
+ * Secondary attributes
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_Armor, "Attributes.Secondary.Armor",
+	"Reduce damage taken, increase Block Chance");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_ArmorPenetration, "Attributes.Secondary.ArmorPenetration",
+	"Ignore percentage of enemy armor and increase critical hit chance");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_BlockChance, "Attributes.Secondary.BlockChance",
+	"Chance to cut incoming damage in half");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitChance, "Attributes.Secondary.CriticalHitChance",
+	"Chance to double damage plus critical hit bonus");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitDamage, "Attributes.Secondary.CriticalHitDamage",
+	"Bonus damage added when a critical hit is scored");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_CriticalHitResistance, "Attributes.Secondary.CriticalHitResistance",
+	"Reduce critical hit chance of attacking enemies");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_HealthRegeneration, "Attributes.Secondary.HealthRegeneration",
+	"Amount of health to regenerate for every 1 second");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_ManaRegeneration, "Attributes.Secondary.ManaRegeneration", 
+	"Amount of mana to regenerate for every 1 second");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_MaxHealth, "Attributes.Secondary.MaxHealth", 
+	"Maximum health");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Secondary_MaxMana, "Attributes.Secondary.MaxMana",
+	"Maximum mana");
+
+/*
+ * Meta Attributes
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Meta_IncomingXP, "Attributes.Meta.IncomingXP",
+	"Incoming XP");
+
+/*
+ * Input Tags
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_LMB, "InputTag.LMB", 
+	"Input tag for left mouse button");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_RMB, "InputTag.RMB", 
+	"Input tag for right mouse button");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_1, "InputTag.1", 
+	"Input tag 1 key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_2, "InputTag.2", 
+	"Input tag 2 key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_3, "InputTag.3", 
+	"Input tag 3 key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_4, "InputTag.4", 
+	"Input tag 4 key");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Passive_1, "InputTag.Passive.1", 
+	"Input tag passive 1");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Passive_2, "InputTag.Passive.2", 
+	"Input tag passive 2");
+
+/*
+ * Damage type
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Fire, "Damage.Fire", 
+	"Damage Fire type");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Lightning, "Damage.Lightning", 
+	"Damage Lightning type");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Arcane, "Damage.Arcane", 
+	"Damage Arcane type");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Damage_Physical, "Damage.Physical", 
+	"Damage Physical type");
+
+/*
+ * Resistance type
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Resistance_Fire, "Attributes.Resistance.Fire", 
+	"Resistance to Fire");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Resistance_Lightning, "Attributes.Resistance.Lightning", 
+	"Resistance to Lightning");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Resistance_Arcane, "Attributes.Resistance.Arcane", 
+	"Resistance to Arcane");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Attributes_Resistance_Physical, "Attributes.Resistance.Physical", 
+	"Resistance to Physical");
+
+/*
+ * Abilities
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_None, "Abilities.None", 
+	"None ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Attack, "Abilities.Attack", 
+	"Attack ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Summon, "Abilities.Summon", 
+	"Summon ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_HitReact, "Abilities.HitReact", 
+	"Hit react ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Status_Eligible, "Abilities.Status.Eligible", 
+	"Eligible status");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Status_Equipped, "Abilities.Status.Equipped", 
+	"Equipped status");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Status_Locked, "Abilities.Status.Locked", 
+	"Locked status");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Status_Unlocked, "Abilities.Status.Unlocked", 
+	"Unlocked status");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Type_None, "Abilities.Type.None", 
+	"Ability type none");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Type_Offensive, "Abilities.Type.Offensive", 
+	"Ability type offensive");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Type_Passive, "Abilities.Type.Passive", 
+	"Ability type passive");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Fire_FireBolt, "Abilities.Fire.FireBolt", 
+	"FireBolt ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Lightning_Electrocute, "Abilities.Lightning.Electrocute", 
+	"Electrocute ability tag");
+
+/*
+ * Debuff
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Arcane, "Debuff.Arcane", 
+	"Debuff for Arcane damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Burn, "Debuff.Burn", 
+	"Debuff for Fire damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Physical, "Debuff.Physical", 
+	"Debuff for Physical damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Stun, "Debuff.Stun", 
+	"Debuff for Lightning damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Chance, "Debuff.Chance", 
+	"Debuff chance");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Damage, "Debuff.Damage", 
+	"Debuff damage");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Duration, "Debuff.Duration", 
+	"Debuff duration");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Frequency, "Debuff.Frequency", 
+	"Debuff frequency");
+
+/**
+ * Ability Cooldown
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Fire_FireBolt, "Cooldown.Fire.FireBolt", 
+	"FireBolt cooldown tag");
+
+/*
+ * Animation Montage Attack
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Montage_Attack_1, "Montage.Attack.1", 
+	"Montage attack 1");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Montage_Attack_2, "Montage.Attack.2", 
+	"Montage attack 2");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Montage_Attack_3, "Montage.Attack.3", 
+	"Montage attack 3");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Montage_Attack_4, "Montage.Attack.4", 
+	"Montage attack 4");
+
+/*
+ * Combat socket
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(CombatSocket_Weapon, "CombatSocket.Weapon", 
+	"Weapon");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(CombatSocket_RightHand, "CombatSocket.RightHand", 
+	"Right hand");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(CombatSocket_LeftHand, "CombatSocket.LeftHand", 
+	"Left hand");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(CombatSocket_Tail, "CombatSocket.Tail", 
+	"Tail");
+
+/*
+ * Effects
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Effects_HitReact, "Effects.HitReact", 
+	"Tag granted when hit react");
+
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
-	/**
-	 * Primary attributes
-	 */
-	
-	GameplayTags.Attributes_Primary_Strength =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Strength"),
-		FString("Increase physical damage")
-	);
-
-	GameplayTags.Attributes_Primary_Intelligence =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Intelligence"),
-		FString("Increase magical damage")
-	);
-
-	GameplayTags.Attributes_Primary_Resilience =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Resilience"),
-		FString("Increase Armor and Armor Penetration")
-	);
-
-	GameplayTags.Attributes_Primary_Vigor =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Primary.Vigor"),
-		FString("Increase Health")
-	);
-
-	/**
-	 * Secondary attributes
-	 */
-	
-	GameplayTags.Attributes_Secondary_Armor =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.Armor"),
-		FString("Reduce damage taken, increase Block Chance")
-	);
-
-	GameplayTags.Attributes_Secondary_ArmorPenetration =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.ArmorPenetration"),
-		FString("Ignore percentage of enemy armor and increase critical hit chance")
-	);
-
-	GameplayTags.Attributes_Secondary_BlockChance =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.BlockChance"),
-		FString("Chance to cut incoming damage in half")
-	);
-
-	GameplayTags.Attributes_Secondary_CriticalHitChance =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.CriticalHitChance"),
-		FString("Chance to double damage plus critical hit bonus")
-	);
-
-	GameplayTags.Attributes_Secondary_CriticalHitDamage =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.CriticalHitDamage"),
-		FString("Bonus damage added when a critical hit is scored")
-	);
-
-	GameplayTags.Attributes_Secondary_CriticalHitResistance =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.CriticalHitResistance"),
-		FString("Reduce critical hit chance of attacking enemies")
-	);
-
-	GameplayTags.Attributes_Secondary_HealthRegeneration =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.HealthRegeneration"),
-		FString("Amount of health to regenerate for every 1 second")
-	);
-
-	GameplayTags.Attributes_Secondary_ManaRegeneration =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.ManaRegeneration"),
-		FString("Amount of mana to regenerate for every 1 second")
-	);
-
-	GameplayTags.Attributes_Secondary_MaxHealth =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.MaxHealth"),
-		FString("Maximum health")
-	);
-
-	GameplayTags.Attributes_Secondary_MaxMana =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Secondary.MaxMana"),
-		FString("Maximum mana")
-	);
-	
-	/**
-	 * Meta Attributes
-	 */
-	
-	GameplayTags.Attributes_Meta_IncomingXP=  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Meta.IncomingXP"),
-		FString("Incoming XP")
-	);
-
-	/**
-	 * Input Tags
-	 */
-	
-	GameplayTags.InputTag_LMB =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.LMB"),
-		FString("Input tag for left mouse button")
-	);
-
-	GameplayTags.InputTag_RMB =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.RMB"),
-		FString("Input tag for right mouse button")
-	);
-
-	GameplayTags.InputTag_1 =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.1"),
-		FString("Input tag 1 key")
-	);
-
-	GameplayTags.InputTag_2 =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.2"),
-		FString("Input tag 2 key")
-	);
-
-	GameplayTags.InputTag_3 =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.3"),
-		FString("Input tag 3 key")
-	);
-
-	GameplayTags.InputTag_4 =  UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.4"),
-		FString("Input tag 4 key")
-	);
-	
-	GameplayTags.InputTag_Passive_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.Passive.1"),
-		FString("Input tag passive 1")
-	);
-	
-	GameplayTags.InputTag_Passive_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("InputTag.Passive.2"),
-		FString("Input tag passive 2")
-	);
-	
-	/*
-	 * Damage and types
-	 */
-	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage"),
-		FString("Damage")
-	);
-	
-	/* Easy way to define damage and resistance type with macros */
-	DEFINE_DAMAGE_TYPE_AND_RESISTANCE(Fire);
-	DEFINE_DAMAGE_TYPE_AND_RESISTANCE(Lightning);
-	DEFINE_DAMAGE_TYPE_AND_RESISTANCE(Arcane);
-	DEFINE_DAMAGE_TYPE_AND_RESISTANCE(Physical);
-	
-	/*GameplayTags.Damage_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Fire"),
-		FString("Fire damage type")
-	);
-	
-	GameplayTags.Damage_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Lightning"),
-		FString("Lightning damage type")
-	);
-	
-	GameplayTags.Damage_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Arcane"),
-		FString("Arcane damage type")
-	);
-	
-	GameplayTags.Damage_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Damage.Physical"),
-		FString("Physical damage type")
-	);*/
-	
-	/*
-	 * Resistance
-	 */
-	
-	/*GameplayTags.Attributes_Resistance_Fire = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Fire"),
-		FString("Resistance to Fire")
-	);
-	
-	GameplayTags.Attributes_Resistance_Lightning = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Lightning"),
-		FString("Resistance to Lightning")
-	);
-	
-	GameplayTags.Attributes_Resistance_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Arcane"),
-		FString("Resistance to Arcane")
-	);
-	
-	GameplayTags.Attributes_Resistance_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Attributes.Resistance.Physical"),
-		FString("Resistance to Physical")
-	);*/
-	
 	/*
 	 * Mapping damage type to resistance 
 	 */
-	GameplayTags.DamageTypesToResistances.Add(
-		GameplayTags.Damage_Fire,
-		GameplayTags.Attributes_Resistance_Fire
-	);
-	
-	GameplayTags.DamageTypesToResistances.Add(
-		GameplayTags.Damage_Lightning,
-		GameplayTags.Attributes_Resistance_Lightning
-	);
-	
-	GameplayTags.DamageTypesToResistances.Add(
-		GameplayTags.Damage_Arcane,
-		GameplayTags.Attributes_Resistance_Arcane
-	);
-	
-	GameplayTags.DamageTypesToResistances.Add(
-		GameplayTags.Damage_Physical,
-		GameplayTags.Attributes_Resistance_Physical
-	);
+	GameplayTags.DamageTypesToResistances.Add(Damage_Fire, Attributes_Resistance_Fire);
+	GameplayTags.DamageTypesToResistances.Add(Damage_Lightning, Attributes_Resistance_Lightning);
+	GameplayTags.DamageTypesToResistances.Add(Damage_Arcane, Attributes_Resistance_Arcane);
+	GameplayTags.DamageTypesToResistances.Add(Damage_Physical, Attributes_Resistance_Physical);
 	
 	/*
 	 * Mapping DamageType to Debuffs
 	 */
-	GameplayTags.DamageTypesToDebuffs.Add(
-		GameplayTags.Damage_Fire,
-		GameplayTags.Debuff_Burn
-	);
-	
-	GameplayTags.DamageTypesToDebuffs.Add(
-		GameplayTags.Damage_Lightning,
-		GameplayTags.Debuff_Stun
-	);
-	
-	GameplayTags.DamageTypesToDebuffs.Add(
-		GameplayTags.Damage_Arcane,
-		GameplayTags.Debuff_Arcane
-	);
-	
-	GameplayTags.DamageTypesToDebuffs.Add(
-		GameplayTags.Damage_Physical,
-		GameplayTags.Debuff_Physical
-	);
-	
-	/*
-	 * Effects
-	 */
-	
-	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Effects.HitReact"),
-		FString("Tag granted when hit react")
-	);
-	
-	/*
-	 * Abilities
-	 */
-	
-	GameplayTags.Abilities_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.None"),
-		FString("None ability tag")
-	);
-	
-	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Attack"),
-		FString("Attack ability tag")
-	);
-	
-	GameplayTags.Abilities_Summon = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Summon"),
-		FString("Summon ability tag")
-	);
-	
-	GameplayTags.Abilities_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.HitReact"),
-		FString("Hit react ability tag")
-	);
-	
-	GameplayTags.Abilities_Status_Eligible = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Status.Eligible"),
-		FString("Eligible status")
-	);
-	
-	GameplayTags.Abilities_Status_Equipped = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Status.Equipped"),
-		FString("Equipped status")
-	);
-	
-	GameplayTags.Abilities_Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Status.Locked"),
-		FString("Locked status")
-	);
-	
-	GameplayTags.Abilities_Status_Unlocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Status.Unlocked"),
-		FString("Unlocked status")
-	);
-	
-	GameplayTags.Abilities_Type_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Type.None"),
-		FString("Ability type none")
-	);
-	
-	GameplayTags.Abilities_Type_Offensive = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Type.Offensive"),
-		FString("Ability type offensive")
-	);
-	
-	GameplayTags.Abilities_Type_Passive = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Type.Passive"),
-		FString("Ability type passive")
-	);
-	
-	GameplayTags.Abilities_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Fire.FireBolt"),
-		FString("FireBolt ability tag")
-	);
-	
-	GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Abilities.Lightning.Electrocute"),
-		FString("Electrocute ability tag")
-	);
-	
-	/*
-	 * Debuff
-	 */
-	GameplayTags.Debuff_Arcane = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Arcane"),
-		FString("Debuff for Arcane damage")
-	);
-	
-	GameplayTags.Debuff_Burn = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Burn"),
-		FString("Debuff for Fire damage")
-	);
-	
-	GameplayTags.Debuff_Physical = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Physical"),
-		FString("Debuff for Physical damage")
-	);
-	
-	GameplayTags.Debuff_Stun = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Stun"),
-		FString("Debuff for Lightning damage")
-	);
-	
-	GameplayTags.Debuff_Chance = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Chance"),
-		FString("Debuff chance")
-	);
-	
-	GameplayTags.Debuff_Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Damage"),
-		FString("Debuff damage")
-	);
-	
-	GameplayTags.Debuff_Duration = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Duration"),
-		FString("Debuff duration")
-	);
-	
-	GameplayTags.Debuff_Frequency = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Debuff.Frequency"),
-		FString("Debuff frequency")
-	);
-	
-	/**
-	 * Cooldown
-	 */
-	GameplayTags.Cooldown_Fire_FireBolt = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Cooldown.Fire.FireBolt"),
-		FString("FireBolt cooldown tag")
-	);
-	
-	/*
-	 * Montage
-	 */
-	GameplayTags.Montage_Attack_1 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.1"),
-		FString("Montage attack 1")
-	);
-	
-	GameplayTags.Montage_Attack_2 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.2"),
-		FString("Montage attack 2")
-	);
-	
-	GameplayTags.Montage_Attack_3 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.3"),
-		FString("Montage attack 3")
-	);
-	
-	GameplayTags.Montage_Attack_4 = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("Montage.Attack.4"),
-		FString("Montage attack 4")
-	);
-	
-	/**
-	 * Combat socket
-	 */
-	GameplayTags.CombatSocket_Weapon = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("CombatSocket.Weapon"),
-		FString("Weapon")
-	);
-	
-	GameplayTags.CombatSocket_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("CombatSocket.RightHand"),
-		FString("Right hand")
-	);
-	
-	GameplayTags.CombatSocket_LeftHand= UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("CombatSocket.LeftHand"),
-		FString("Left hand")
-	);
-	
-	GameplayTags.CombatSocket_Tail= UGameplayTagsManager::Get().AddNativeGameplayTag(
-		FName("CombatSocket.Tail"),
-		FString("Tail")
-	);
+	GameplayTags.DamageTypesToDebuffs.Add(Damage_Fire, Debuff_Burn);
+	GameplayTags.DamageTypesToDebuffs.Add(Damage_Lightning, Debuff_Stun);
+	GameplayTags.DamageTypesToDebuffs.Add(Damage_Arcane, Debuff_Arcane);
+	GameplayTags.DamageTypesToDebuffs.Add(Damage_Physical, Debuff_Physical);
 }

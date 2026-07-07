@@ -115,7 +115,7 @@ private:
 	/**
 	 * Tracing selected ability on UI
 	 */
-	FSelectedAbility SelectedAbility = {FAuraGameplayTags::Get().Abilities_None, FAuraGameplayTags::Get().Abilities_Status_Locked};
+	FSelectedAbility SelectedAbility = {Abilities_None, Abilities_Status_Locked};
 
 	/**
 	 * For storing spell points temporary

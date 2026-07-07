@@ -220,7 +220,7 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 			else
 			{
 				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+				TagContainer.AddTag(Effects_HitReact);
 				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 			}
 			
@@ -328,14 +328,14 @@ void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props)
 			CharacterClass, 
 			TargetLevel
 		);
-		const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+		
 		FGameplayEventData Payload;
-		Payload.EventTag = GameplayTags.Attributes_Meta_IncomingXP;
+		Payload.EventTag = Attributes_Meta_IncomingXP;
 		Payload.EventMagnitude = XPReward;
 		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(
 			Props.SourceCharacter,
-			GameplayTags.Attributes_Meta_IncomingXP,
+			Attributes_Meta_IncomingXP,
 			Payload
 		);
 	}

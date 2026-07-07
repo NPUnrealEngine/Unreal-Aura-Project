@@ -155,8 +155,8 @@ void UOverlayWidgetController::OnAbilityEquipped(const FGameplayTag& AbilityTag,
 	FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 	
 	FAuraAbilityInfo LastSlotInfo;
-	LastSlotInfo.AbilityTag = GameplayTags.Abilities_None;
-	LastSlotInfo.StatusTag = GameplayTags.Abilities_Status_Unlocked;
+	LastSlotInfo.AbilityTag = Abilities_None;
+	LastSlotInfo.StatusTag = Abilities_Status_Unlocked;
 	LastSlotInfo.InputTag = PreviousSlotTag;
 	// Broadcast empty info if previous slot is a valid slot, On if equipping on already equipped spell
 	AbilityInfoDelegate.Broadcast(LastSlotInfo);
