@@ -47,7 +47,6 @@ struct AuraDamageStatic
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);
 		
-		const FAuraGameplayTags& Tags = FAuraGameplayTags::Get();
 		TagsToCaptureDefs.Add(Attributes_Secondary_Armor, ArmorDef);
 		TagsToCaptureDefs.Add(Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
 		TagsToCaptureDefs.Add(Attributes_Secondary_BlockChance, BlockChanceDef);
