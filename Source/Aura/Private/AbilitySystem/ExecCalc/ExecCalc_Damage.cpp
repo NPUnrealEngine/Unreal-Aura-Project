@@ -88,8 +88,48 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatic().PhysicalResistanceDef);
 }
 
+void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluateAggregatorParameters) const
+{
+	const FAuraGameplayTags& GameplayTags = FAuraGameplayTags::Get();
+	
+	for (TPair<FGameplayTag, FGameplayTag> Pair : GameplayTags.DamageTypesToDebuffs)
+	{
+		const FGameplayTag& DamageType = Pair.Key;
+		const FGameplayTag& DebuffType = Pair.Value;
+		const float TypeDamage = Spec.GetSetByCallerMagnitude(DamageType, false, -1);
+		
+		if (TypeDamage > -1.f)
+		{
+			// Determine if successful debuff
+			const float SourceDebuffChance = Spec.GetSetByCallerMagnitude(
+				GameplayTags.Debuff_Chance,
+				false,
+				-1
+			);
+			
+			// Find resistance to debuff damage type
+			float TargetDebuffResistance = 0.f;
+			const FGameplayTag& ResistanceTag = GameplayTags.DamageTypesToResistances[DamageType];
+			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+				DamageStatic().TagsToCaptureDefs[ResistanceTag],
+				EvaluateAggregatorParameters,
+				TargetDebuffResistance
+			);
+			TargetDebuffResistance = FMath::Max<float>(TargetDebuffResistance, 0.f);
+			
+			// Calculate chance
+			const float EffectiveDebuffChance = SourceDebuffChance * (100.f - TargetDebuffResistance) / 100.f;
+			const bool bDebuff = FMath::RandRange(1, 100) < EffectiveDebuffChance;
+			if (bDebuff)
+			{
+				// TODO: What do we do?
+			}
+		}
+	}
+}
+
 void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
-	FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
+                                              FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const
 {
 	Super::Execute_Implementation(ExecutionParams, OutExecutionOutput);
 	
@@ -127,6 +167,11 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	FAggregatorEvaluateParameters EvaluateAggregatorParameters;
 	EvaluateAggregatorParameters.SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	EvaluateAggregatorParameters.TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
+	
+	/*
+	 * Debuff
+	 */
+	DetermineDebuff(ExecutionParams, Spec, EvaluateAggregatorParameters);
 	
 	// Initial damage value
 	float Damage = 0.f;
