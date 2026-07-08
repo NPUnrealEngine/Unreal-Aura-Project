@@ -112,8 +112,16 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 	/*
 	 * New way doing it
 	 */
+	
+	// Check if parent NetSerialize successful
 	if (Super::NetSerialize(Ar, Map, bOutSuccess))
 	{
+		// Declare a Replication Bits and use it with bitwise left shift
+		// uint32 - unsign 32 bit E.g 00000000000000000000000000000000
+		// bitwise left shift example
+		//		- RepBits |= 1 << 0; is 00000000000000000000000000000001 = 1
+		//		- RepBits |= 1 << 1; is 00000000000000000000000000000010 = 2
+		//		- RepBits |= 1 << 2; is 00000000000000000000000000000100 = 4
 		uint32 RepBits = 0;
 		if (Ar.IsSaving())
 		{
@@ -147,8 +155,12 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 			}
 		}
 	
+		// tell archive how long is the replication bits
 		Ar.SerializeBits(&RepBits, 7);
 	
+		// Use bitwise operator AND to see if the bit is flipped to 1 from 0
+		// If it is then tell archive to serialize data
+		// Note: the order has to be as same as above
 		if (RepBits & (1 << 0))
 		{
 			Ar << bIsBlockedHit;
