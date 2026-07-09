@@ -8,6 +8,18 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class UAbilitySystemComponent;
+
+/**
+ * Delegate for AbilitySystemComponent initialized 
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
+
+/**
+ * Delegate for character death
+ */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
+
 class UNiagaraSystem;
 /**
  * A struct that associate a gameplay tag with an animation montage
@@ -45,6 +57,7 @@ class AURA_API ICombatInterface
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+	
 public:
 	/**
 	 * Get player level
@@ -123,4 +136,16 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	ECharacterClass GetCharacterClass();
+
+	/**
+	 * Get delegate for AbilitySystemComponent initialized
+	 * @return 
+	 */
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() = 0;
+
+	/**
+	 * Get delegate for character death
+	 * @return 
+	 */
+	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
 };

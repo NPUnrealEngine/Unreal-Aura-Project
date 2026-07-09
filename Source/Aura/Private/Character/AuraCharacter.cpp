@@ -181,6 +181,8 @@ void AAuraCharacter::InitAbilityActorInfo()
 
 	/* Initialize character default attributes*/
 	InitializeDefaultAttributes();
+	
+	OnASCRegisteredDelegate.Broadcast(AbilitySystemComponent);
 }
 
 void AAuraCharacter::ActivateCamera_Implementation(APlayerController* PlayerController)
