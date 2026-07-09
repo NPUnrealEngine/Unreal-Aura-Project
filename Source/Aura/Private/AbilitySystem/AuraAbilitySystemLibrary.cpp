@@ -341,15 +341,21 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 {
 	AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
 	
+	// Make an effect contenxt for the gameplay effect
 	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(SourceAvatarActor);
 
+	// Make a gameplay effect
 	FGameplayEffectSpecHandle SpecHandle = Params.SourceAbilitySystemComponent->MakeOutgoingSpec(
 		Params.DamageGameplayEffectClass,
 		Params.AbilityLevel,
 		EffectContextHandle
 	);
 	
+	/*
+	 * Add debuff related values to the gameplay effect
+	 * for later to be retrieved
+	 */
 	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(
 		SpecHandle,
 		Params.DamageType,

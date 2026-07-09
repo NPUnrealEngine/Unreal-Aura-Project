@@ -99,14 +99,14 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 		
 		if (TypeDamage > -1.f)
 		{
-			// Determine if successful debuff
+			// Get source actor debuff apply chance 
 			const float SourceDebuffChance = Spec.GetSetByCallerMagnitude(
 				Debuff_Chance,
 				false,
 				-1
 			);
 			
-			// Find resistance to debuff damage type
+			// Find target actor resistance to debuff damage type
 			float TargetDebuffResistance = 0.f;
 			const FGameplayTag& ResistanceTag = GameplayTags.DamageTypesToResistances[DamageType];
 			ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
@@ -119,6 +119,9 @@ void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParam
 			// Calculate chance
 			const float EffectiveDebuffChance = SourceDebuffChance * (100.f - TargetDebuffResistance) / 100.f;
 			const bool bDebuff = FMath::RandRange(1, 100) < EffectiveDebuffChance;
+			
+			// Have chane to apply debuff to target
+			// Set values to GameplayContext of this GameplayEffect
 			if (bDebuff)
 			{
 				FGameplayEffectContextHandle ContextHandle = Spec.GetContext();

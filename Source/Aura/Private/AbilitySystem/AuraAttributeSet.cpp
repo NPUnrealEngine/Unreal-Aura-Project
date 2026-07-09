@@ -181,16 +181,20 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
+	
+	// Do nothing if character is dead
+	if (Props.TargetCharacter->Implements<UCombatInterface>() &&
+		ICombatInterface::Execute_IsDead(Props.TargetCharacter)) return;
 
 	/* Clamp attributes after effect executed */
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		const float NewValue = FMath::Clamp(GetHealth(), 0.f, GetMaxHealth());
 		SetHealth(NewValue);
-		UE_LOG(LogTemp, Warning, TEXT("Change health on %s, Health: %f"),
+		/*UE_LOG(LogTemp, Warning, TEXT("Change health on %s, Health: %f"),
 			*Props.TargetAvatarActor->GetName(),
 			GetHealth()
-		);
+		);*/
 	}
 	if (Data.EvaluatedData.Attribute == GetManaAttribute())
 	{
@@ -216,15 +220,21 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 	{
 		const float NewHealth = GetHealth() - LocalIncomingDamage;
 		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
-			
+		
+		// If fatal damage cause dead or not
 		const bool bFatal = NewHealth <= 0.f;
+		
+		// If fatal damage cause dead
 		if (bFatal)
 		{
+			// Tell character to die
 			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 			if (CombatInterface)
 			{
 				CombatInterface->Die();
 			}
+			
+			// Give XP to damage causer
 			SendXPEvent(Props);
 		}
 		else
@@ -263,13 +273,16 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	
 	/* Create a new GameplayEffect */
 	FString DebuffName = FString::Printf(TEXT("DynamicDebuff_%s"), *DamageType.ToString());
-	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackage(), FName(DebuffName));
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackageAsObject(), FName(*DebuffName));
 	
 	/* Setup properties */
 	Effect->DurationPolicy = EGameplayEffectDurationType::HasDuration;
 	Effect->DurationMagnitude = FScalableFloat(DebuffDuration);
 	Effect->Period = DebuffFrequency;
-	// TODO: Setup Stacking
+	PRAGMA_DISABLE_DEPRECATION_WARNINGS
+	Effect->StackingType = EGameplayEffectStackingType::AggregateBySource;
+	PRAGMA_ENABLE_DEPRECATION_WARNINGS
+	Effect->StackLimitCount = 1;
 	
 	/* Add debuff tag*/
 	UTargetTagsGameplayEffectComponent& GrantedTags = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
@@ -288,7 +301,9 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	/* Create a GameplayEffect and apply it to target */
 	if (FGameplayEffectSpec* MutableSpec = new FGameplayEffectSpec(Effect, ContextHandle, 1))
 	{
-		FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(MutableSpec->GetContext().Get());
+		FAuraGameplayEffectContext* AuraEffectContext = static_cast<FAuraGameplayEffectContext*>(
+			MutableSpec->GetContext().Get()
+		);
 		TSharedPtr<FGameplayTag> DebuffDamageType = MakeShareable(new FGameplayTag(DamageType));
 		AuraEffectContext->SetDamageType(DebuffDamageType);
 		Props.TargetASC->ApplyGameplayEffectSpecToSelf(*MutableSpec);
