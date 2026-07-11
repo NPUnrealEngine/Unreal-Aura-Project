@@ -341,7 +341,7 @@ FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const 
 {
 	AActor* SourceAvatarActor = Params.SourceAbilitySystemComponent->GetAvatarActor();
 	
-	// Make an effect contenxt for the gameplay effect
+	// Make an effect context for the gameplay effect
 	FGameplayEffectContextHandle EffectContextHandle = Params.SourceAbilitySystemComponent->MakeEffectContext();
 	EffectContextHandle.AddSourceObject(SourceAvatarActor);
 
