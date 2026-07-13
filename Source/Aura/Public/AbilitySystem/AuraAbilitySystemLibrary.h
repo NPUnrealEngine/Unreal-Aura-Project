@@ -69,6 +69,9 @@ public:
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static FGameplayTag GetDamageType(const FGameplayEffectContextHandle& EffectContextHandle);
 	
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static FVector GetDeathImpluse(const FGameplayEffectContextHandle& EffectContextHandle);
+	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsBlocked);
 	
@@ -89,6 +92,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetDebuffDamageType(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FGameplayTag& InDamageType);
+	
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static void SetDeathImpluse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InDeathImpluse);
 	
 	/**
 	 * Get all actors who is alive within a sphere radius
