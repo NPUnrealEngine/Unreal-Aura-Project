@@ -45,7 +45,7 @@ public: // Override
 	
 	/* ICombatInterface */
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpluse) override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
@@ -59,7 +59,7 @@ public: // Override
 	 * Run on server and all clients
 	 */
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void MulticastHandleDeath();
+	virtual void MulticastHandleDeath(const FVector& DeathImpluse);
 	
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;

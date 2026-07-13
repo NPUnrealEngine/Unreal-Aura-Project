@@ -96,7 +96,7 @@ public:
 	/**
 	 * Make character die
 	 */
-	virtual void Die() = 0;
+	virtual void Die(const FVector& DeathImpluse) = 0;
 
 	/**
 	 * Check whether the character is dead or not

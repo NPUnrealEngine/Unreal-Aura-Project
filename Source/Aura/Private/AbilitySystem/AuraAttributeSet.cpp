@@ -227,13 +227,11 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 		// If fatal damage cause dead
 		if (bFatal)
 		{
-			// TODO: Death impluse
-			
 			// Tell character to die
 			ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
 			if (CombatInterface)
 			{
-				CombatInterface->Die();
+				CombatInterface->Die(UAuraAbilitySystemLibrary::GetDeathImpluse(Props.EffectContextHandle));
 			}
 			
 			// Give XP to damage causer

@@ -125,14 +125,14 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCou
 	}
 }
 
-void AAuraEnemy::Die()
+void AAuraEnemy::Die(const FVector& DeathImpluse)
 {
 	SetLifeSpan(LifeSpan);
 	if (AuraAIController)
 	{
 		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
 	}
-	Super::Die();
+	Super::Die(DeathImpluse);
 }
 
 void AAuraEnemy::PossessedBy(AController* NewController)

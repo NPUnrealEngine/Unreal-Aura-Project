@@ -45,7 +45,7 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	void HitReactTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	virtual void Die() override;
+	virtual void Die(const FVector& DeathImpluse) override;
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;

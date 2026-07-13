@@ -42,9 +42,9 @@ UAnimMontage* AAuraCharacterBase::GetHitReactMontage_Implementation()
 	return HitReactMontage;
 }
 
-void AAuraCharacterBase::Die()
+void AAuraCharacterBase::Die(const FVector& DeathImpluse)
 {
-	MulticastHandleDeath();
+	MulticastHandleDeath(DeathImpluse);
 }
 
 bool AAuraCharacterBase::IsDead_Implementation() const
@@ -90,7 +90,7 @@ FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 	return OnDeathDelegate;
 }
 
-void AAuraCharacterBase::MulticastHandleDeath_Implementation()
+void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpluse)
 {
 	UGameplayStatics::PlaySoundAtLocation(
 		this, 
@@ -103,11 +103,13 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::Type::PhysicsOnly);
+	Weapon->AddImpulse(DeathImpluse * 0.1f, NAME_None, true);
 	
 	GetMesh()->SetSimulatePhysics(true);
 	GetMesh()->SetEnableGravity(true);
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::PhysicsOnly);
 	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	GetMesh()->AddImpulse(DeathImpluse, NAME_None, true);
 	
 	/*
 	 * We make character's capsule to only collide with static and dynamic object
