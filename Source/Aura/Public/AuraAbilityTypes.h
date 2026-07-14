@@ -49,7 +49,7 @@ struct FDamageEffectParams
 	float DeathImpulseMagnitude = 0.f;
 	
 	UPROPERTY()
-	FVector DeathImpluse = FVector::Zero();
+	FVector DeathImpulse = FVector::Zero();
 };
 
 USTRUCT(BlueprintType)
@@ -67,13 +67,13 @@ public:
 	float GetDebuffDamage() const { return DebuffDamage; }
 	float GetDebuffDuration() const { return DebuffDuration; }
 	float GetDebuffFrequency() const { return DebuffFrequency; }
-	FVector GetDeathImpluse() const { return DeathImpluse; }
+	FVector GetDeathImpulse() const { return DeathImpulse; }
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
 	void SetDebuffDamage(float InDamage) { DebuffDamage = InDamage; }
 	void SetDebuffDuration(float InDuration) { DebuffDuration = InDuration; }
 	void SetDebuffFrequency(float InFrequency) { DebuffFrequency = InFrequency; }
 	void SetDamageType(const TSharedPtr<FGameplayTag>& InDamageType) { DamageType = InDamageType; }
-	void SetDeathImpluse(const FVector& InDeathImpluse) { DeathImpluse = InDeathImpluse; }
+	void SetDeathImpulse(const FVector& InDeathImpulse) { DeathImpulse = InDeathImpulse; }
 public: // Override
 	virtual UScriptStruct* GetScriptStruct() const override;
 	virtual bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess) override;
@@ -105,7 +105,7 @@ protected:
 	float DebuffFrequency = 0.f;
 	
 	UPROPERTY()
-	FVector DeathImpluse = FVector::Zero();
+	FVector DeathImpulse = FVector::Zero();
 	
 	TSharedPtr<FGameplayTag> DamageType;
 };
