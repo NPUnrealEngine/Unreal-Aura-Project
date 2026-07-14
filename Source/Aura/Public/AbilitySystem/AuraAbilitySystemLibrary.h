@@ -72,6 +72,12 @@ public:
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static FVector GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle);
 	
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static float GetKnockForceMagnitude(const FGameplayEffectContextHandle& EffectContextHandle);
+	
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static FVector GetKnockForce(const FGameplayEffectContextHandle& EffectContextHandle);
+	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetIsBlockedHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsBlocked);
 	
@@ -96,6 +102,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetDeathImpulse(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InDeathImpulse);
 	
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static void SetKnockbackForceMagnitude(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const float InKnockbackForceMagnitude);
+	
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
+	static void SetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockbackForce);
+	
 	/**
 	 * Get all actors who is alive within a sphere radius
 	 * 
@@ -112,7 +124,7 @@ public:
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Damage Effect")
-	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams Params);
+	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams DamageEffectParams);
 	
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 	

@@ -157,10 +157,22 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 			{
 				RepBits |= 1 << 7;
 			}
+			if (KnockbackChance > 0.f)
+			{
+				RepBits |= 1 << 8;
+			}
+			if (KnockbackForceMagnitude > 0.f)
+			{
+				RepBits |= 1 << 9;
+			}
+			if (KnockbackForce.IsZero())
+			{
+				RepBits |= 1 << 10;
+			}
 		}
 	
 		// tell archive how long is the replication bits
-		Ar.SerializeBits(&RepBits, 8);
+		Ar.SerializeBits(&RepBits, 11);
 	
 		// Use bitwise operator AND to see if the bit is flipped to 1 from 0
 		// If it is then tell archive to serialize data
@@ -203,6 +215,18 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 		if (RepBits & (1 << 7))
 		{
 			DeathImpulse.NetSerialize(Ar, Map, bOutSuccess);
+		}
+		if (RepBits & (1 << 8))
+		{
+			Ar << KnockbackChance;
+		}
+		if (RepBits & (1 << 9))
+		{
+			Ar << KnockbackForceMagnitude;
+		}
+		if (RepBits & (1 << 10))
+		{
+			KnockbackForce.NetSerialize(Ar, Map, bOutSuccess);
 		}
 	
 		bOutSuccess = true;

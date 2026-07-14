@@ -242,6 +242,13 @@ void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 			FGameplayTagContainer TagContainer;
 			TagContainer.AddTag(Effects_HitReact);
 			Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+			
+			// Knockback
+			const FVector& KnockbackForce = UAuraAbilitySystemLibrary::GetKnockForce(Props.EffectContextHandle);
+			if (!KnockbackForce.IsNearlyZero(1.f))
+			{
+				Props.TargetCharacter->LaunchCharacter(KnockbackForce, true, true);
+			}
 		}
 			
 		if (Props.SourceCharacter != Props.TargetCharacter)
