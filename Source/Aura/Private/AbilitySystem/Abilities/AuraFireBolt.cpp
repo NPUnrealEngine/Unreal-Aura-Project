@@ -4,6 +4,8 @@
 #include "AbilitySystem/Abilities/AuraFireBolt.h"
 
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "Actors/AuraProjectile.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 FString UAuraFireBolt::GetDescription(int32 Level)
@@ -102,60 +104,30 @@ void UAuraFireBolt::SpawnProjectiles(const FVector& ProjectileTargetLocation, co
 	if (bPitchOverride) ProjectileRotation.Pitch = OverridePitch;
 	
 	const FVector ForwardVector = ProjectileRotation.Vector();
-	const FVector LeftOfSpread = ForwardVector.RotateAngleAxis(-ProjectileSpread / 2.f, FVector::UpVector);
-	const FVector RightOfSpread = ForwardVector.RotateAngleAxis(ProjectileSpread / 2.f, FVector::UpVector);
+	TArray<FRotator> Rotations = UAuraAbilitySystemLibrary::EvenlySpaceRotators(
+		ForwardVector, 
+		FVector::UpVector, 
+		ProjectileSpread, 
+		NumProjectiles
+	);
 	
-	// NumProjectiles = FMath::Min(MaxNumProjectiles, GetAbilityLevel());
-	
-	
-	if (NumProjectiles > 1)
+	for (const FRotator& Rot : Rotations)
 	{
-		const float DeltaSpread = ProjectileSpread / (NumProjectiles - 1);
-		for (int32 i = 0; i < NumProjectiles; i++)
-		{
-			const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread * i, FVector::UpVector);
-			
-			UKismetSystemLibrary::DrawDebugArrow(
-				GetAvatarActorFromActorInfo(),
-				SocketLocation,
-				SocketLocation + Direction * 75.f,
-				5.f,
-				FLinearColor::Red,
-				120.f,
-				2.f
-			);
-		}
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);
+		SpawnTransform.SetRotation(Rot.Quaternion());
+		
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			Cast<APawn>(GetAvatarActorFromActorInfo()),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn
+		);
+		
+		// Set damage effect params to projectile
+		Projectile->DamageEffectParams = MakeDamageEffectParamsFromClassDefaults(nullptr);
+
+		Projectile->FinishSpawning(SpawnTransform);
 	}
-	else
-	{
-		// Single projectile		
-	}
-	
-	UKismetSystemLibrary::DrawDebugArrow(
-		GetAvatarActorFromActorInfo(),
-		SocketLocation,
-		SocketLocation + ProjectileRotation.Vector() * 100.f,
-		5.f,
-		FLinearColor::Gray,
-		120.f,
-		2.f
-	);
-	UKismetSystemLibrary::DrawDebugArrow(
-		GetAvatarActorFromActorInfo(),
-		SocketLocation,
-		SocketLocation + LeftOfSpread * 100.f,
-		5.f,
-		FLinearColor::Gray,
-		120.f,
-		2.f
-	);
-	UKismetSystemLibrary::DrawDebugArrow(
-		GetAvatarActorFromActorInfo(),
-		SocketLocation,
-		SocketLocation + RightOfSpread * 100.f,
-		5.f,
-		FLinearColor::Gray,
-		120.f,
-		2.f
-	);
 }
