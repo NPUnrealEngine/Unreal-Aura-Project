@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UNiagaraSystem;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomInSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomOutSignature);
 
@@ -33,13 +34,18 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FZoomOutSignature ZoomOutDelegate;
 	
-public:
+public: // Override
 	virtual void PlayerTick(float DeltaTime) override;
 	
+public:
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
-	
+
 protected:
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
+	
+protected: // Override
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
