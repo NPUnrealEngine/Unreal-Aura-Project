@@ -78,6 +78,13 @@ public:
 
 	/**
 	 * Tell AbilitySystemComponent a key associated gameplay tag
+	 * had pressed
+	 * @param InputTag Gameplay tag
+	 */
+	void AbilityInputTagPress(const FGameplayTag& InputTag);
+	
+	/**
+	 * Tell AbilitySystemComponent a key associated gameplay tag
 	 * had held and need to activate ability
 	 * @param InputTag Gameplay tag
 	 */

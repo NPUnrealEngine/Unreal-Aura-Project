@@ -68,11 +68,22 @@ void AAuraProjectile::OnHit()
 		ImpactEffect,
 		GetActorLocation()
 	);
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
 	bHit = true;
 }
 
 void AAuraProjectile::Destroyed()
 {
+	if (LoopingSoundComponent)
+	{
+		LoopingSoundComponent->Stop();
+		LoopingSoundComponent->DestroyComponent();
+	}
+	
 	/**
 	 * Play sound and effect only when projectile not hit and not the owner
 	 * This case happen when server projectile been destroyed before client's

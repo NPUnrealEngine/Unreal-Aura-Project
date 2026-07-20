@@ -148,4 +148,7 @@ public:
 	 * @return 
 	 */
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void SetInShockLoop(bool bInLoop);
 };

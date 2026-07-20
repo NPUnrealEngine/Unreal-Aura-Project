@@ -220,6 +220,7 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		// Reset auto running to default value
 		bAutoRunning = false;
 	}
+	if (GetASC()) GetASC()->AbilityInputTagPress(InputTag);
 }
 
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
