@@ -162,6 +162,14 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(CombatSocket_Tail);
  */
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Effects_HitReact);
 
+/*
+ * Player
+ */
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_InputPressed);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_InputHeld);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_InputReleased);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_CursorTrace);
+
 /**
  * AuraGameplayTags
  *

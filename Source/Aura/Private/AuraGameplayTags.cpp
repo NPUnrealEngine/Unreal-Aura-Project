@@ -181,6 +181,18 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(CombatSocket_Tail, "CombatSocket.Tail",
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Effects_HitReact, "Effects.HitReact", 
 	"Tag granted when hit react");
 
+/*
+ * Player
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_InputPressed, "Player.Block.InputPressed", 
+	"Block mouse input pressed");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_InputHeld, "Player.Block.InputHeld",
+	"Block mouse input held");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_InputReleased, "Player.Block.InputReleased", 
+	"Block mouse input released");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_CursorTrace, "Player.Block.CursorTrace",
+	"Block trace under mouse cursor");
+
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
 	/*
