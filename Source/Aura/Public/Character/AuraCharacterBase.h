@@ -51,6 +51,7 @@ public: // Override
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	virtual FTaggedMontage GetTaggedMontageByTag_Implementation(const FGameplayTag& MontageTag) override;
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
+	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	/* ICombatInterface */
 
 	/**
