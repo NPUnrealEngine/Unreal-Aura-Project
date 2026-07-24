@@ -20,12 +20,21 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void StoreOwnerVariables();
+
+	/**
+	 * Fire a sphere trace toward the location and see if a target hit.
+	 * And then update mouse hit actor and mouse hit location
+	 * @param BeamTargetLocation 
+	 */
+	UFUNCTION(BlueprintCallable)
+	void TraceTarget(const FVector& BeamTargetLocation);
+	
 protected:
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
 	FVector MouseHitLocation;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
-	TObjectPtr<AActor> HitActor;
+	TObjectPtr<AActor> MouseHitActor;
 	
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
 	TObjectPtr<APlayerController> OwnerPlayerController;
