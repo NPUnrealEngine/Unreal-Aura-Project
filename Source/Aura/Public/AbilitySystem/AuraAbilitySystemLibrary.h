@@ -121,6 +121,9 @@ public:
 	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	static void GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin);
+	
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Damage Effect")

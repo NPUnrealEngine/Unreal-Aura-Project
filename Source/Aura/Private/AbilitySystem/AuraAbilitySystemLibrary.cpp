@@ -384,6 +384,37 @@ void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldC
 	}
 }
 
+void UAuraAbilitySystemLibrary::GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors,
+	TArray<AActor*>& OutClosestTargets, const FVector& Origin)
+{
+	if (Actors.IsEmpty()) return;
+	if (Actors.Num() <= MaxTargets)
+	{
+		OutClosestTargets = Actors;
+		return;
+	}
+	
+	// Make a copy
+	TArray<AActor*> ActorsToCheck = Actors;
+	
+	// Array sort comparison: https://www.google.com/search?q=unreal+array+sort+heap+sort+stable+sort&sxsrf=APpeQnvYHIaahVE6B14DYjhnIfHYHMGLWg%3A1785213276104
+	// Sort actors by distance 
+	ActorsToCheck.HeapSort(
+		[Origin](AActor& A, AActor& B)
+		{
+			const double ADistance = (A.GetActorLocation() - Origin).Length();
+			const double BDistance = (B.GetActorLocation() - Origin).Length();
+			return ADistance < BDistance;
+		}
+	);
+	
+	// Number of actors in array to select
+	int32 Size = FMath::Min(ActorsToCheck.Num(), MaxTargets);
+	
+	// Append those selected actors
+	OutClosestTargets.Append(ActorsToCheck.GetData(), Size);
+}
+
 bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondActor)
 {
 	const bool Friends = (FirstActor->ActorHasTag("Player") && SecondActor->ActorHasTag("Player")) || 
