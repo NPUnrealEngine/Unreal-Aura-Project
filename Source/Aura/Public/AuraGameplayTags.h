@@ -140,6 +140,7 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Duration);
  * Ability Cooldown
  */
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Fire_FireBolt);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Lighting_Electrocute);
 
 /*
  * Animation Montage Attack

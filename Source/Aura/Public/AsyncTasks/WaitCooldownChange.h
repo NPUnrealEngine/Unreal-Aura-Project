@@ -10,6 +10,7 @@
 struct FActiveGameplayEffectHandle;
 struct FGameplayEffectSpec;
 class UAbilitySystemComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCooldownChangeSignature, float, TimeRemaining);
 
 /**
@@ -33,6 +34,12 @@ public:
 	 */
 	UPROPERTY(BlueprintAssignable)
 	FCooldownChangeSignature CooldownEnd;
+
+	/**
+	 * The delegate for cooldown duration changed
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FCooldownChangeSignature CooldownDurationChanged;
 	
 public:
 	/**
@@ -75,4 +82,12 @@ protected:
 	 * @param ActiveEffectHandle 
 	 */
 	void OnActiveEffectAdded(UAbilitySystemComponent* TargetASC, const FGameplayEffectSpec& SpecApplied,  FActiveGameplayEffectHandle ActiveEffectHandle);
+
+	/**
+	 * Callback function for cooldown effect duration changed
+	 * @param Handle 
+	 * @param NewStartTime 
+	 * @param NewDuration 
+	 */
+	void OnActiveEffectDurationChanged(FActiveGameplayEffectHandle Handle, float NewStartTime, float NewDuration);
 };

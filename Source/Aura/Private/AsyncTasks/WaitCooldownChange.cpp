@@ -89,5 +89,14 @@ void UWaitCooldownChange::OnActiveEffectAdded(UAbilitySystemComponent* TargetASC
 			// Broadcast cooldown start
 			CooldownStart.Broadcast(TimeRemaining);
 		}
+		
+		// Listen for cooldown duration changed
+		TargetASC->OnGameplayEffectTimeChangeDelegate(ActiveEffectHandle)->AddUObject(this, &UWaitCooldownChange::OnActiveEffectDurationChanged);
 	}
+}
+
+void UWaitCooldownChange::OnActiveEffectDurationChanged(FActiveGameplayEffectHandle Handle, float NewStartTime,
+	float NewDuration)
+{
+	CooldownDurationChanged.Broadcast(NewDuration);
 }

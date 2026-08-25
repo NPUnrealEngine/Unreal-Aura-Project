@@ -213,6 +213,16 @@ public:
 	 * @return 
 	 */
 	static bool AbilityHasSlot(FGameplayAbilitySpec* AbilitySpec, const FGameplayTag& SlotTag);
+
+	/**
+	 * Reduce ability cooldown remaining time by percentage
+	 * 
+	 * Implementation refer to https://github.com/tranek/GASDocumentation?tab=readme-ov-file#concepts-ge-duration
+	 * @param CooldownTag Tag for cooldown gameplay effect
+	 * @param PercentToReduce 0.f ~ 1.f
+	 */
+	UFUNCTION(BlueprintCallable)
+	void ReduceCooldownRemainingTime(FGameplayTag CooldownTag, float PercentToReduce);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;

@@ -325,6 +325,44 @@ bool UAuraAbilitySystemComponent::AbilityHasSlot(FGameplayAbilitySpec* AbilitySp
 	return false;
 }
 
+void UAuraAbilitySystemComponent::ReduceCooldownRemainingTime(FGameplayTag CooldownTag, float PercentToReduce)
+{
+	PercentToReduce = FMath::Clamp(PercentToReduce, 0.f, 1.f);
+	
+	for (FActiveGameplayEffectHandle ActiveEffectHandle : GetActiveGameplayEffects().GetAllActiveEffectHandles())
+	{
+		FActiveGameplayEffect* ActiveEffect = const_cast<FActiveGameplayEffect*>(GetActiveGameplayEffect(ActiveEffectHandle));
+		FGameplayTagContainer TagContainer;
+		ActiveEffect->Spec.GetAllGrantedTags(TagContainer);
+		
+		if (ActiveEffect && TagContainer.HasTagExact(CooldownTag) || 
+			ActiveEffect->Spec.DynamicGrantedTags.HasTagExact(CooldownTag))
+		{
+			float CurrentRemainingTime = ActiveEffect->GetTimeRemaining(ActiveGameplayEffects.GetWorldTime());
+			float NewRemainingTime = CurrentRemainingTime - (CurrentRemainingTime * PercentToReduce);
+			if (NewRemainingTime > 0.f)
+			{
+				ActiveEffect->Spec.Duration = NewRemainingTime;
+			}
+			else
+			{
+				ActiveEffect->Spec.Duration = 0.01f;
+			}
+			ActiveEffect->StartServerWorldTime = ActiveGameplayEffects.GetServerWorldTime();
+			ActiveEffect->CachedStartServerWorldTime = ActiveEffect->StartServerWorldTime;
+			ActiveEffect->StartWorldTime = ActiveGameplayEffects.GetWorldTime();
+			ActiveGameplayEffects.MarkItemDirty(*ActiveEffect);
+			ActiveGameplayEffects.CheckDuration(ActiveEffectHandle);
+			ActiveEffect->EventSet.OnTimeChanged.Broadcast(
+				ActiveEffectHandle, 
+				ActiveEffect->StartWorldTime, 
+				ActiveEffect->GetDuration()
+			);
+			OnGameplayEffectDurationChange(*ActiveEffect);
+		}
+	}
+}
+
 void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag,
                                                                     const FGameplayTag& SlotTag)
 {

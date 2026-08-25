@@ -150,6 +150,8 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Frequency, "Debuff.Frequency",
  */
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Fire_FireBolt, "Cooldown.Fire.FireBolt", 
 	"FireBolt cooldown tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Cooldown_Lighting_Electrocute, "Cooldown.Lighting.Electrocute", 
+	"Lighting cooldown tag");
 
 /*
  * Animation Montage Attack
