@@ -11,6 +11,7 @@
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -33,6 +34,38 @@ AAuraProjectile::AAuraProjectile()
 	ProjectileMovement->InitialSpeed = 550.f;
 	ProjectileMovement->MaxSpeed = 550.f;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+}
+
+void AAuraProjectile::LaunchProjectile(AActor* InTarget, const FVector& InTargetLocation, const float AccelerationMin,
+	const float AccelerationMax)
+{
+	ProjectileMovement->HomingAccelerationMagnitude = FMath::FRandRange(AccelerationMin, AccelerationMax);
+	ProjectileMovement->bIsHomingProjectile = true;
+	TargetLocation = InTargetLocation;
+	
+	GetWorld()->GetTimerManager().SetTimer(
+		IntervalDistCheckTimer,
+		this,  
+		&ThisClass::CheckIfReachTargetLocation, 
+		0.1, 
+		true
+	);
+	
+	// Check if target implement combat interface which indicate target can be homing target
+	// otherwise target can't be targeted
+	if (InTarget->Implements<UCombatInterface>())
+	{
+		// If target is not dead
+		if (!ICombatInterface::Execute_IsDead(InTarget))
+		{
+			ProjectileMovement->HomingTargetComponent = InTarget->GetRootComponent();
+			return;
+		}
+	}
+	
+	HomingTargetSceneComponent = NewObject<USceneComponent>(USceneComponent::StaticClass());
+	HomingTargetSceneComponent->SetWorldLocation(TargetLocation);
+	ProjectileMovement->HomingTargetComponent =  HomingTargetSceneComponent;
 }
 
 // Called when the game starts or when spawned
@@ -78,6 +111,11 @@ void AAuraProjectile::OnHit()
 
 void AAuraProjectile::Destroyed()
 {
+	if (IntervalDistCheckTimer.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(IntervalDistCheckTimer);
+	}
+	
 	if (LoopingSoundComponent)
 	{
 		LoopingSoundComponent->Stop();
@@ -139,4 +177,22 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	{
 		bHit = true;
 	}
+}
+
+void AAuraProjectile::CheckIfReachTargetLocation()
+{
+	float Distance = (TargetLocation - GetActorLocation()).Length();
+	if (Distance <= TargetDistanceAcceptanceRadius)
+	{
+		if (IntervalDistCheckTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(IntervalDistCheckTimer);
+		}
+		OnReachTargetLocation();
+	}
+}
+
+void AAuraProjectile::OnReachTargetLocation_Implementation()
+{
+	Destroy();
 }

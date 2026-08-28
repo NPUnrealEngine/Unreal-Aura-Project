@@ -30,7 +30,21 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<USceneComponent> HomingTargetSceneComponent;
+	
+public:
+	UFUNCTION()
+	void LaunchProjectile(AActor* InTarget, const FVector& InTargetLocation, const float AccelerationMin, const float AccelerationMax);
 
+protected:
+	FVector TargetLocation;
+	FTimerHandle IntervalDistCheckTimer;
+	
+	UPROPERTY(EditAnywhere, Category="Aura | Projectile")
+	float TargetDistanceAcceptanceRadius = 15.f;
+	
+	UPROPERTY(EditAnywhere, Category="Aura | Projectile")
+	float IntervalToCheckTargetDistance = 0.1f;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,6 +53,17 @@ protected:
 
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	/**
+	 * Callback function for timer
+	 */
+	void CheckIfReachTargetLocation();
+
+	/**
+	 * Call when target location reach within acceptance radius
+	 */
+	UFUNCTION(BlueprintNativeEvent)
+	void OnReachTargetLocation();
 	
 private:
 	UPROPERTY(EditDefaultsOnly)
