@@ -45,25 +45,36 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Aura | Projectile")
 	float IntervalToCheckTargetDistance = 0.1f;
 	
-protected:
-	// Called when the game starts or when spawned
+protected: // Override
 	virtual void BeginPlay() override;
-	void OnHit();
 	virtual void Destroyed() override;
-
 	UFUNCTION()
 	void OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+protected:
 	/**
-	 * Callback function for timer
+	 * Call this when projectile hit something
+	 */
+	void OnHit();
+	
+	/**
+	 * Callback function for timer to check if reaching target destination
 	 */
 	void CheckIfReachTargetLocation();
 
 	/**
 	 * Call when target location reach within acceptance radius
+	 * 
+	 * C++ default implementation is only destroy this actor
 	 */
 	UFUNCTION(BlueprintNativeEvent)
 	void OnReachTargetLocation();
+
+	/**
+	 * Call from server side to notify clients reached target destination
+	 */
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_ReachTargetLocation();
 	
 private:
 	UPROPERTY(EditDefaultsOnly)

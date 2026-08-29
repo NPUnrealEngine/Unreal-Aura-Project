@@ -13,6 +13,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 AAuraProjectile::AAuraProjectile()
@@ -43,6 +44,7 @@ void AAuraProjectile::LaunchProjectile(AActor* InTarget, const FVector& InTarget
 	ProjectileMovement->bIsHomingProjectile = true;
 	TargetLocation = InTargetLocation;
 	
+	// Spawn a timer for checking reaching destination or not in interval
 	GetWorld()->GetTimerManager().SetTimer(
 		IntervalDistCheckTimer,
 		this,  
@@ -116,12 +118,6 @@ void AAuraProjectile::Destroyed()
 		GetWorld()->GetTimerManager().ClearTimer(IntervalDistCheckTimer);
 	}
 	
-	if (LoopingSoundComponent)
-	{
-		LoopingSoundComponent->Stop();
-		LoopingSoundComponent->DestroyComponent();
-	}
-	
 	/**
 	 * Play sound and effect only when projectile not hit and not the owner
 	 * This case happen when server projectile been destroyed before client's
@@ -141,7 +137,6 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	// Ignore actor if actor is the instigator
 	if (GetInstigator() == OtherActor) return;
 	if (!UAuraAbilitySystemLibrary::IsNotFriend(GetInstigator(), OtherActor)) return;
-	if (!bHit) OnHit();
 	
 	/**
 	 * Destroy projectile only if we are the owner
@@ -171,28 +166,44 @@ void AAuraProjectile::OnSphereOverlap(UPrimitiveComponent* OverlappedComp, AActo
 			UAuraAbilitySystemLibrary::ApplyDamageEffect(DamageEffectParams);
 		}
 		
+		if (!bHit) OnHit();
 		Destroy();
 	}
 	else
 	{
-		bHit = true;
+		if (!bHit) OnHit();
 	}
 }
 
 void AAuraProjectile::CheckIfReachTargetLocation()
 {
 	float Distance = (TargetLocation - GetActorLocation()).Length();
+	
+	// If distance is less and equal to accepted radius
 	if (Distance <= TargetDistanceAcceptanceRadius)
 	{
+		// Clear timer
 		if (IntervalDistCheckTimer.IsValid())
 		{
 			GetWorld()->GetTimerManager().ClearTimer(IntervalDistCheckTimer);
 		}
-		OnReachTargetLocation();
+		
+		// Notify all clients reached target location
+		Multicast_ReachTargetLocation();
 	}
 }
 
 void AAuraProjectile::OnReachTargetLocation_Implementation()
 {
+	// Default c++ implementation
 	Destroy();
+}
+
+void AAuraProjectile::Multicast_ReachTargetLocation_Implementation()
+{
+	// Make sure projectile marked as hit
+	bHit = true;
+	
+	// Do our own hit logic
+	OnReachTargetLocation();
 }
