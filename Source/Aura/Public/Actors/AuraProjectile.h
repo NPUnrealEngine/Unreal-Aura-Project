@@ -73,7 +73,7 @@ protected:
 	/**
 	 * Call from server side to notify clients reached target destination
 	 */
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, Unreliable)
 	void Multicast_ReachTargetLocation();
 	
 private:
