@@ -218,7 +218,7 @@ public:
 	 * Reduce ability cooldown remaining time by percentage
 	 * 
 	 * Implementation refer to https://github.com/tranek/GASDocumentation?tab=readme-ov-file#concepts-ge-duration
-	 * @param CooldownTag Tag for cooldown gameplay effect
+	 * @param CooldownTag Tag of cooldown gameplay effect
 	 * @param PercentToReduce 0.f ~ 1.f
 	 */
 	UFUNCTION(BlueprintCallable)

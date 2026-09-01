@@ -329,17 +329,28 @@ void UAuraAbilitySystemComponent::ReduceCooldownRemainingTime(FGameplayTag Coold
 {
 	PercentToReduce = FMath::Clamp(PercentToReduce, 0.f, 1.f);
 	
-	for (FActiveGameplayEffectHandle ActiveEffectHandle : GetActiveGameplayEffects().GetAllActiveEffectHandles())
+	/* Find all active gameplay effect handle match cooldown tag */
+	FGameplayTagContainer Tags;
+	Tags.AddTag(CooldownTag);
+	FGameplayEffectQuery GEQuery = FGameplayEffectQuery::MakeQuery_MatchAnyOwningTags(Tags);
+	TArray<FActiveGameplayEffectHandle> EffectHandles = GetActiveEffects(GEQuery);
+	
+	for (FActiveGameplayEffectHandle ActiveEffectHandle : EffectHandles)
 	{
+		// Get its granted tags
 		FActiveGameplayEffect* ActiveEffect = const_cast<FActiveGameplayEffect*>(GetActiveGameplayEffect(ActiveEffectHandle));
 		FGameplayTagContainer TagContainer;
 		ActiveEffect->Spec.GetAllGrantedTags(TagContainer);
 		
+		// If tag is matched
 		if (ActiveEffect && TagContainer.HasTagExact(CooldownTag) || 
 			ActiveEffect->Spec.DynamicGrantedTags.HasTagExact(CooldownTag))
 		{
 			float CurrentRemainingTime = ActiveEffect->GetTimeRemaining(ActiveGameplayEffects.GetWorldTime());
 			float NewRemainingTime = CurrentRemainingTime - (CurrentRemainingTime * PercentToReduce);
+			
+			// If new cooldown duration greater than 0 set cooldown to new duration
+			// otherwise set cooldown duration to very small duration
 			if (NewRemainingTime > 0.f)
 			{
 				ActiveEffect->Spec.Duration = NewRemainingTime;

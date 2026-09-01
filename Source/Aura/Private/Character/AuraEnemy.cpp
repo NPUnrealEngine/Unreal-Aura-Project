@@ -36,6 +36,8 @@ AAuraEnemy::AAuraEnemy()
 	bUseControllerRotationRoll = false;
 	
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	
+	BaseWalkSpeed = 250.f;
 }
 
 void AAuraEnemy::HighlightActor()
@@ -171,6 +173,11 @@ void AAuraEnemy::InitAbilityActorInfo()
 
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	
+	AbilitySystemComponent->RegisterGameplayTagEvent(
+		Debuff_Stun,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraEnemy::StunTagChanged);
+	
 	// Only server side can initialize default attributes
 	if (HasAuthority())
 	{
@@ -188,4 +195,13 @@ void AAuraEnemy::InitializeDefaultAttributes() const
 		Level,
 		AbilitySystemComponent
 	);
+}
+
+void AAuraEnemy::StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::StunTagChanged(CallbackTag, NewCount);
+	if (AuraAIController && AuraAIController->GetBlackboardComponent())
+	{
+		AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Stunned"), bIsStunned);
+	}
 }

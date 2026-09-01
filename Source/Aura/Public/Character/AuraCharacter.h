@@ -49,9 +49,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
 	
-protected:
+protected: // Override
 	virtual void InitAbilityActorInfo() override;
 
+protected:
 	/**
 	 * Call to activate camera system
 	 * 

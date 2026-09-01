@@ -294,7 +294,18 @@ void UAuraAttributeSet::Debuff(const FEffectProperties& Props)
 	/* Add debuff tag*/
 	UTargetTagsGameplayEffectComponent& GrantedTags = Effect->FindOrAddComponent<UTargetTagsGameplayEffectComponent>();
 	FInheritedTagContainer TagContainer = FInheritedTagContainer();
-	TagContainer.AddTag(GameplayTags.DamageTypesToDebuffs[DamageType]);
+	FGameplayTag DebuffTag = GameplayTags.DamageTypesToDebuffs[DamageType];
+	TagContainer.AddTag(DebuffTag);
+	
+	// If stunned then block player input
+	if (DebuffTag.MatchesTagExact(Debuff_Stun))
+	{
+		TagContainer.AddTag(Player_Block_InputHeld);
+		TagContainer.AddTag(Player_Block_InputPressed);
+		TagContainer.AddTag(Player_Block_InputReleased);
+		TagContainer.AddTag(Player_Block_CursorTrace);
+	}
+	
 	GrantedTags.SetAndApplyTargetTagChanges(TagContainer);
 	
 	/* Add modifier and set it up */

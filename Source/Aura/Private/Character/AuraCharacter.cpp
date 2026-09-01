@@ -4,6 +4,7 @@
 #include "Character/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
@@ -170,7 +171,13 @@ void AAuraCharacter::InitAbilityActorInfo()
 	/* For player character, assign ASC and AS pointer to the player character */
 	AbilitySystemComponent = AuraPlayerState->GetAbilitySystemComponent();
 	AttributeSet = AuraPlayerState->GetAttributeSet();
-
+	
+	// Listen for stun tag changed
+	AbilitySystemComponent->RegisterGameplayTagEvent(
+		Debuff_Stun,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraCharacter::StunTagChanged);
+	
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))

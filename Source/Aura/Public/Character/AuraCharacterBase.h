@@ -35,6 +35,12 @@ public:
 	 */
 	FOnDeathSignature OnDeathDelegate;
 	
+	UPROPERTY(Replicated, BlueprintReadOnly)
+	bool bIsStunned = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Combat")
+	float BaseWalkSpeed = 600.f;
+	
 public:
 	class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 
@@ -53,6 +59,8 @@ public: // Override
 	virtual ECharacterClass GetCharacterClass_Implementation() override;
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	/* ICombatInterface */
+	
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/**
 	 * Handle the character death
@@ -206,6 +214,13 @@ protected:
 	virtual void InitializeDefaultAttributes() const;
 
 	void AddCharacterAbilities();
+
+	/**
+	 * Callback function for stun tag changed
+	 * @param CallbackTag 
+	 * @param NewCount 
+	 */
+	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
