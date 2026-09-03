@@ -162,6 +162,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
 	TObjectPtr<UDebuffNiagaraComponent> BurnDebuffComponent;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	TObjectPtr<UDebuffNiagaraComponent> StunDebuffComponent;
+	
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo();
