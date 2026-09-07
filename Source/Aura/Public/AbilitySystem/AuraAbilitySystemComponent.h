@@ -29,6 +29,12 @@ DECLARE_MULTICAST_DELEGATE_FourParams(FAbilityEquipped, const FGameplayTag& /* A
 DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag& /* Ability Tag */, const FGameplayTag& /* Status Tag*/, int32 AbilityLevel /* Ability level*/);
 
 /**
+ * Deactivate passive ability delegate
+ * @param FGameplayTag is Ability Tag
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /* AbilityTag */);
+
+/**
  * 
  */
 UCLASS()
@@ -43,19 +49,24 @@ public:
 	FEffectAssetTags EffectAssetTags;
 
 	/**
-	 * Call when startup abilities has given
+	 * Delegate for startup abilities has given
 	 */
 	FAbilityGiven AbilityGivenDelegate;
 
 	/**
-	 * Call when ability status changed
+	 * Delegate for ability status changed
 	 */
 	FAbilityStatusChanged AbilityStatusChanged;
 
 	/**
-	 * Call when an ability equipped
+	 * Delegate for an ability equipped
 	 */
 	FAbilityEquipped AbilityEquippedDelegate;
+
+	/**
+	 * Delegate for deactivate passive ability 
+	 */
+	FDeactivatePassiveAbility DeactivatePassiveAbilityDelegate;
 	
 	bool bStartupAbilityGiven = false;
 	
