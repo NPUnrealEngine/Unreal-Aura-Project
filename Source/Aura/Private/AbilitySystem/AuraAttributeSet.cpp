@@ -351,6 +351,10 @@ void UAuraAttributeSet::HandleImcomingXP(const FEffectProperties& Props)
 		// If leveling up
 		if (NumLevelUps > 0)
 		{
+			int32 FinalAttributePointsReward = 0;
+			int32 FinalSpellPointsReward = 0;
+			int32 FinalLevel = 0;
+			
 			for (int32 i = CurrentLevel; i < NewLevel; i++)
 			{
 				// Get attribute and spell points reward
@@ -358,24 +362,30 @@ void UAuraAttributeSet::HandleImcomingXP(const FEffectProperties& Props)
 					Props.SourceCharacter, 
 					i
 				);
+				FinalAttributePointsReward += AttributePointsReward;
+				
 				const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(
 					Props.SourceCharacter,
 					i
 				);
+				FinalSpellPointsReward += SpellPointsReward;
 				
-				// Add to player level
-				IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, 1);
-				
-				// Add to attribute and spell points
-				IPlayerInterface::Execute_AddToAttributePoints(
-					Props.SourceCharacter,
-					AttributePointsReward
-				);
-				IPlayerInterface::Execute_AddToSpellPoints(
-					Props.SourceCharacter,
-					SpellPointsReward
-				);
+				// Increment level by 1
+				FinalLevel += 1;
 			}
+			
+			// Add to player level
+			IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, FinalLevel);
+				
+			// Add to attribute and spell points
+			IPlayerInterface::Execute_AddToAttributePoints(
+				Props.SourceCharacter,
+				FinalAttributePointsReward
+			);
+			IPlayerInterface::Execute_AddToSpellPoints(
+				Props.SourceCharacter,
+				FinalSpellPointsReward
+			);
 				
 			// Fill health and mana
 			/*SetHealth(GetMaxHealth());

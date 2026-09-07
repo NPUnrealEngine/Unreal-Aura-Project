@@ -379,7 +379,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 {
 	if (FGameplayAbilitySpec* AbilitySpec = GetAbilitySpecFromAbilityTag(AbilityTag))
 	{
-		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		//const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
 		const FGameplayTag& PreviousSlotTag = GetInputTagFromSpec(*AbilitySpec);
 		const FGameplayTag& StatusTag = GetStatusTagFromSpec(*AbilitySpec);
 		const bool bStatusValid = StatusTag == Abilities_Status_Equipped || 
@@ -419,7 +419,7 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGa
 		}
 		
 		FGameplayTag AbilityStatusTag = GetStatusTagFromSpec(*AbilitySpec);
-		const FAuraGameplayTags GamePlayTags = FAuraGameplayTags::Get();
+		//const FAuraGameplayTags GamePlayTags = FAuraGameplayTags::Get();
 		
 		/*
 		 * Depend on ability status tag we do following case:
