@@ -35,6 +35,13 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /* AbilityTag */);
 
 /**
+ * Activate passive effect
+ * @param FGameplayTag passive ability tag
+ * @param bool whether to activate Niagara effect or not
+ */
+DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag& , bool);
+
+/**
  * 
  */
 UCLASS()
@@ -67,6 +74,11 @@ public:
 	 * Delegate for deactivate passive ability 
 	 */
 	FDeactivatePassiveAbility DeactivatePassiveAbilityDelegate;
+
+	/**
+	 * Delegate for activate/deactivate passive ability effect
+	 */
+	FActivatePassiveEffect ActivatePassiveEffectDelegate;
 	
 	bool bStartupAbilityGiven = false;
 	
@@ -270,6 +282,14 @@ public:
 	 */
 	static void AssignSlotToAbility(FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& SlotTag);
 
+	/**
+	 * Tell everyone on network to activate passive ability effect
+	 * @param AbilityTag 
+	 * @param bActiavte 
+	 */
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastActivatePassiveEffect(const FGameplayTag& AbilityTag, bool bActiavte);
+	
 	/**
 	 * Reduce ability cooldown remaining time by percentage
 	 * 

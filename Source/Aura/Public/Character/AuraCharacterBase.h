@@ -8,6 +8,7 @@
 #include "Interface/CombatInterface.h"
 #include "AuraCharacterBase.generated.h"
 
+class UPassiveNiagaraComponent;
 class UDebuffNiagaraComponent;
 class UNiagaraSystem;
 class UGameplayAbility;
@@ -169,6 +170,18 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
 	TObjectPtr<UDebuffNiagaraComponent> StunDebuffComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	TObjectPtr<UPassiveNiagaraComponent> HaloOfProtectionNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	TObjectPtr<UPassiveNiagaraComponent> LifeSiphonNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	TObjectPtr<UPassiveNiagaraComponent> ManaSiphonNiagaraComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character Class Default")
+	TObjectPtr<USceneComponent> EffectAttachComponent;
 	
 protected:
 	virtual void BeginPlay() override;

@@ -378,6 +378,12 @@ void UAuraAbilitySystemComponent::AssignSlotToAbility(FGameplayAbilitySpec& Abil
 	AbilitySpec.GetDynamicSpecSourceTags().AddTag(SlotTag);
 }
 
+void UAuraAbilitySystemComponent::MulticastActivatePassiveEffect_Implementation(const FGameplayTag& AbilityTag,
+	bool bActiavte)
+{
+	ActivatePassiveEffectDelegate.Broadcast(AbilityTag, bActiavte);
+}
+
 void UAuraAbilitySystemComponent::ReduceCooldownRemainingTime(FGameplayTag CooldownTag, float PercentToReduce)
 {
 	PercentToReduce = FMath::Clamp(PercentToReduce, 0.f, 1.f);
@@ -461,6 +467,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 					// Deal with passive ability
 					if (IsPassiveAbility(*AbilitySpecWithSlot))
 					{
+						MulticastActivatePassiveEffect(GetAbilityTagFromSpec(*AbilitySpecWithSlot), false);
 						DeactivatePassiveAbilityDelegate.Broadcast(GetAbilityTagFromSpec(*AbilitySpecWithSlot));
 					}
 					ClearSlot(AbilitySpecWithSlot);
@@ -477,6 +484,7 @@ void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGamep
 				if (IsPassiveAbility(*AbilitySpec))
 				{
 					TryActivateAbility(AbilitySpec->Handle);
+					MulticastActivatePassiveEffect(AbilityTag, true);
 				}
 			}
 			AssignSlotToAbility(*AbilitySpec, SlotTag);
