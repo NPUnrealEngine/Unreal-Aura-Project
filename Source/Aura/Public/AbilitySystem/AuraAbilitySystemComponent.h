@@ -158,6 +158,21 @@ public:
 	FGameplayTag GetInputTagFromAbilityTag(const FGameplayTag& AbilityTag);
 
 	/**
+	 * Loop through all abilities and check if Slot is exists in any of abilities
+	 * @param Slot Slot tag / Input tag
+	 * @return 
+	 */
+	bool IsSlotEmpty(const FGameplayTag& Slot);
+
+	/**
+	 * Check whether Slot is exist in the AbilitySpec
+	 * @param AbilitySpec 
+	 * @param Slot Slot tag / Input tag
+	 * @return 
+	 */
+	bool AbilityHasSlot(const FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& Slot);
+
+	/**
 	 * Upgrade an attribute
 	 * @param AttributeTag 
 	 */
@@ -208,7 +223,7 @@ public:
 	 * Clear input tag of an ability spec
 	 * @param AbilitySpec 
 	 */
-	void ClearSlot(FGameplayAbilitySpec* AbilitySpec);
+	static void ClearSlot(FGameplayAbilitySpec* AbilitySpec);
 
 	/**
 	 * Loop through all activable abilities and clear input tag from the ability
@@ -224,6 +239,36 @@ public:
 	 * @return 
 	 */
 	static bool AbilityHasSlot(FGameplayAbilitySpec* AbilitySpec, const FGameplayTag& SlotTag);
+
+	/**
+	 * Get ability spec which have matching slot tag
+	 * @param Slot slot tag / input tag
+	 * @return 
+	 */
+	FGameplayAbilitySpec* GetAbilitySpecWithSlot(const FGameplayTag& Slot);
+
+	/**
+	 * Check if ability is passive or not
+	 * @param AbilitySpec 
+	 * @return 
+	 */
+	bool IsPassiveAbility(const FGameplayAbilitySpec& AbilitySpec) const;
+
+	/**
+	 * Check if ability spec have any input tag
+	 * @param AbilitySpec 
+	 * @return 
+	 */
+	static bool AbilityHasAnySlot(const FGameplayAbilitySpec& AbilitySpec);
+
+	/**
+	 * Assign a slot tag / input tag to ability spec
+	 * 
+	 * Note: Any of slot tag / input tag in ability spec will be removed first
+	 * @param AbilitySpec 
+	 * @param SlotTag 
+	 */
+	static void AssignSlotToAbility(FGameplayAbilitySpec& AbilitySpec, const FGameplayTag& SlotTag);
 
 	/**
 	 * Reduce ability cooldown remaining time by percentage
