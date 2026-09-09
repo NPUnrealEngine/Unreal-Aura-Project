@@ -155,6 +155,16 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Duration, "Debuff.Duration",
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Debuff_Frequency, "Debuff.Frequency", 
 	"Debuff frequency");
 
+/*
+ * Buff
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Buff_HaloOfProtection, "Buff.HaloOfProtection",
+	"Buff Halo of Protection");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Buff_LifeSiphon, "Buff.LifeSiphon", 
+	"Buff Life Siphon");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Buff_ManaSiphon, "Buff.ManaSiphon",
+	"Buff Mana Siphon");
+
 /**
  * Ability Cooldown
  */

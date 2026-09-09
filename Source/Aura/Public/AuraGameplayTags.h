@@ -144,6 +144,14 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Frequency);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Debuff_Duration);
 
 /*
+ * Buff
+ */
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Buff_HaloOfProtection);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Buff_LifeSiphon);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Buff_ManaSiphon);
+
+
+/*
  * Ability Cooldown
  */
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Cooldown_Fire_FireBolt);
