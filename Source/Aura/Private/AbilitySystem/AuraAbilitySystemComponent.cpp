@@ -541,6 +541,9 @@ void UAuraAbilitySystemComponent::ServerSpendSpellPoint_Implementation(const FGa
 			AbilityStatusTag.MatchesTagExact(Abilities_Status_Unlocked))
 		{
 			AbilitySpec->Level += 1;
+			
+			// Notify the ability level changed
+			OnAbilityLevelChangedDelegated.Broadcast(*AbilitySpec, AbilitySpec->Level);
 		}
 		
 		// Tell client an ability status had been updated

@@ -35,11 +35,18 @@ DECLARE_MULTICAST_DELEGATE_ThreeParams(FAbilityStatusChanged, const FGameplayTag
 DECLARE_MULTICAST_DELEGATE_OneParam(FDeactivatePassiveAbility, const FGameplayTag& /* AbilityTag */);
 
 /**
- * Activate passive effect
+ * Activate passive effect delegate
  * @param FGameplayTag passive ability tag
  * @param bool whether to activate Niagara effect or not
  */
 DECLARE_MULTICAST_DELEGATE_TwoParams(FActivatePassiveEffect, const FGameplayTag& , bool);
+
+/**
+ * On ability level changed delegate
+ * @param  FGameplayAbilitySpec ability spec
+ * @param  int32 ability level
+ */
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAbilityLevelChanged, const FGameplayAbilitySpec&, int32);
 
 /**
  * 
@@ -79,6 +86,11 @@ public:
 	 * Delegate for activate/deactivate passive ability effect
 	 */
 	FActivatePassiveEffect ActivatePassiveEffectDelegate;
+
+	/**
+	 * Delegate for ability level changed
+	 */
+	FOnAbilityLevelChanged OnAbilityLevelChangedDelegated;
 	
 	bool bStartupAbilityGiven = false;
 	

@@ -152,6 +152,10 @@ public:
 	FGameplayAttributeData PhysicalResistance;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, PhysicalResistance);
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_DamageReduction, Category="Secondary Attributes")
+	FGameplayAttributeData DamageReduction;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, DamageReduction);
+	
 	/*
 	 * Vital attributes
 	 */
@@ -256,6 +260,9 @@ public:
 	
 	UFUNCTION()
 	void OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const;
+	
+	UFUNCTION()
+	void OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const;
 
 private:
 	bool bTopOffHealth = false;

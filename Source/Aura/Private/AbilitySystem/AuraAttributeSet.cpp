@@ -90,6 +90,7 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, LightningResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ArcaneResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, DamageReduction, COND_None, REPNOTIFY_Always);
 
 	/* Vital attributes */
 	
@@ -113,6 +114,10 @@ void UAuraAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 	if (Attribute == GetManaAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.f, GetMaxMana());
+	}
+	if (Attribute == GetDamageReductionAttribute())
+	{
+		NewValue = FMath::Clamp(NewValue, 0.f, 50.f);
 	}
 }
 
@@ -201,6 +206,11 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 		const float NewValue = FMath::Clamp(GetMana(), 0.f, GetMaxMana());
 		SetMana(NewValue);
 	}
+	if (Data.EvaluatedData.Attribute == GetDamageReductionAttribute())
+	{
+		const float NewValue = FMath::Clamp(GetDamageReduction(), 0.f, 0.5f);
+		SetDamageReduction(NewValue);
+	}
 	if (Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
 	{
 		HandleIncomingDamage(Props);
@@ -213,11 +223,19 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const struct FGameplayEffectMo
 
 void UAuraAttributeSet::HandleIncomingDamage(const FEffectProperties& Props)
 {
-	const float LocalIncomingDamage = GetIncomingDamage();
+	float LocalIncomingDamage = GetIncomingDamage();
 	SetIncomingDamage(0.f);
 		
 	if (LocalIncomingDamage > 0.f)
 	{
+		// Handle damage reduction
+		const float LocalDamageReduction = GetDamageReduction();
+		LocalIncomingDamage = FMath::Clamp(
+			LocalIncomingDamage - (LocalDamageReduction / 100.f * LocalIncomingDamage), 
+			1.f, 
+			LocalIncomingDamage
+		);
+		
 		const float NewHealth = GetHealth() - LocalIncomingDamage;
 		SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 		
@@ -547,4 +565,9 @@ void UAuraAttributeSet::OnRep_ArcaneResistance(const FGameplayAttributeData& Old
 void UAuraAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, PhysicalResistance, OldPhysicalResistance);
+}
+
+void UAuraAttributeSet::OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, DamageReduction, OldDamageReduction);
 }
