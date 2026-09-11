@@ -31,6 +31,9 @@ struct AuraDamageStatic
 	DECLARE_ATTRIBUTE_CAPTUREDEF(ArcaneResistance);
 	DECLARE_ATTRIBUTE_CAPTUREDEF(PhysicalResistance);
 	
+	DECLARE_ATTRIBUTE_CAPTUREDEF(LifeLeech);
+	DECLARE_ATTRIBUTE_CAPTUREDEF(ManaLeech);
+	
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
 	
 	AuraDamageStatic()
@@ -46,6 +49,9 @@ struct AuraDamageStatic
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LightningResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ArcaneResistance, Target, false);
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, PhysicalResistance, Target, false);
+		
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, LifeLeech, Source, false);
+		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSet, ManaLeech, Source, false);
 		
 		TagsToCaptureDefs.Add(Attributes_Secondary_Armor, ArmorDef);
 		TagsToCaptureDefs.Add(Attributes_Secondary_ArmorPenetration, ArmorPenetrationDef);
@@ -85,6 +91,9 @@ UExecCalc_Damage::UExecCalc_Damage()
 	RelevantAttributesToCapture.Add(DamageStatic().LightningResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatic().ArcaneResistanceDef);
 	RelevantAttributesToCapture.Add(DamageStatic().PhysicalResistanceDef);
+	
+	RelevantAttributesToCapture.Add(DamageStatic().LifeLeechDef);
+	RelevantAttributesToCapture.Add(DamageStatic().ManaLeechDef);
 }
 
 void UExecCalc_Damage::DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams, const FGameplayEffectSpec& Spec, FAggregatorEvaluateParameters EvaluateAggregatorParameters) const
@@ -161,8 +170,8 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	/*
 	 * Get Ability System Component for source and target
 	 */
-	const UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
-	const UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
+	UAbilitySystemComponent* SourceASC = ExecutionParams.GetSourceAbilitySystemComponent();
+	UAbilitySystemComponent* TargetASC = ExecutionParams.GetTargetAbilitySystemComponent();
 	
 	/*
 	 * Get Avatar actor for source and target
@@ -355,6 +364,39 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	Damage = bCriticalHit ? 2.f * Damage + SourceCriticalHitDamage : Damage;
 	
 	/*
+	 * Apply secondary effects
+	 */
+	float SourceLifeLeech = 0.f; 
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatic().LifeLeechDef,
+		EvaluateAggregatorParameters,
+		SourceLifeLeech
+	);
+	SourceLifeLeech = SourceLifeLeech / 100.f;
+	
+	float SourceManaLeech = 0.f;
+	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(
+		DamageStatic().ManaLeechDef,
+		EvaluateAggregatorParameters,
+		SourceManaLeech
+	);
+	SourceManaLeech = SourceManaLeech / 100.f;
+	
+	ApplyInstantDynamicEffect(
+		SourceASC, 
+		Damage * SourceLifeLeech, 
+		UAuraAttributeSet::GetHealthAttribute(), 
+		"LifeLeech"
+	);
+	
+	ApplyInstantDynamicEffect(
+		SourceASC, 
+		Damage * SourceManaLeech, 
+		UAuraAttributeSet::GetManaAttribute(), 
+		"ManaLeech"
+	);
+	
+	/*
 	 * Add modifier evaluated data to the output modifier
 	 */
 	FGameplayModifierEvaluatedData EvaluateData(
@@ -363,4 +405,29 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		Damage
 	);
 	OutExecutionOutput.AddOutputModifier(EvaluateData);
+}
+
+void UExecCalc_Damage::ApplyInstantDynamicEffect(UAbilitySystemComponent* ASC, float Magnitude, FGameplayAttribute Attribute, FString EffectName) const
+{
+	if (!ASC) return;
+	
+	/* Create a new GameplayEffect */
+	FString DebuffName = FString::Printf(TEXT("DynamicLeech_%s"), *EffectName);
+	UGameplayEffect* Effect = NewObject<UGameplayEffect>(GetTransientPackageAsObject(), FName(*DebuffName));
+	
+	/* Setup properties */
+	Effect->DurationPolicy = EGameplayEffectDurationType::Instant;
+	Effect->StackLimitCount = 1;
+	
+	/* Add modifier and set it up */
+	const int32 Index = Effect->Modifiers.Num();
+	Effect->Modifiers.Add(FGameplayModifierInfo());
+	FGameplayModifierInfo& ModifierInfo = Effect->Modifiers[Index];
+	ModifierInfo.ModifierMagnitude = FScalableFloat(Magnitude);
+	ModifierInfo.ModifierOp = EGameplayModOp::AddFinal;
+	ModifierInfo.Attribute = Attribute;
+	
+	// Apply effect
+	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+	ASC->ApplyGameplayEffectToSelf(Effect, 1, ContextHandle);
 }

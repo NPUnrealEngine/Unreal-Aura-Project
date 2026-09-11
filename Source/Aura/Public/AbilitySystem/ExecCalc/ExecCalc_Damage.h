@@ -24,4 +24,14 @@ public:
 
 public:
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+	
+protected:
+	/**
+	 * Apply an instant GameplayEffect which change an attribute's value by magnitude
+	 * @param ASC AbilitySystemComponent this effect will be applied to
+	 * @param Magnitude Value to change to an attribute
+	 * @param Attribute The attribute whose value will be changed
+	 * @param EffectName Name of this GameplayEffect
+	 */
+	void ApplyInstantDynamicEffect(UAbilitySystemComponent* ASC, float Magnitude, FGameplayAttribute Attribute, FString EffectName) const;
 };

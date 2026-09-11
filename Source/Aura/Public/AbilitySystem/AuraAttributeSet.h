@@ -156,6 +156,14 @@ public:
 	FGameplayAttributeData DamageReduction;
 	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, DamageReduction);
 	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_LifeLeech, Category="Secondary Attributes")
+	FGameplayAttributeData LifeLeech;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, LifeLeech);
+	
+	UPROPERTY(BlueprintReadOnly, ReplicatedUsing=OnRep_ManaLeech, Category="Secondary Attributes")
+	FGameplayAttributeData ManaLeech;
+	ATTRIBUTE_ACCESSORS(UAuraAttributeSet, ManaLeech);
+	
 	/*
 	 * Vital attributes
 	 */
@@ -263,6 +271,12 @@ public:
 	
 	UFUNCTION()
 	void OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const;
+	
+	UFUNCTION()
+	void OnRep_LifeLeech(const FGameplayAttributeData& OldLifeLeeching) const;
+	
+	UFUNCTION()
+	void OnRep_ManaLeech(const FGameplayAttributeData& OldManaLeeching) const;
 
 private:
 	bool bTopOffHealth = false;

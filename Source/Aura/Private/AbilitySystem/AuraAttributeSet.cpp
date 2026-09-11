@@ -91,6 +91,8 @@ void UAuraAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ArcaneResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, PhysicalResistance, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, DamageReduction, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, LifeLeech, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSet, ManaLeech, COND_None, REPNOTIFY_Always);
 
 	/* Vital attributes */
 	
@@ -570,4 +572,14 @@ void UAuraAttributeSet::OnRep_PhysicalResistance(const FGameplayAttributeData& O
 void UAuraAttributeSet::OnRep_DamageReduction(const FGameplayAttributeData& OldDamageReduction) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, DamageReduction, OldDamageReduction);
+}
+
+void UAuraAttributeSet::OnRep_LifeLeech(const FGameplayAttributeData& OldLifeLeeching) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, LifeLeech, OldLifeLeeching);
+}
+
+void UAuraAttributeSet::OnRep_ManaLeech(const FGameplayAttributeData& OldManaLeeching) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSet, ManaLeech, OldManaLeeching);
 }
