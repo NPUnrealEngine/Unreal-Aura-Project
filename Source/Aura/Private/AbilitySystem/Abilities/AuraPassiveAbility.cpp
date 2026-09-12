@@ -32,3 +32,17 @@ void UAuraPassiveAbility::ReceiveDeactivate(const FGameplayTag& AbilityTag)
 		);
 	}
 }
+
+FGameplayEffectSpecHandle UAuraPassiveAbility::MakeGameplayEffect()
+{
+	checkf(GameplayEffectClass != nullptr, TEXT("GameplayEffectClass is null"));
+	
+	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
+	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
+	FGameplayEffectSpecHandle SpecHandle = ASC->MakeOutgoingSpec(
+		GameplayEffectClass, 
+		GetAbilityLevel(), 
+		ContextHandle
+	);
+	return SpecHandle;
+}

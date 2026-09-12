@@ -18,5 +18,23 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 protected:
+	/**
+	 * Class of gameplay effect that will be made
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Effect")
+	TSubclassOf<UGameplayEffect> GameplayEffectClass;
+	
+protected:
+	/**
+	 * Callback funtion for receive deactivate event
+	 * @param AbilityTag 
+	 */
 	void ReceiveDeactivate(const FGameplayTag& AbilityTag);
+
+	/**
+	 * Helper function to make gameplay effect
+	 * @return 
+	 */
+	UFUNCTION(BlueprintCallable)
+	FGameplayEffectSpecHandle MakeGameplayEffect();
 };
