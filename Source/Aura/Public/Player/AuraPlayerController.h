@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class AMagicCircle;
 class UNiagaraSystem;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomInSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomOutSignature);
@@ -40,7 +41,13 @@ public: // Override
 public:
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
-
+	
+	UFUNCTION(BlueprintCallable)
+	void ShowMagicCircle();
+	
+	UFUNCTION(BlueprintCallable)
+	void HideMagicCircle();
+	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
@@ -126,6 +133,12 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<AMagicCircle> MagicCircleClass;
+	
+	UPROPERTY()
+	TObjectPtr<AMagicCircle> MagicCircle;
+	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Zoom(const FInputActionValue& InputActionValue);
@@ -156,4 +169,6 @@ private:
 	 * Called every ticks
 	 */
 	void AutoRun();
+	
+	void UpdateMagicCircleLocation();
 };
