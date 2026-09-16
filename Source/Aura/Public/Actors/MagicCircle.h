@@ -17,6 +17,9 @@ public:
 public:
 	virtual void Tick(float DeltaTime) override;
 	
+public:
+	FORCEINLINE UDecalComponent* GetDecalComponent() const {return MagicCircleDecal;}
+	
 protected:
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	TObjectPtr<UDecalComponent> MagicCircleDecal;
