@@ -124,6 +124,8 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Fire_FireBolt, "Abilities.Fire.FireBolt
 	"FireBolt ability tag");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Lightning_Electrocute, "Abilities.Lightning.Electrocute", 
 	"Electrocute ability tag");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Abilities_Arcane_ArcaneShards, "Abilities.Arcane.ArcaneShards", 
+	"Arcane shards ability tag");
 
 /*
  * Passive Ability
