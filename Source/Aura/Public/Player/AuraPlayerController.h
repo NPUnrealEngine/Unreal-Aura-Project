@@ -35,6 +35,12 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FZoomOutSignature ZoomOutDelegate;
 	
+public:
+	FORCEINLINE void SetCursorTraceUnderMouseChannel(ECollisionChannel Channel)
+	{
+		CursorTraceChannelUnderMouse = Channel;
+	}
+	
 public: // Override
 	virtual void PlayerTick(float DeltaTime) override;
 	
@@ -51,6 +57,12 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> ClickNiagaraSystem;
+
+	/**
+	 * Current used channel for tracing object hit under cursor mouse
+	 */
+	UPROPERTY(VisibleAnywhere)
+	TEnumAsByte<ECollisionChannel> CursorTraceChannelUnderMouse = ECollisionChannel::ECC_Visibility;
 	
 protected: // Override
 	virtual void BeginPlay() override;

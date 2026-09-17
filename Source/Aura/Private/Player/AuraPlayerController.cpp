@@ -12,6 +12,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actors/MagicCircle.h"
+#include "Aura/Aura.h"
 #include "Aura/AuraLogChannel.h"
 #include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
@@ -44,6 +45,7 @@ void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
 		{
 			MagicCircle->GetDecalComponent()->SetDecalMaterial(DecalMaterial);
 		}
+		SetCursorTraceUnderMouseChannel(ECC_Decal);
 	}
 }
 
@@ -51,6 +53,7 @@ void AAuraPlayerController::HideMagicCircle()
 {
 	if (IsValid(MagicCircle))
 	{
+		SetCursorTraceUnderMouseChannel(ECC_Visibility);
 		MagicCircle->Destroy();	
 	}
 }
@@ -106,7 +109,11 @@ void AAuraPlayerController::UpdateMagicCircleLocation()
 {
 	if (IsValid(MagicCircle))
 	{
-		MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
+		if (CursorHit.bBlockingHit)
+		{
+			MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
+		}
+		
 	}
 }
 
@@ -226,7 +233,7 @@ void AAuraPlayerController::CursorTrace()
 		return;
 	}
 	
-	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, false, CursorHit);
+	GetHitResultUnderCursor(CursorTraceChannelUnderMouse, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 
 	LastActor = ThisActor;
