@@ -59,6 +59,18 @@ struct FDamageEffectParams
 	
 	UPROPERTY(BlueprintReadWrite)
 	FVector KnockbackForce = FVector::ZeroVector;
+	
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsRadialDamage = false;
+	
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageInnerRadius = 0.f;
+	
+	UPROPERTY(BlueprintReadWrite)
+	float RadialDamageOuterRadius = 0.f;
+	
+	UPROPERTY(BlueprintReadWrite)
+	FVector RadialDamageOrigin = FVector::ZeroVector;
 };
 
 USTRUCT(BlueprintType)
@@ -80,6 +92,10 @@ public: // Getter
 	float GetKnockbackChance() const { return KnockbackChance; }
 	float GetKnockbackForceMagnitude() const { return KnockbackForceMagnitude; }
 	FVector GetKnockbackForce() const { return KnockbackForce; }
+	bool GetIsRadialDamage() const { return bIsRadialDamage; }
+	FVector GetRadialDamageOrigin() const { return RadialDamageOrigin; }
+	float GetRadialDamageInnerRadius() const { return RadialDamageInnerRadius; }
+	float GetRadialDamageOuterRadius() const { return RadialDamageOuterRadius; }
 
 public: // Setter
 	void SetDebuffDamage(float InDamage) { DebuffDamage = InDamage; }
@@ -90,6 +106,10 @@ public: // Setter
 	void SetKnockbackChance(const float InKnockbackChacne) { KnockbackChance = InKnockbackChacne; }
 	void SetKnockbackForceMagnitude(const float InKnockbackForceMagnitude) { KnockbackForceMagnitude = InKnockbackForceMagnitude; }
 	void SetKnockbackForce(const FVector& InKnockbackForce) { KnockbackForce = InKnockbackForce; }
+	void SetIsRadialDamage(bool InIsRadialDamage) { bIsRadialDamage = InIsRadialDamage; }
+	void SetRadialDamageOrigin(const FVector& InRadialDamageOrigin) { RadialDamageOrigin = InRadialDamageOrigin; }
+	void SetRadialDamageInnerRadius(const float InRadialDamageInnerRadius) { RadialDamageInnerRadius = InRadialDamageInnerRadius; }
+	void SetRadialDamageOuterRadius(const float InRadialDamageOuterRadius) { RadialDamageOuterRadius = InRadialDamageOuterRadius; }
 	
 public:
 	TSharedPtr<FGameplayTag> GetDamageType() const { return DamageType; }
@@ -135,6 +155,18 @@ protected:
 	
 	UPROPERTY()
 	FVector KnockbackForce = FVector::ZeroVector;
+	
+	UPROPERTY()
+	bool bIsRadialDamage = false;
+	
+	UPROPERTY()
+	float RadialDamageInnerRadius = 0.f;
+	
+	UPROPERTY()
+	float RadialDamageOuterRadius = 0.f;
+	
+	UPROPERTY()
+	FVector RadialDamageOrigin = FVector::ZeroVector;
 	
 	TSharedPtr<FGameplayTag> DamageType;
 };

@@ -169,10 +169,29 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 			{
 				RepBits |= 1 << 10;
 			}
+			if (bIsRadialDamage)
+			{
+				RepBits |= 1 << 11;
+				
+				if (RadialDamageInnerRadius > 0.f)
+				{
+					RepBits |= 1 << 12;
+				}
+				
+				if (RadialDamageOuterRadius > 0.f)
+				{
+					RepBits |= 1 << 13;
+				}
+				
+				if (!RadialDamageOrigin.IsZero())
+				{
+					RepBits |= 1 << 14;
+				}
+			}
 		}
 	
 		// tell archive how long is the replication bits
-		Ar.SerializeBits(&RepBits, 11);
+		Ar.SerializeBits(&RepBits, 15);
 	
 		// Use bitwise operator AND to see if the bit is flipped to 1 from 0
 		// If it is then tell archive to serialize data
@@ -227,6 +246,22 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, class UPackageMap* M
 		if (RepBits & (1 << 10))
 		{
 			KnockbackForce.NetSerialize(Ar, Map, bOutSuccess);
+		}
+		if (RepBits & (1 << 11))
+		{
+			Ar << bIsRadialDamage;
+		}
+		if (RepBits & (1 << 12))
+		{
+			Ar << RadialDamageInnerRadius;
+		}
+		if (RepBits & (1 << 13))
+		{
+			Ar << RadialDamageOuterRadius;
+		}
+		if (RepBits & (1 << 14))
+		{
+			RadialDamageOrigin.NetSerialize(Ar, Map, bOutSuccess);
 		}
 	
 		bOutSuccess = true;
