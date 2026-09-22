@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Character/AuraCharacterBase.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
@@ -19,6 +20,12 @@ DECLARE_MULTICAST_DELEGATE_OneParam(FOnASCRegistered, UAbilitySystemComponent*);
  * Delegate for character death
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeadActor);
+
+/**
+ * Delegate for taking damage 
+ * @param first - damage
+ */
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageSignature, float);
 
 class UNiagaraSystem;
 /**
@@ -148,6 +155,12 @@ public:
 	 * @return 
 	 */
 	virtual FOnDeathSignature& GetOnDeathDelegate() = 0;
+
+	/**
+	 * Get delegate for character taking damage
+	 * @return 
+	 */
+	virtual FOnDamageSignature& GetOnDamageSignature() = 0;
 	
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void SetInShockLoop(bool bInLoop);

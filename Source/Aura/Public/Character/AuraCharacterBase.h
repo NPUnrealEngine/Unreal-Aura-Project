@@ -35,6 +35,11 @@ public:
 	 * Call when character death
 	 */
 	FOnDeathSignature OnDeathDelegate;
+
+	/**
+	 * Call when taking damage
+	 */
+	FOnDamageSignature OnDamageDelegate;
 	
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bIsStunned = false;
@@ -48,12 +53,10 @@ public:
 public:
 	class UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 
-public: // Override
-	/* IAbilitySystemInterface */
+public: // Override IAbilitySystemInterface
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	/* IAbilitySystemInterface */
 	
-	/* ICombatInterface */
+public: // Override ICombatInterface
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual void Die(const FVector& DeathImpluse) override;
 	virtual bool IsDead_Implementation() const override;
@@ -64,10 +67,17 @@ public: // Override
 	virtual USkeletalMeshComponent* GetWeapon_Implementation() override;
 	virtual bool IsBeingShocked_Implementation() const override;
 	virtual void SetIsBeingShocked_Implementation(bool bInShock) override;
-	/* ICombatInterface */
+	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
+	virtual FOnDeathSignature& GetOnDeathDelegate() override;
+	virtual FOnDamageSignature& GetOnDamageSignature() override;
 	
+public: // Override Character
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+public: // Override Pawn
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+public:
 	/**
 	 * Handle the character death
 	 * 
@@ -76,9 +86,6 @@ public: // Override
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void MulticastHandleDeath(const FVector& DeathImpluse);
 	
-	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
-	virtual FOnDeathSignature& GetOnDeathDelegate() override;
-
 protected:
 	
 	bool bDead = false;
