@@ -134,20 +134,6 @@ FOnDeathSignature& AAuraCharacterBase::GetOnDeathDelegate()
 	return OnDeathDelegate;
 }
 
-FOnDamageSignature& AAuraCharacterBase::GetOnDamageSignature()
-{
-	return OnDamageDelegate;
-}
-
-float AAuraCharacterBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-                                     class AController* EventInstigator, AActor* DamageCauser)
-{
-	const float DamageTaken = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	OnDamageDelegate.Broadcast(DamageTaken);
-	return DamageTaken;
-}
-
 void AAuraCharacterBase::MulticastHandleDeath_Implementation(const FVector& DeathImpluse)
 {
 	UGameplayStatics::PlaySoundAtLocation(

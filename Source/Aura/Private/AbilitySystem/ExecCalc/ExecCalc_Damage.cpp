@@ -231,54 +231,24 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		
 		float DamageTypeValue = Spec.GetSetByCallerMagnitude(DamageTypeTag, false);
 		
+		if (DamageTypeValue <= 0.f) continue;
+		
 		float Resistance = 0.f;
 		ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateAggregatorParameters, Resistance);
 		Resistance = FMath::Clamp(Resistance, 0.f, 100.f);
 		
 		DamageTypeValue *= (100.f - Resistance) / 100.f;
 		
+		// Calculate radial damage if enabled
 		if (UAuraAbilitySystemLibrary::IsRadialDamage(ContextHandle))
 		{
-			/*
-			 * --- In CombatInterface ---
-			 * 1. Declare multicast delegate signature FOnDamageSignature
-			 * 
-			 * --- In AuraCharacterBase ---
-			 * 1. Override TakeDamage in AuraCharacterBase
-			 * 2. Create a delegate OnDamageDelegate, broadcast damage received in TakeDamage
-			 * 
-			 * --- This class ---
-			 * 1. Bind lambda to OnDamageDelegate on the victim here
-			 * 2. In lambda, set DamageTypeValue to damage received from the broadcast
-			 * 3. Call UGameplayStatic::ApplyRadialDamageWithFalloff to cause damage (this will
-			 *	result in TakeDamage being called on the victim, which will broadcast 
-			 *	OnDamageDelegate)
-			 */
+			const FVector RadialOrigin = UAuraAbilitySystemLibrary::GetRadialDamageOrigin(ContextHandle);
+			const float InnerRadius = UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(ContextHandle);
+			const float OuterRadius = UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(ContextHandle);
 			
-			if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(TargetAvatar))
-			{
-				// Bind delegate
-				CombatInterface->GetOnDamageSignature().AddLambda(
-					[&](float DamageAmount)
-					{
-						DamageTypeValue = DamageAmount;
-					}
-				);
-				
-				UGameplayStatics::ApplyRadialDamageWithFalloff(
-					TargetAvatar,
-					DamageTypeValue,
-					0.f,
-					UAuraAbilitySystemLibrary::GetRadialDamageOrigin(ContextHandle),
-					UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(ContextHandle),
-					UAuraAbilitySystemLibrary::GetRadialDamageOuterRadius(ContextHandle),
-					1.f,
-					UDamageType::StaticClass(),
-					TArray<AActor*>(),
-					SourceAvatar,
-					nullptr
-				);
-			}
+			float DistFromCenter = (TargetAvatar->GetActorLocation() - RadialOrigin).Length();
+			float RadialDamage = CalculateRadialDamage(DistFromCenter, InnerRadius, OuterRadius,DamageTypeValue);
+			DamageTypeValue = RadialDamage;
 		}
 		
 		Damage += DamageTypeValue;
@@ -475,4 +445,52 @@ void UExecCalc_Damage::ApplyInstantDynamicEffect(UAbilitySystemComponent* ASC, f
 	// Apply effect
 	FGameplayEffectContextHandle ContextHandle = ASC->MakeEffectContext();
 	ASC->ApplyGameplayEffectToSelf(Effect, 1, ContextHandle);
+}
+
+float UExecCalc_Damage::CalculateRadialDamage(float ClosestDistanceFromCenter, float InnerRadius, float OuterRadius,
+	float BaseDamage, float MinimumDamage, float DamageFalloff)
+{
+	float FinalDamage = BaseDamage;
+	
+	const float DamageScale = GetRadialDamageScale(
+		ClosestDistanceFromCenter,
+		InnerRadius,
+		OuterRadius,
+		DamageFalloff
+	);
+	
+	// Find out damage by linear interpolation
+	FinalDamage = FMath::Lerp(
+		MinimumDamage, 
+		FinalDamage, 
+		FMath::Max(0.f, DamageScale)
+	);
+	
+	return FinalDamage;
+}
+
+float UExecCalc_Damage::GetRadialDamageScale(float DistanceFromCenter, float InnerRadius, float OuterRadius,
+                                             float DamageFalloff)
+{
+	float const ValidatedInnerRadius = FMath::Max(0.f, InnerRadius);
+	float const ValidatedOuterRadius = FMath::Max(OuterRadius, ValidatedInnerRadius);
+	float const ValidatedDist = FMath::Max(0.f, DistanceFromCenter);
+
+	if (ValidatedDist >= ValidatedOuterRadius)
+	{
+		// outside the radius, no effect
+		return 0.f;
+	}
+
+	if ((DamageFalloff == 0.f) || (ValidatedDist <= ValidatedInnerRadius))
+	{
+		// no falloff or inside inner radius means full effect
+		return 1.f;
+	}
+
+	// calculate the interpolated scale
+	float DamageScale = 1.f - ((ValidatedDist - ValidatedInnerRadius) / (ValidatedOuterRadius - ValidatedInnerRadius));
+	DamageScale = FMath::Clamp(FMath::Pow(DamageScale, DamageFalloff), 0.f, 1.f);
+
+	return DamageScale;
 }

@@ -35,11 +35,6 @@ public:
 	 * Call when character death
 	 */
 	FOnDeathSignature OnDeathDelegate;
-
-	/**
-	 * Call when taking damage
-	 */
-	FOnDamageSignature OnDamageDelegate;
 	
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	bool bIsStunned = false;
@@ -69,13 +64,9 @@ public: // Override ICombatInterface
 	virtual void SetIsBeingShocked_Implementation(bool bInShock) override;
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
-	virtual FOnDamageSignature& GetOnDamageSignature() override;
 	
 public: // Override Character
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
-public: // Override Pawn
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	/**

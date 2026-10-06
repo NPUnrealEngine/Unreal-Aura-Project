@@ -18,12 +18,44 @@ class AURA_API UExecCalc_Damage : public UGameplayEffectExecutionCalculation
 	
 public:
 	UExecCalc_Damage();
+	
+public:
 	void DetermineDebuff(const FGameplayEffectCustomExecutionParameters& ExecutionParams,
 	                    const FGameplayEffectSpec& Spec,
 	                    FAggregatorEvaluateParameters EvaluateAggregatorParameters) const;
 
-public:
+public: // Override
 	virtual void Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams, FGameplayEffectCustomExecutionOutput& OutExecutionOutput) const override;
+
+public: // Helper functions
+	/**
+	 * Reference to InternalTakeRadialDamage function in AActor class in UnrealEngine source code
+	 * 
+	 * Calculate radial damage with damage falloff
+	 * @param ClosestDistanceFromCenter  Distance from hit point/target location to radial 
+	 * center
+	 * @param InnerRadius Inner radial radius 
+	 * @param OuterRadius Outer radial radius
+	 * @param BaseDamage Base damage
+	 * @param MinimumDamage Minimum damage default to 0
+	 * @param DamageFalloff Used to calculate exponential damage falloff. 
+	 * A value of 1.0 is linear, while 2.0 creates a squared/exponential curve 
+	 * @return Damage value
+	 */
+	static float CalculateRadialDamage(float ClosestDistanceFromCenter, float InnerRadius, float OuterRadius, float BaseDamage, float MinimumDamage = 0.f, float DamageFalloff = 1.f);
+
+	/**
+	 * Reference to GetDamageScale function in FRadialDamageEvent in UnrealEngin source code
+	 * 
+	 * Get radial damage scale
+	 * @param DistanceFromCenter Distance from hit point/target location to radial center
+	 * @param InnerRadius Inner radial radius 
+	 * @param OuterRadius Outer radial radius
+	 * @param DamageFalloff Used to calculate exponential damage falloff. 
+	 * A value of 1.0 is linear, while 2.0 creates a squared/exponential curve
+	 * @return scaled value from 0 ~ 1
+	 */
+	static float GetRadialDamageScale(float DistanceFromCenter, float InnerRadius, float OuterRadius, float DamageFalloff);
 	
 protected:
 	/**

@@ -347,6 +347,7 @@ bool UAuraAbilitySystemLibrary::IsRadialDamage(const FGameplayEffectContextHandl
 	{
 		return AuraEffectContext->GetIsRadialDamage();
 	}
+	return false;
 }
 
 float UAuraAbilitySystemLibrary::GetRadialDamageInnerRadius(const FGameplayEffectContextHandle& EffectContextHandle)
