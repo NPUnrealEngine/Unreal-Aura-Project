@@ -36,10 +36,19 @@ public:
 	FZoomOutSignature ZoomOutDelegate;
 	
 public:
+	/**
+	 * Set particular collision for cursor trace under mouse
+	 * @param Channel Channel to set
+	 */
 	FORCEINLINE void SetCursorTraceUnderMouseChannel(ECollisionChannel Channel)
 	{
 		CursorTraceChannelUnderMouse = Channel;
 	}
+	
+	/**
+	 * Set cursor trace channel under mouse back to ECC_Visibility
+	 */
+	FORCEINLINE void SetCursorTraceUnderMouseChannelToDefault() { CursorTraceChannelUnderMouse = ECC_Visibility; }
 	
 public: // Override
 	virtual void PlayerTick(float DeltaTime) override;
@@ -47,12 +56,6 @@ public: // Override
 public:
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
-	
-	UFUNCTION(BlueprintCallable)
-	void ShowMagicCircle(UMaterialInterface* DecalMaterial);
-	
-	UFUNCTION(BlueprintCallable)
-	void HideMagicCircle();
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -145,12 +148,6 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
 	
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<AMagicCircle> MagicCircleClass;
-	
-	UPROPERTY()
-	TObjectPtr<AMagicCircle> MagicCircle;
-	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);
 	void Zoom(const FInputActionValue& InputActionValue);
@@ -181,6 +178,4 @@ private:
 	 * Called every ticks
 	 */
 	void AutoRun();
-	
-	void UpdateMagicCircleLocation();
 };

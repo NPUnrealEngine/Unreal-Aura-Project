@@ -17,6 +17,12 @@ class AURA_API UArcaneShards : public UAuraDamageGameplayAbility
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxNumShards = 11;
+
+	/**
+	 * Shards that will be spawned in this radius
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Damage|Radius")
+	FScalableFloat ShardSpawnRadius;
 	
 public: // Override
 	virtual FString GetDescription(int32 Level) override;

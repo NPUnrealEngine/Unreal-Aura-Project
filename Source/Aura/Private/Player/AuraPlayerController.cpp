@@ -11,9 +11,7 @@
 #include "NavigationSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
-#include "Actors/MagicCircle.h"
 #include "Aura/Aura.h"
-#include "Aura/AuraLogChannel.h"
 #include "Components/DecalComponent.h"
 #include "Components/SplineComponent.h"
 #include "GameFramework/Character.h"
@@ -33,29 +31,6 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 
 	CursorTrace();
 	AutoRun();
-	UpdateMagicCircleLocation();
-}
-
-void AAuraPlayerController::ShowMagicCircle(UMaterialInterface* DecalMaterial)
-{
-	if (!IsValid(MagicCircle))
-	{
-		MagicCircle = GetWorld()->SpawnActor<AMagicCircle>(MagicCircleClass);
-		if (DecalMaterial != nullptr)
-		{
-			MagicCircle->GetDecalComponent()->SetDecalMaterial(DecalMaterial);
-		}
-		SetCursorTraceUnderMouseChannel(ECC_Decal);
-	}
-}
-
-void AAuraPlayerController::HideMagicCircle()
-{
-	if (IsValid(MagicCircle))
-	{
-		SetCursorTraceUnderMouseChannel(ECC_Visibility);
-		MagicCircle->Destroy();	
-	}
 }
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
@@ -102,18 +77,6 @@ void AAuraPlayerController::AutoRun()
 		{
 			bAutoRunning = false;
 		}
-	}
-}
-
-void AAuraPlayerController::UpdateMagicCircleLocation()
-{
-	if (IsValid(MagicCircle))
-	{
-		if (CursorHit.bBlockingHit)
-		{
-			MagicCircle->SetActorLocation(CursorHit.ImpactPoint);
-		}
-		
 	}
 }
 
