@@ -6,6 +6,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
+#include "Algo/RandomShuffle.h"
 #include "Engine/OverlapResult.h"
 #include "Game/AuraGameModeBase.h"
 #include "GameFramework/Character.h"
@@ -493,6 +494,87 @@ bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondAc
 		(FirstActor->ActorHasTag("Enemy") && SecondActor->ActorHasTag("Enemy"));
 	return !Friends;
 }
+
+void UAuraAbilitySystemLibrary::RandomPointsInRadiusOnGround(const UObject* WorldContextObject,
+	TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius,
+	const FVector& SphereOrigin, float TraceHalfSize, bool bRandomIfSinglePoint, bool bShuffle)
+{
+	OutPoints.Empty();
+	
+	/*
+	 * Find world
+	 */
+	UWorld* World = GEngine->GetWorldFromContextObject(
+		WorldContextObject,
+		EGetWorldErrorMode::LogAndReturnNull
+	);
+	if (World == nullptr) return;
+	
+	// Make all character within radius to be ignored
+	GetLivePlayersWithinRadius(
+		WorldContextObject, 
+		ActorToIgnore, 
+		TArray<AActor*>(), 
+		Radius, 
+		SphereOrigin
+	);
+	
+	for (int32 i = 0; i < NumPoints; i++)
+	{
+		/*
+		 * Find random point
+		 */
+		float Angle =  FMath::DegreesToRadians(FMath::RandRange(0.f, 360.f));
+		float Distance = FMath::RandRange(0.f, Radius);
+		FVector RandomPoint =FVector(
+			Distance * FMath::Cos(Angle), 
+			Distance * FMath::Sin(Angle), 
+			SphereOrigin.Z
+		);
+		RandomPoint = SphereOrigin + RandomPoint;
+		
+		/*
+		 * Set random XY to sphere origin's XY if do not do random when there is
+		 * only 1 point
+		 */
+		if (!bRandomIfSinglePoint && NumPoints == 1)
+		{
+			RandomPoint.X = SphereOrigin.X;
+			RandomPoint.Y = SphereOrigin.Y;
+		}
+		
+		/*
+		 * Prepare parameters for tracing
+		 */
+		FVector TraceStart(RandomPoint.X, RandomPoint.Y, RandomPoint.Z + TraceHalfSize);
+		FVector TraceEnd(RandomPoint.X, RandomPoint.Y, RandomPoint.Z - TraceHalfSize);
+		FHitResult HitResult;
+		FCollisionQueryParams CollisionQueryParams;
+		CollisionQueryParams.AddIgnoredActors(ActorToIgnore);
+		
+		// Do tracing
+		World->LineTraceSingleByProfile(
+			HitResult, 
+			TraceStart, 
+			TraceEnd,
+			FName("BlockAll"),
+			CollisionQueryParams
+		);
+		
+		// If it hit
+		if (HitResult.bBlockingHit)
+		{
+			RandomPoint.Z = HitResult.ImpactPoint.Z;
+			OutPoints.Add(RandomPoint);
+		}
+	}
+	
+	if (bShuffle)
+	{
+		Algo::RandomShuffle(OutPoints);
+	}
+}
+
 
 FGameplayEffectContextHandle UAuraAbilitySystemLibrary::ApplyDamageEffect(const FDamageEffectParams DamageEffectParams)
 {

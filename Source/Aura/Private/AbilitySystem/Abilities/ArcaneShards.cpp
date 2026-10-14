@@ -3,11 +3,14 @@
 
 #include "AbilitySystem/Abilities/ArcaneShards.h"
 
+#include <string>
+
 FString UArcaneShards::GetDescription(int32 Level)
 {
 	const int32 ScalableDamage =  Damage.GetValueAtLevel(Level);
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
+	const float RadiusInMeter = ShardSpawnRadius.GetValueAtLevel(Level) / 100.f;
 	
 	if (Level == 1)
 	{
@@ -29,7 +32,8 @@ FString UArcaneShards::GetDescription(int32 Level)
 			Level, 
 			ManaCost,
 			Cooldown,
-			ScalableDamage);
+			ScalableDamage
+			);
 	}
 	
 	return FString::Printf(TEXT(
@@ -44,14 +48,17 @@ FString UArcaneShards::GetDescription(int32 Level)
 		// Description
 		"<Default>Summon %d shards of arcane energy, causing radial arcane damage of </> "
 		"<Damage>%d</> "
-		"<Default>within an area</>"), 
+		"<Default>within</> "
+		"<Distance>%.1f</> "
+		"<Default>meter</>"), 
 		
 		// Values
 		Level, 
 		ManaCost,
 		Cooldown,
 		FMath::Min(Level, MaxNumShards), 
-		ScalableDamage);
+		ScalableDamage,
+		RadiusInMeter);
 }
 
 FString UArcaneShards::GetNextLevelDescription(int32 Level)
@@ -59,6 +66,7 @@ FString UArcaneShards::GetNextLevelDescription(int32 Level)
 	const int32 ScalableDamage =  Damage.GetValueAtLevel(Level);
 	const float ManaCost = FMath::Abs(GetManaCost(Level));
 	const float Cooldown = GetCooldown(Level);
+	const float RadiusInMeter = ShardSpawnRadius.GetValueAtLevel(Level) / 100.f;
 	
 	return FString::Printf(TEXT(
 		// Title
@@ -72,12 +80,15 @@ FString UArcaneShards::GetNextLevelDescription(int32 Level)
 		// Description
 		"<Default>Summon %d shards of arcane energy, causing radial arcane damage of </> "
 		"<Damage>%d</> "
-		"<Default>within an area</>"), 
+		"<Default>within</> "
+		"<Distance>%.1f</> "
+		"<Default>meter</>"), 
 		
 		// Values
 		Level, 
 		ManaCost,
 		Cooldown,
 		FMath::Min(Level, MaxNumShards), 
-		ScalableDamage);
+		ScalableDamage,
+		RadiusInMeter);
 }

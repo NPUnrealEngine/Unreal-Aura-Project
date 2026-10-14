@@ -176,6 +176,9 @@ public:
 	
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
+	
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	static void RandomPointsInRadiusOnGround(const UObject* WorldContextObject, TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius, const FVector& SphereOrigin, float TraceHalfSize=100.f, bool bRandomIfSinglePoint = false, bool bShuffle = false);
 
 	/**
 	 * Take FDamageEffectParams as parameters then use source Ability System component 
