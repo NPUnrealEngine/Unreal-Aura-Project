@@ -176,9 +176,66 @@ public:
 	
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
-	
+
+	/**
+	 * Find random points in a defined radius then adjust those points' 
+	 * Z to ground
+	 * 
+	 * @param WorldContextObject 
+	 * @param OutPoints Output points
+	 * @param ActorToIgnore Actor that need to be ignored while tracing to find ground 
+	 * @param NumPoints Number of points to generate
+	 * @param Radius Max radius for points to be generated within
+	 * @param SphereOrigin Origin point / center of radius
+	 * @param RadiusForPoint Radius for each point, it will be used for distribute points evenly if
+	 * max radius is big enough to contain all points otherwise points may overlap or too
+	 * close to each other
+	 * @param TraceHalfSize Half of tracing length for find ground
+	 * @param bRandomIfSinglePoint If true then NumPoints will be considered and point is at
+	 * center of radius when NumPoints=1, false then 
+	 * NumPoints will not be considered. Default to false
+	 * @param bShuffle Shuffle final points order in Array
+	 */
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
-	static void RandomPointsInRadiusOnGround(const UObject* WorldContextObject, TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius, const FVector& SphereOrigin, float TraceHalfSize=100.f, bool bRandomIfSinglePoint = false, bool bShuffle = false);
+	static void RandomPointsInRadiusOnGround(const UObject* WorldContextObject, TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius, const FVector& SphereOrigin, const float RadiusForPoint=50.f, float TraceHalfSize=100.f, bool bRandomIfSinglePoint = false, bool bShuffle = false);
+
+	/**
+	 * Generate a 2D point in a radius
+	 * 
+	 * Using Polar Coordinates with Area Correction method
+	 * 
+	 * Reference: https://www.google.com/search?q=algorithm+for+random+locations+in+circle+radius+evenlly&ie=UTF-8
+	 * 
+	 * @param Radius Boundary of radius
+	 * @return Vector2D
+	 */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	static FVector2D RandomPointInRadius(float Radius);
+
+	/**
+	 * Algorithm for finding the best point in a radius with number of points to be considered
+	 * 
+	 * To generate number of points with evenly distributed using this function:
+	 * Store each returned point in an array then use array as AcceptedPointsHistory to find number
+	 * of points that are evenly distributed in the max radius.
+	 * 
+	 * Reference: https://www.google.com/search?q=Polar+Coordinates+with+Area+Correction+random+points+without+overlapping+&sxsrf=APpeQnvk7Aru9flOaJOP3rD5g2DNCSGt2Q%3A1792216232185
+	 * 
+	 * Implemented with Mitchell's Best-Candidate Algorithm:
+	 * For each new point, generate a fixed number of "candidate" points (e.g., 10 or 20). 
+	 * Pick the candidate that is furthest from all existing points. This creates a visually 
+	 * pleasing, tightly packed distribution.
+	 * 
+	 * @param MaxRadius Boundary of radius
+	 * @param MinDistBetween2Points Used to find best point evenly distributed 
+	 * @param AcceptedPointsHistory Array of points to be considered for finding the best point, if
+	 * this parameter contain no points then a random point is returned
+	 * @param MaxAttempts How many attempts / candidates to find the best point. 
+	 * Warning: higher value cause more calculations to be done may result in freeze. Default to 10
+	 * @return Vector2D point
+	 */
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	static FVector2D MitchellBestCandidateAlgo(float MaxRadius, float MinDistBetween2Points, const TArray<FVector2D>& AcceptedPointsHistory, int32 MaxAttempts=10);
 
 	/**
 	 * Take FDamageEffectParams as parameters then use source Ability System component 

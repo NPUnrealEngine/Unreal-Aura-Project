@@ -497,7 +497,7 @@ bool UAuraAbilitySystemLibrary::IsNotFriend(AActor* FirstActor, AActor* SecondAc
 
 void UAuraAbilitySystemLibrary::RandomPointsInRadiusOnGround(const UObject* WorldContextObject,
 	TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius,
-	const FVector& SphereOrigin, float TraceHalfSize, bool bRandomIfSinglePoint, bool bShuffle)
+	const FVector& SphereOrigin, const float RadiusForPoint, float TraceHalfSize, bool bRandomIfSinglePoint, bool bShuffle)
 {
 	OutPoints.Empty();
 	
@@ -519,19 +519,23 @@ void UAuraAbilitySystemLibrary::RandomPointsInRadiusOnGround(const UObject* Worl
 		SphereOrigin
 	);
 	
+	/*
+	 * Use Algorithm to generate number of points
+	 */
+	TArray<FVector2D> AcceptedPoints;
 	for (int32 i = 0; i < NumPoints; i++)
 	{
-		/*
-		 * Find random point
-		 */
-		float Angle =  FMath::DegreesToRadians(FMath::RandRange(0.f, 360.f));
-		float Distance = FMath::RandRange(0.f, Radius);
-		FVector RandomPoint =FVector(
-			Distance * FMath::Cos(Angle), 
-			Distance * FMath::Sin(Angle), 
-			SphereOrigin.Z
-		);
-		RandomPoint = SphereOrigin + RandomPoint;
+		FVector2D Point = MitchellBestCandidateAlgo(Radius, RadiusForPoint, AcceptedPoints);
+		AcceptedPoints.Add(Point);
+	}
+	
+	for (int32 i = 0; i < NumPoints; i++)
+	{
+		// Get the point
+		FVector2D Point2D = AcceptedPoints[i];
+		
+		// Find out the location of point from center point
+		FVector RandomPoint = SphereOrigin + FVector(Point2D, SphereOrigin.Z);
 		
 		/*
 		 * Set random XY to sphere origin's XY if do not do random when there is
@@ -573,6 +577,85 @@ void UAuraAbilitySystemLibrary::RandomPointsInRadiusOnGround(const UObject* Worl
 	{
 		Algo::RandomShuffle(OutPoints);
 	}
+}
+
+FVector2D UAuraAbilitySystemLibrary::RandomPointInRadius(float Radius)
+{
+	/*
+	 * Reference:
+	 * https://www.google.com/search?q=algorithm+for+random+locations+in+circle+radius+evenlly&ie=UTF-8
+	 */
+	float V1 = FMath::RandRange(0.f, 1.f);
+	float V2 = FMath::RandRange(0.f, 1.f);
+	float R = Radius * FMath::Sqrt(V1);
+	float Theta = FMath::DegreesToRadians(2 * 180.f * V2);
+	
+	return FVector2D (R * FMath::Cos(Theta), R * FMath::Sin(Theta));
+}
+
+FVector2D UAuraAbilitySystemLibrary::MitchellBestCandidateAlgo(float MaxRadius, float MinDistBetween2Points,
+                                                               const TArray<FVector2D>& AcceptedPointsHistory, int32 MaxAttempts)
+{
+	// Best distance found
+	float BestDist = 0.f;
+	
+	// Bool to indicate the best candidate is found or not
+	bool bBestCandidateFound = false;
+	
+	// Best candidate point
+	FVector2D BestCandidate = RandomPointInRadius(MaxRadius);
+	
+	// For each attempt / candidate
+	for (int32 i = 0; i < MaxAttempts; i++)
+	{
+		// Potential candidate
+		FVector2D Candidate = RandomPointInRadius(MaxRadius);
+		
+		// Return candidate if no considered points
+		if (AcceptedPointsHistory.Num() == 0)
+		{
+			return Candidate;
+		}
+		
+		/*
+		 * Find the distance to the closest existing point
+		 */
+		float MinDistToExisting = FLT_MAX;
+		for (const FVector2D& AcceptedPoint : AcceptedPointsHistory)
+		{
+			float Dist = (Candidate - AcceptedPoint).Length();
+			if (Dist < MinDistToExisting)
+			{
+				MinDistToExisting = Dist;
+			}
+		}
+		
+		/*
+		 * Check if this candidate is valid and better than previous candidates
+		 */
+		if (MinDistToExisting >= MinDistBetween2Points)
+		{
+			if (MinDistToExisting > BestDist)
+			{
+				// Stored the closest distance for next iteration
+				BestDist = MinDistToExisting;
+				bBestCandidateFound = true;
+				BestCandidate = Candidate;
+			}
+		}
+	}
+	
+	// Return best candidate if found
+	if (bBestCandidateFound)
+	{
+		return BestCandidate;
+	}
+	
+	/*
+	 * At this point no best candidate found so 
+	 * BestCandidate is random generated point
+	 */
+	return BestCandidate;
 }
 
 
