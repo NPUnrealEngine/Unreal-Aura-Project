@@ -5,12 +5,16 @@
 
 #include "Actors/Decal/SpellDecal.h"
 #include "Aura/Aura.h"
+#include "Input/AuraInputComponent.h"
 #include "Player/AuraPlayerController.h"
 
 ULocalSpellDecalUnderMouse* ULocalSpellDecalUnderMouse::CreateLocalSpellDecalUnderMouse(UGameplayAbility* OwningAbility,
                                                                         TSubclassOf<ASpellDecal>SpellDecalClass,
                                                                         float InSpellDecalRadius,
-                                                                        float InSpellDecalHeight)
+                                                                        float InSpellDecalHeight,
+                                                                        UInputAction* InConfirmAction, 
+                                                                        UInputAction* InCancelAction,
+                                                                        bool bInEndTaskOnConfirmOrCancelPressed)
 {
 	// Create a task
 	ULocalSpellDecalUnderMouse* MyTask = NewAbilityTask<ULocalSpellDecalUnderMouse>(OwningAbility);
@@ -28,6 +32,11 @@ ULocalSpellDecalUnderMouse* ULocalSpellDecalUnderMouse::CreateLocalSpellDecalUnd
 	// Decal height
 	MyTask->SpellDecalHeight = InSpellDecalHeight;
 	
+	MyTask->ConfirmAction = InConfirmAction;
+	MyTask->CancelAction = InCancelAction;
+	
+	MyTask->bEndTaskOnConfirmOrCancelPressed = bInEndTaskOnConfirmOrCancelPressed;
+	
 	// Get aura player controller
 	if (APawn* Pawn = Cast<APawn>(OwningAbility->GetAvatarActorFromActorInfo()))
 	{
@@ -43,6 +52,31 @@ ULocalSpellDecalUnderMouse* ULocalSpellDecalUnderMouse::CreateLocalSpellDecalUnd
 void ULocalSpellDecalUnderMouse::Activate()
 {
 	Super::Activate();
+	
+	/*
+	 * Bind confirm and cancel action
+	 */
+	if (UAuraInputComponent* AuraInputComponent = Cast<UAuraInputComponent>(AuraPlayerController->InputComponent))
+	{
+		if (AuraPlayerController.IsValid() && ConfirmAction != nullptr)
+		{
+			AuraInputComponent->BindAction(
+				ConfirmAction,
+				ETriggerEvent::Triggered,
+				this,
+				&ULocalSpellDecalUnderMouse::OnConfirm
+			);
+		}
+		if (AuraPlayerController.IsValid() && CancelAction != nullptr)
+		{
+			AuraInputComponent->BindAction(
+				CancelAction,
+				ETriggerEvent::Triggered,
+				this,
+				&ULocalSpellDecalUnderMouse::OnCancel
+			);
+		}
+	}
 	
 	/*
 	 * Set spell decal size
@@ -86,5 +120,29 @@ void ULocalSpellDecalUnderMouse::OnDestroy(bool bInOwnerFinished)
 	if (DecalActor)
 	{
 		DecalActor->Destroy();
+	}
+}
+
+void ULocalSpellDecalUnderMouse::OnConfirm(const FInputActionValue& InputActionValue)
+{
+	if (OnConfirmPressed.IsBound())
+	{
+		OnConfirmPressed.Broadcast();
+	}
+	if (bEndTaskOnConfirmOrCancelPressed)
+	{
+		EndTask();
+	}
+}
+
+void ULocalSpellDecalUnderMouse::OnCancel(const FInputActionValue& InputActionValue)
+{
+	if (OnCancelPressed.IsBound())
+	{
+		OnCancelPressed.Broadcast();
+	}
+	if (bEndTaskOnConfirmOrCancelPressed)
+	{
+		EndTask();
 	}
 }
