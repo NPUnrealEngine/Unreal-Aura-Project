@@ -75,6 +75,8 @@ public:
 	 */
 	bool bEndTaskOnConfirmOrCancelPressed = false;
 	
+	FGameplayTagContainer TagsToGranted;
+	
 public: // Factory
 	/**
 	 * Create a task that handle spell decal which follow player cursor pointing
@@ -91,16 +93,24 @@ public: // Factory
 	 * use node such WaitInputPress to capture ability key pressed
 	 * @param InCancelAction [Optional] Action for cancel E.G End the ability
 	 * @param bInEndTaskOnConfirmOrCancelPressed Whether to end task automatically when
-	 * confirm or cancel action pressed, or you want to end task manually. Default to false
+	 * confirm or cancel action pressed, or you want to end task manually. Default to true
+	 * @param InTagsToGranted Tags to granted to player's AbilitySystemComponent locally. Note:
+	 * if you decide to end task manually you must call RemoveGrantedTags() in order to remove
+	 * all granted tags that was added
 	 * @return 
 	 */
 	UFUNCTION(BlueprintCallable, Category="Ability|Task", 
 		meta=(DisplayName="LocalSpellDecalUnderMouse", HidePin="OwningAbility", DefaultToSelf="OwningAbility", BlueprintInternalUseOnly="true"))
-	static ULocalSpellDecalUnderMouse* CreateLocalSpellDecalUnderMouse(UGameplayAbility* OwningAbility, TSubclassOf<ASpellDecal>SpellDecalClass, 
-		float InSpellDecalRadius=100.f, float InSpellDecalHeight=50.f, 
-		UInputAction* InConfirmAction=nullptr, UInputAction* InCancelAction=nullptr, 
-		bool bInEndTaskOnConfirmOrCancelPressed = false);
+	static ULocalSpellDecalUnderMouse* CreateLocalSpellDecalUnderMouse(UGameplayAbility* OwningAbility, 
+		TSubclassOf<ASpellDecal>SpellDecalClass, float InSpellDecalRadius=100.f, 
+		float InSpellDecalHeight=50.f, UInputAction* InConfirmAction=nullptr, 
+		UInputAction* InCancelAction=nullptr, bool bInEndTaskOnConfirmOrCancelPressed = true,
+		FGameplayTagContainer InTagsToGranted = FGameplayTagContainer());
 
+public:
+	virtual void AddGrantedTags();
+	virtual void RemoveGrantedTags();
+	
 protected: // Override
 	virtual void Activate() override;
 	virtual void TickTask(float DeltaTime) override;

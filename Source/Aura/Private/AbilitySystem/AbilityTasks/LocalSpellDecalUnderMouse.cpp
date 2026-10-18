@@ -3,6 +3,8 @@
 
 #include "AbilitySystem/AbilityTasks/LocalSpellDecalUnderMouse.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "Actors/Decal/SpellDecal.h"
 #include "Aura/Aura.h"
 #include "Input/AuraInputComponent.h"
@@ -14,7 +16,8 @@ ULocalSpellDecalUnderMouse* ULocalSpellDecalUnderMouse::CreateLocalSpellDecalUnd
                                                                         float InSpellDecalHeight,
                                                                         UInputAction* InConfirmAction, 
                                                                         UInputAction* InCancelAction,
-                                                                        bool bInEndTaskOnConfirmOrCancelPressed)
+                                                                        bool bInEndTaskOnConfirmOrCancelPressed,
+                                                                        FGameplayTagContainer InTagsToGranted)
 {
 	// Create a task
 	ULocalSpellDecalUnderMouse* MyTask = NewAbilityTask<ULocalSpellDecalUnderMouse>(OwningAbility);
@@ -32,10 +35,16 @@ ULocalSpellDecalUnderMouse* ULocalSpellDecalUnderMouse::CreateLocalSpellDecalUnd
 	// Decal height
 	MyTask->SpellDecalHeight = InSpellDecalHeight;
 	
+	// Confirm action
 	MyTask->ConfirmAction = InConfirmAction;
+	
+	// Cancel action
 	MyTask->CancelAction = InCancelAction;
 	
 	MyTask->bEndTaskOnConfirmOrCancelPressed = bInEndTaskOnConfirmOrCancelPressed;
+	
+	// Tags to grant
+	MyTask->TagsToGranted = InTagsToGranted;
 	
 	// Get aura player controller
 	if (APawn* Pawn = Cast<APawn>(OwningAbility->GetAvatarActorFromActorInfo()))
@@ -90,6 +99,8 @@ void ULocalSpellDecalUnderMouse::Activate()
 		
 		DecalActor->SetDecalSize(DSize);
 	}
+	
+	AddGrantedTags();
 }
 
 void ULocalSpellDecalUnderMouse::TickTask(float DeltaTime)
@@ -115,12 +126,12 @@ void ULocalSpellDecalUnderMouse::TickTask(float DeltaTime)
 
 void ULocalSpellDecalUnderMouse::OnDestroy(bool bInOwnerFinished)
 {
-	Super::OnDestroy(bInOwnerFinished);
-	
 	if (DecalActor)
 	{
 		DecalActor->Destroy();
 	}
+	
+	Super::OnDestroy(bInOwnerFinished);
 }
 
 void ULocalSpellDecalUnderMouse::OnConfirm(const FInputActionValue& InputActionValue)
@@ -131,6 +142,7 @@ void ULocalSpellDecalUnderMouse::OnConfirm(const FInputActionValue& InputActionV
 	}
 	if (bEndTaskOnConfirmOrCancelPressed)
 	{
+		RemoveGrantedTags();
 		EndTask();
 	}
 }
@@ -143,6 +155,31 @@ void ULocalSpellDecalUnderMouse::OnCancel(const FInputActionValue& InputActionVa
 	}
 	if (bEndTaskOnConfirmOrCancelPressed)
 	{
+		RemoveGrantedTags();
 		EndTask();
+	}
+}
+
+void ULocalSpellDecalUnderMouse::AddGrantedTags()
+{
+	if (!TagsToGranted.IsEmpty())
+	{
+		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(
+			UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActor())))
+		{
+			AuraASC->AddLooseGameplayTags(TagsToGranted);
+		}
+	}
+}
+
+void ULocalSpellDecalUnderMouse::RemoveGrantedTags()
+{
+	if (!TagsToGranted.IsEmpty())
+	{
+		if (UAuraAbilitySystemComponent* AuraASC = Cast<UAuraAbilitySystemComponent>(
+			UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActor())))
+		{
+			AuraASC->RemoveLooseGameplayTagsDeferred(TagsToGranted, 0.1f);
+		}
 	}
 }

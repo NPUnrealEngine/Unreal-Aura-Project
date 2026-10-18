@@ -311,6 +311,26 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable)
 	void ReduceCooldownRemainingTime(FGameplayTag CooldownTag, float PercentToReduce);
+
+	/**
+	 * Run AddLooseGameplayTags deferred
+	 * 
+	 * @param Tags Tags to remove
+	 * @param Time If value <= -1 then run AddLooseGameplayTags next tick otherwise
+	 * run AddLooseGameplayTags after amount of time
+	 */
+	UFUNCTION(Blueprintable)
+	void AddLooseGameplayTagsDeferred(FGameplayTagContainer& Tags, float Time = -1.f);
+	
+	/**
+	 * Run RemoveLooseGameplayTags deferred
+	 * 
+	 * @param Tags Tags to remove
+	 * @param Time If value <= -1 then run RemoveLooseGameplayTags next tick otherwise
+	 * run RemoveLooseGameplayTags after amount of time
+	 */
+	UFUNCTION(Blueprintable)
+	void RemoveLooseGameplayTagsDeferred(FGameplayTagContainer& Tags, float Time = -1.f);
 	
 protected:
 	FDelegateHandle EffectAppliedDelegateHandle;
