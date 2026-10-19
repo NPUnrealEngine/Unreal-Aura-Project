@@ -57,6 +57,22 @@ public: // Override
 public:
 	UFUNCTION(Client, Reliable)
 	void ShowDamageNumber(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
+
+	/**
+	 * Add input blocking tags
+	 * 
+	 * @param TagsToAdd 
+	 */
+	UFUNCTION(BlueprintCallable)
+	void AddInputBlockingTags(FGameplayTagContainer TagsToAdd);
+
+	/**
+	 * Remove input blocking tags
+	 * 
+	 * @param TagsToRemove 
+	 */
+	UFUNCTION(BlueprintCallable)
+	void RemoveInputBlockingTags(FGameplayTagContainer TagsToRemove);
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)

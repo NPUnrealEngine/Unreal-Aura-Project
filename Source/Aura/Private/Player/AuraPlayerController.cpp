@@ -33,6 +33,16 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	AutoRun();
 }
 
+void AAuraPlayerController::AddInputBlockingTags(FGameplayTagContainer TagsToAdd)
+{
+	InputBlockingTags.UpdateTagCount(TagsToAdd, 1);
+}
+
+void AAuraPlayerController::RemoveInputBlockingTags(FGameplayTagContainer TagsToRemove)
+{
+	InputBlockingTags.UpdateTagCount(TagsToRemove, -1);
+}
+
 void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
 {
 	if (IsValid(TargetCharacter) && DamageTextComponentClass)
@@ -231,6 +241,11 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		return;
 	}
 	
+	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputPressed))
+	{
+		return;
+	}
+	
 	// If pressed left mouse button
 	if (InputTag.MatchesTagExact(InputTag_LMB))
 	{
@@ -246,6 +261,11 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(Player_Block_InputReleased))
+	{
+		return;
+	}
+	
+	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputReleased))
 	{
 		return;
 	}
@@ -323,6 +343,11 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(Player_Block_InputHeld))
+	{
+		return;
+	}
+	
+	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputHeld))
 	{
 		return;
 	}
