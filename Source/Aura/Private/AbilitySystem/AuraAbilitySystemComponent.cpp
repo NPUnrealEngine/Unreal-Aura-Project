@@ -433,58 +433,6 @@ void UAuraAbilitySystemComponent::ReduceCooldownRemainingTime(FGameplayTag Coold
 	}
 }
 
-void UAuraAbilitySystemComponent::AddLooseGameplayTagsDeferred(FGameplayTagContainer& Tags, float Time)
-{
-	if (Time < 0.f)
-	{
-		GetWorld()->GetTimerManager().SetTimerForNextTick(
-			[this, &Tags]()
-			{
-				AddLooseGameplayTags(Tags);
-			}
-		);
-	}
-	else
-	{
-		FTimerHandle _;
-		GetWorld()->GetTimerManager().SetTimer(
-			_,
-			[this, &Tags]()
-			{
-				AddLooseGameplayTags(Tags);
-			},
-			Time, 
-			false
-		);
-	}
-}
-
-void UAuraAbilitySystemComponent::RemoveLooseGameplayTagsDeferred(FGameplayTagContainer& Tags, float Time)
-{
-	if (Time < 0.f)
-	{
-		GetWorld()->GetTimerManager().SetTimerForNextTick(
-			[this, &Tags]()
-			{
-				RemoveLooseGameplayTags(Tags);
-			}
-		);
-	}
-	else
-	{
-		FTimerHandle _;
-		GetWorld()->GetTimerManager().SetTimer(
-			_,
-			[this, &Tags]()
-			{
-				RemoveLooseGameplayTags(Tags);
-			},
-			Time, 
-			false
-		);
-	}
-}
-
 void UAuraAbilitySystemComponent::ServerEquipAbility_Implementation(const FGameplayTag& AbilityTag,
                                                                     const FGameplayTag& SlotTag)
 {

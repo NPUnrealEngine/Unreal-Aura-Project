@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "OcclusionAwarePlayerController.h"
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
@@ -147,6 +148,9 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
+	
+	UPROPERTY(VisibleInstanceOnly)
+	FGameplayTagCountContainer InputBlockingTags;
 	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);
