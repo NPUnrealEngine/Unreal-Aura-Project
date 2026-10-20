@@ -138,6 +138,13 @@ public:
 	ECharacterClass GetCharacterClass();
 
 	/**
+	 * Get AAuraPlayerController
+	 * @return AAuraPlayerController or nullptr
+	 */
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AAuraPlayerController* GetAuraPlayerController();
+
+	/**
 	 * Get delegate for AbilitySystemComponent initialized
 	 * @return 
 	 */

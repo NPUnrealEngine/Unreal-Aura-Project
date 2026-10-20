@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "PlayerInterface.generated.h"
 
+class AAuraPlayerController;
 // This class does not need to be modified.
 UINTERFACE()
 class UPlayerInterface : public UInterface

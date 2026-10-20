@@ -33,14 +33,55 @@ void AAuraPlayerController::PlayerTick(float DeltaTime)
 	AutoRun();
 }
 
-void AAuraPlayerController::AddInputBlockingTags(FGameplayTagContainer TagsToAdd)
+void AAuraPlayerController::AddInputMappingContextDeferred(const UInputMappingContext* InputContext, int32 Priority,
+	float DeltaTime) const
 {
-	InputBlockingTags.UpdateTagCount(TagsToAdd, 1);
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (Subsystem)
+	{
+		if (DeltaTime < 0.f)
+		{
+			Subsystem->AddMappingContext(InputContext, Priority);
+		}
+		else
+		{
+			FTimerHandle _;
+			GetWorld()->GetTimerManager().SetTimer(
+				_, 
+				[Subsystem, InputContext, Priority]()
+				{
+					Subsystem->AddMappingContext(InputContext, Priority);
+				},
+				DeltaTime,
+				false
+			);	
+		}
+	}
 }
 
-void AAuraPlayerController::RemoveInputBlockingTags(FGameplayTagContainer TagsToRemove)
+void AAuraPlayerController::RemoveInputMappingContextDeferred(const UInputMappingContext* InputContext, float DeltaTime) const
 {
-	InputBlockingTags.UpdateTagCount(TagsToRemove, -1);
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (Subsystem)
+	{
+		if (DeltaTime < 0.f)
+		{
+			Subsystem->RemoveMappingContext(InputContext);
+		}
+		else
+		{
+			FTimerHandle _;
+			GetWorld()->GetTimerManager().SetTimer(
+				_, 
+				[Subsystem, InputContext]()
+				{
+					Subsystem->RemoveMappingContext(InputContext);
+				},
+				DeltaTime,
+				false
+			);	
+		}
+	}
 }
 
 void AAuraPlayerController::ShowDamageNumber_Implementation(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit)
@@ -241,11 +282,6 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 		return;
 	}
 	
-	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputPressed))
-	{
-		return;
-	}
-	
 	// If pressed left mouse button
 	if (InputTag.MatchesTagExact(InputTag_LMB))
 	{
@@ -261,11 +297,6 @@ void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(Player_Block_InputReleased))
-	{
-		return;
-	}
-	
-	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputReleased))
 	{
 		return;
 	}
@@ -343,11 +374,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 {
 	if (GetASC() && GetASC()->HasMatchingGameplayTag(Player_Block_InputHeld))
-	{
-		return;
-	}
-	
-	if (InputBlockingTags.HasMatchingGameplayTag(Player_Block_InputHeld))
 	{
 		return;
 	}

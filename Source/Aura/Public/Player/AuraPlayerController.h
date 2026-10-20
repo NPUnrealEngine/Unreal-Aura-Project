@@ -8,6 +8,7 @@
 #include "GameFramework/PlayerController.h"
 #include "AuraPlayerController.generated.h"
 
+class UInputMappingContext;
 class AMagicCircle;
 class UNiagaraSystem;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FZoomInSignature);
@@ -59,20 +60,23 @@ public:
 	void ShowDamageNumber(float Damage, ACharacter* TargetCharacter, bool bBlockedHit, bool bCriticalHit);
 
 	/**
-	 * Add input blocking tags
-	 * 
-	 * @param TagsToAdd 
+	 * Add input mapping context deferred / no deferred 
+	 * @param InputContext Input mapping context to be added
+	 * @param Priority Priority for mapping context
+	 * @param DeltaTime Deferred time to add input mapping context, if DeltaTime < 0 then
+	 * no deferred otherwise deferred for DeltaTime. Default -1 no deferred
 	 */
 	UFUNCTION(BlueprintCallable)
-	void AddInputBlockingTags(FGameplayTagContainer TagsToAdd);
-
+	void AddInputMappingContextDeferred(const UInputMappingContext* InputContext, int32 Priority, float DeltaTime=-1.f) const;
+	
 	/**
-	 * Remove input blocking tags
-	 * 
-	 * @param TagsToRemove 
+	 * Remove input mapping context deferred / no deferred 
+	 * @param InputContext Input mapping context to be removed
+	 * @param DeltaTime Deferred time to add input mapping context, if DeltaTime < 0 then
+	 * no deferred otherwise deferred for DeltaTime. Default -1 no deferred
 	 */
 	UFUNCTION(BlueprintCallable)
-	void RemoveInputBlockingTags(FGameplayTagContainer TagsToRemove);
+	void RemoveInputMappingContextDeferred(const UInputMappingContext* InputContext, float DeltaTime=-1.f) const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
@@ -164,9 +168,6 @@ private:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UDamageTextComponent> DamageTextComponentClass;
-	
-	UPROPERTY(VisibleInstanceOnly)
-	FGameplayTagCountContainer InputBlockingTags;
 	
 private:
 	void Move(const struct FInputActionValue& InputActionValue);

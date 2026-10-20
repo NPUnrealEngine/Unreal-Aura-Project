@@ -64,6 +64,7 @@ public: // Override ICombatInterface
 	virtual void SetIsBeingShocked_Implementation(bool bInShock) override;
 	virtual FOnASCRegistered& GetOnASCRegisteredDelegate() override;
 	virtual FOnDeathSignature& GetOnDeathDelegate() override;
+	virtual AAuraPlayerController* GetAuraPlayerController_Implementation() override;
 	
 public: // Override Character
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
