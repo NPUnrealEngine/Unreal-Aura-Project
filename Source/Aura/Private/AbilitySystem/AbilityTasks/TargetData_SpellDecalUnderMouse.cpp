@@ -242,7 +242,7 @@ void UTargetData_SpellDecalUnderMouse::OnConfirm(const FInputActionValue& InputA
 	// Hide decal actor
 	if (DecalActor)
 	{
-		DecalActor->SetHidden(true);
+		DecalActor->SetActorHiddenInGame(true);
 	}
 	
 	// Remove all binding input actions to prevent it been triggered again 
@@ -266,7 +266,7 @@ void UTargetData_SpellDecalUnderMouse::OnCancel(const FInputActionValue& InputAc
 	// Hide decal actor
 	if (DecalActor)
 	{
-		DecalActor->SetHidden(true);
+		DecalActor->SetActorHiddenInGame(true);
 	}
 	
 	// Remove all binding input actions to prevent it been triggered again 
