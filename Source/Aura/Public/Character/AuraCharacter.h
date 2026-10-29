@@ -46,20 +46,14 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LevelUp")
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	TObjectPtr<UGameplayCameraComponent> GameplayCameraComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<UCameraComponent> CameraComponent;
 	
 protected: // Override
 	virtual void InitAbilityActorInfo() override;
-
-protected:
-	/**
-	 * Call to activate camera system
-	 * 
-	 * @param PlayerController 
-	 */
-	UFUNCTION(BlueprintNativeEvent)
-	void ActivateCamera(APlayerController* PlayerController);
 	
 private:
 	UFUNCTION(NetMulticast, Reliable)
