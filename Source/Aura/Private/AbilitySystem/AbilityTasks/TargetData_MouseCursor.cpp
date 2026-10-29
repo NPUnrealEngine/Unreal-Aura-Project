@@ -27,6 +27,7 @@ FGameplayAbilityTargetDataHandle& UTargetData_MouseCursor::SendMouseCursorData()
 	 */
 	FGameplayAbilityTargetData_SingleTargetHit* TargetHitData = new FGameplayAbilityTargetData_SingleTargetHit();
 	TargetHitData->HitResult = CursorHit;
+	TargetHitDataHandle.Clear();
 	TargetHitDataHandle.Add(TargetHitData);
 
 	/**
@@ -79,4 +80,14 @@ void UTargetData_MouseCursor::OnTargetHitDataArrived(const FGameplayAbilityTarge
 	FGameplayTag ActivationTag)
 {
 	TargetHitDataHandle = DataHandle;
+	
+	/**
+	 * Since AbilitySystemComponent will cached target data associated with a prediction key
+	 * then we need to tell AbilitySystemComponent to consume it in order to clear it from
+	 * cached
+	 */
+	AbilitySystemComponent.Get()->ConsumeClientReplicatedTargetData(
+		GetAbilitySpecHandle(),
+		GetActivationPredictionKey()
+	);
 }
