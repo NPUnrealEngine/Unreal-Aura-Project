@@ -14,12 +14,19 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
 
 AAuraCharacter::AAuraCharacter()
 {
+	// Register tick function
+	PrimaryActorTick.bCanEverTick = true;
+	
+	// Only enable tick later time
+	PrimaryActorTick.bStartWithTickEnabled = false;
+	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(GetRootComponent());
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
@@ -137,6 +144,46 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 	return AuraPlayerState->GetSpellPoints();
 }
 
+void AAuraCharacter::EnableFacingTarget_Implementation(float InRotationSpeed)
+{
+	if (IsLocallyControlled() && GetCharacterMovement() && GetController())
+	{
+		bUpdateFacingTarget = true;
+		RotateToTargetSpeed = InRotationSpeed;
+		
+		// Align controller's initial rotation with actor
+		Controller->SetControlRotation(GetActorForwardVector().Rotation());
+		
+		// Only rotate yaw
+		bUseControllerRotationYaw = true;
+		
+		// Make sure character not orient toward movement direction
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		
+		// Start actor ticking
+		SetActorTickEnabled(true);
+		
+		
+		
+	}
+}
+
+void AAuraCharacter::DisableFacingTarget_Implementation()
+{
+	if (IsLocallyControlled() && GetCharacterMovement() && GetController())
+	{
+		bUpdateFacingTarget = false;
+		SetActorTickEnabled(false);
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+}
+
+void AAuraCharacter::SetFacingTarget_Implementation(FVector InFacingTarget)
+{
+	TargetToFace = InFacingTarget;
+}
+
 void AAuraCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -152,6 +199,13 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	/* Init ability actor info for client */
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+	FacingTarget(DeltaTime);
 }
 
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
@@ -189,6 +243,37 @@ void AAuraCharacter::InitAbilityActorInfo()
 	InitializeDefaultAttributes();
 	
 	OnASCRegisteredDelegate.Broadcast(AbilitySystemComponent);
+}
+
+void AAuraCharacter::FacingTarget(float DeltaTime)
+{
+	if (!bUpdateFacingTarget) return;
+	if (Controller != nullptr)
+	{
+		/*
+		 * Find out look rotation to target and zero out pitch and roll
+		 */
+		FRotator ToRotation = UKismetMathLibrary::FindLookAtRotation(
+			GetActorLocation(), 
+			TargetToFace
+		);
+		ToRotation.Pitch = 0.0f;
+		ToRotation.Roll = 0.0f;
+		
+		/*
+		 * Using Rotation Interpolation Constant to find out 
+		 * delta rotation for this frame
+		 */
+		FRotator DeltaRotation = FMath::RInterpConstantTo(
+			Controller->GetControlRotation(),
+			ToRotation,
+			DeltaTime,
+			RotateToTargetSpeed
+		);
+		
+		// Update controller rotation
+		Controller->SetControlRotation(DeltaRotation);
+	}
 }
 
 

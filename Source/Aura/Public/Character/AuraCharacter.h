@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Character/AuraCharacterBase.h"
+#include "Interface/PlayerControlInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
@@ -15,7 +16,7 @@ class UNiagaraComponent;
  * 
  */
 UCLASS()
-class AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface
+class AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterface, public IPlayerControlInterface
 {
 	GENERATED_BODY()
 
@@ -35,9 +36,15 @@ public: // IPlayerInterface
 	virtual int32 GetAttributePoints_Implementation() const override;
 	virtual int32 GetSpellPoints_Implementation() const override;
 	
+public: // IPlayerControlInterface
+	virtual void EnableFacingTarget_Implementation(float InRotationSpeed) override;
+	virtual void DisableFacingTarget_Implementation() override;
+	virtual void SetFacingTarget_Implementation(FVector InFacingTarget) override;
+	
 public: // Override
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+	virtual void Tick(float DeltaTime) override;
 	
 public: // CombatInterface
 	virtual int32 GetPlayerLevel_Implementation() override;
@@ -51,9 +58,32 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	/**
+	 * Should we update facing target rotation
+	 */
+	bool bUpdateFacingTarget = false;
+
+	/**
+	 * Constant speed for facing target rotation
+	 */
+	float RotateToTargetSpeed;
+
+	/**
+	 * Desired target to facing toward
+	 */
+	FVector TargetToFace = FVector::ZeroVector;
 	
 protected: // Override
 	virtual void InitAbilityActorInfo() override;
+	
+protected:
+	/**
+	 * Call to update character facing toward its target
+	 * 
+	 * @param DeltaTime 
+	 */
+	virtual void FacingTarget(float DeltaTime);
 	
 private:
 	UFUNCTION(NetMulticast, Reliable)
