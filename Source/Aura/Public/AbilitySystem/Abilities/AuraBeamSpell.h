@@ -60,16 +60,36 @@ public:
 	 * @param StartLocation Start location for tracing
 	 * @param EndLocation End location for tracing
 	 * @param SphereRadius Size of sphere
-	 * @param TargetInterfaceClass Found target must implement this interface to be considered as
+	 * @param HasInterfaceClass Found target must implement this interface to be considered as
 	 * target
 	 * @param TraceExtend Extend trace by amount, if 0 then tracing only from start to end location.
 	 * Default to 10
 	 * @param DrawDebug Show debug or not. It draws a circle to indicate max range then draw tracing
 	 * only if hitting target is within max range
+	 * @param DrawDebugDuration How long the drawing debug should be shown
 	 * @return FFoundBeamTarget
 	 */
 	UFUNCTION(BlueprintCallable)
-	FFoundBeamTarget FindPrimaryTarget(const FVector StartLocation, const FVector EndLocation, const float SphereRadius, TSubclassOf<UInterface> TargetInterfaceClass, float TraceExtend = 10.f, bool DrawDebug = false);
+	FFoundBeamTarget FindPrimaryTarget(const FVector StartLocation, const FVector EndLocation, const float SphereRadius, TSubclassOf<UInterface> HasInterfaceClass, float TraceExtend = 10.f, bool DrawDebug = false, float DrawDebugDuration = 5.f);
+
+	/**
+	 * Find secondary/additional targets from a location
+	 * 
+	 * Cast a sphere with a radius to find actors that overlapped then
+	 * filter out actors that didn't implement specific interface.
+	 * 
+	 * @param CenterLocation Center location of tracing
+	 * @param ActorToIgnored Actor to be ignored
+	 * @param HasInterfaceClass Found target must implement this interface to be considered as
+	 * target
+	 * @param ObjectTypes Array of type of object to query/trace. Default to ECC_Pawn
+	 * @param OutFoundTargets Output result of found targets
+	 * @param ActorClassToFilter If set, will only return results of this class or subclasses of it
+	 * @param DrawDebug If need to draw debug or not
+	 * @param DrawDebugDuration How long the drawing debug should be shown
+	 */
+	UFUNCTION(BlueprintCallable, meta=(AutoCreateRefTerm="ActorToIgnored, ObjectTypes"))
+	void FindSecondaryTargets(const FVector CenterLocation, UPARAM(ref) TArray<AActor*>& ActorToIgnored, TSubclassOf<UInterface> HasInterfaceClass, UPARAM(ref) TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, TArray<AActor*>& OutFoundTargets, UClass* ActorClassToFilter = nullptr, bool DrawDebug = false, float DrawDebugDuration = 5.f);
 	
 protected:
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
@@ -98,6 +118,12 @@ protected:
 	 */
 	UPROPERTY(EditDefaultsOnly, Category="Beam|Range")
 	FScalableFloat SecondaryBeamRange;
+
+	/**
+	 * Number of secondary/additional chaining targets for beam
+	 */
+	UPROPERTY(EditDefaultsOnly, Category="Beam|Chain")
+	FScalableFloat NumChainingTargets;
 	
 protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
