@@ -110,7 +110,7 @@ void UAuraBeamSpell::StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTarget
 }
 
 FFoundBeamTarget UAuraBeamSpell::FindPrimaryTarget(const FVector StartLocation, const FVector EndLocation,
-	const float SphereRadius, TSubclassOf<UInterface> HasInterfaceClass, float TraceExtend, bool DrawDebug, 
+	const float SphereRadius, TSubclassOf<UInterface> ConformToInterface, float TraceExtend, bool DrawDebug, 
 	float DrawDebugDuration)
 {
 	check(OwnerCharacter);
@@ -169,7 +169,7 @@ FFoundBeamTarget UAuraBeamSpell::FindPrimaryTarget(const FVector StartLocation, 
 		if (HitResult.bBlockingHit)
 		{
 			// Does hit actor implement specific interface to be considered as target
-			if (HitResult.GetActor()->GetClass()->ImplementsInterface(HasInterfaceClass))
+			if (HitResult.GetActor()->GetClass()->ImplementsInterface(ConformToInterface))
 			{
 				return FFoundBeamTarget(
 					HitResult.bBlockingHit, 
@@ -188,7 +188,7 @@ FFoundBeamTarget UAuraBeamSpell::FindPrimaryTarget(const FVector StartLocation, 
 }
 
 void UAuraBeamSpell::FindSecondaryTargets(const FVector CenterLocation, TArray<AActor*>& ActorToIgnored,
-	TSubclassOf<UInterface> HasInterfaceClass, TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, 
+	TSubclassOf<UInterface> ConformToInterface, TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, 
 	TArray<AActor*>& OutFoundTargets, UClass* ActorClassToFilter, bool DrawDebug, float DrawDebugDuration)
 {
 	OutFoundTargets.Empty();
@@ -247,7 +247,7 @@ void UAuraBeamSpell::FindSecondaryTargets(const FVector CenterLocation, TArray<A
 	 */
 	for (auto It = FoundActors.CreateIterator(); It; ++It)
 	{
-		if (!(*It)->GetClass()->ImplementsInterface(HasInterfaceClass))
+		if (!(*It)->GetClass()->ImplementsInterface(ConformToInterface))
 		{
 			It.RemoveCurrent();
 		}
