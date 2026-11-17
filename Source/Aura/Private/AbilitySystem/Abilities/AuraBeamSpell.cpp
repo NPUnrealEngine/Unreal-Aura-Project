@@ -187,9 +187,19 @@ FFoundBeamTarget UAuraBeamSpell::FindPrimaryTarget(const FVector StartLocation, 
 	);
 }
 
+int32 UAuraBeamSpell::GetNumChainingTargets()
+{
+	if (NumChainingTargets.IsValid())
+	{
+		return NumChainingTargets.AsInteger(GetAbilityLevel());
+	}
+	
+	return 0;
+}
+
 void UAuraBeamSpell::FindSecondaryTargets(const FVector CenterLocation, TArray<AActor*>& ActorToIgnored,
-	TSubclassOf<UInterface> ConformToInterface, TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, 
-	TArray<AActor*>& OutFoundTargets, UClass* ActorClassToFilter, bool DrawDebug, float DrawDebugDuration)
+                                          TSubclassOf<UInterface> ConformToInterface, TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, 
+                                          TArray<AActor*>& OutFoundTargets, UClass* ActorClassToFilter, bool DrawDebug, float DrawDebugDuration)
 {
 	OutFoundTargets.Empty();
 	

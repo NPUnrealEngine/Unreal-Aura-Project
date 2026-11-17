@@ -34,6 +34,7 @@ public:
 	/**
 	 * Call when character death
 	 */
+	UPROPERTY(BlueprintAssignable)
 	FOnDeathSignature OnDeathDelegate;
 	
 	UPROPERTY(Replicated, BlueprintReadOnly)
