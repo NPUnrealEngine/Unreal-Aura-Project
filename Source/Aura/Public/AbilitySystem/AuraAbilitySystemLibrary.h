@@ -23,11 +23,7 @@ class AURA_API UAuraAbilitySystemLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 
-public:
-	/*
-	 * UI
-	 */
-	
+public: /* UI */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | WidgetController", meta=(DefaultToSelf="WorldContextObject"))
 	static bool MakeWidgetControllerParams(const UObject* WorldContextObject, FWidgetControllerParams& OutWCParams, AAuraHUD*& OutAuraHUD);
 	
@@ -39,11 +35,8 @@ public:
 
 	UFUNCTION(blueprintPure, Category="AuraAbilitySystemLibrary | WidgetController", meta=(DefaultToSelf="WorldContextObject"))
 	static USpellMenuWidgetController* GetSpellMenuWidgetController(const UObject* WorldContextObject);
-	
-	/*
-	 * Character start up ability
-	 */
-	
+
+public: /* Character start up ability */
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Character Class Defaults")
 	static void InitializeDefaultAttributes(const UObject* WorldContextObject, ECharacterClass CharacterClass, float Level, UAbilitySystemComponent* ASC);
 
@@ -55,11 +48,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Ability info")
 	static UAbilityInfo* GetAbilityInfo(const UObject* WorldContextObject);
-	
-	/*
-	 * Critical and blocked hit 
-	 */
-	
+
+public: /* Critical and blocked hit */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static bool IsBlockedHit(const FGameplayEffectContextHandle& EffectContextHandle);
 	
@@ -71,11 +61,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetIsCriticalHit(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, bool bIsCritical);
-	
-	/*
-	 * Knock back
-	 */
-	
+
+public: /* Knock back */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static FVector GetDeathImpulse(const FGameplayEffectContextHandle& EffectContextHandle);
 	
@@ -93,10 +80,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetKnockbackForce(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FVector& InKnockbackForce);
-	
-	/*
-	 * Radial damage
-	 */
+
+public: /* Radial damage */
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static bool IsRadialDamage(const FGameplayEffectContextHandle& EffectContextHandle);
 	
@@ -120,11 +105,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetRadialDamageOrigin(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, FVector InRadialDamageOrigin);
-	
-	/*
-	 * Debuff
-	 */
-	
+
+public: /* Debuff */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static bool IsSuccessfulDebuff(const FGameplayEffectContextHandle& EffectContextHandle);
 	
@@ -154,11 +136,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Effect")
 	static void SetDebuffDamageType(UPARAM(ref) FGameplayEffectContextHandle& EffectContextHandle, const FGameplayTag& InDamageType);
-	
-	/*
-	 * Gameplay mechanic
-	 */
-	
+
+public: /* Gameplay mechanic */
 	/**
 	 * Get all actors who is alive within a sphere radius
 	 * 
@@ -168,13 +147,13 @@ public:
 	 * @param Radius 
 	 * @param SphereOrigin 
 	 */
-	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, TArray<AActor*>& OutOverlappingActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static void GetClosestTargets(int32 MaxTargets, const TArray<AActor*>& Actors, TArray<AActor*>& OutClosestTargets, const FVector& Origin);
 	
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
 
 	/**
@@ -196,7 +175,7 @@ public:
 	 * NumPoints will not be considered. Default to false
 	 * @param bShuffle Shuffle final points order in Array
 	 */
-	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static void RandomPointsInRadiusOnGround(const UObject* WorldContextObject, TArray<FVector>& OutPoints, TArray<AActor*>& ActorToIgnore, int32 NumPoints, const float Radius, const FVector& SphereOrigin, const float RadiusForPoint=50.f, float TraceHalfSize=100.f, bool bRandomIfSinglePoint = false, bool bShuffle = false);
 
 	/**
@@ -209,7 +188,7 @@ public:
 	 * @param Radius Boundary of radius
 	 * @return Vector2D
 	 */
-	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static FVector2D RandomPointInRadius(float Radius);
 
 	/**
@@ -234,7 +213,7 @@ public:
 	 * Warning: higher value cause more calculations to be done may result in freeze. Default to 10
 	 * @return Vector2D point
 	 */
-	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static FVector2D MitchellBestCandidateAlgo(float MaxRadius, float MinDistBetween2Points, const TArray<FVector2D>& AcceptedPointsHistory, int32 MaxAttempts=10);
 
 	/**
@@ -248,14 +227,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="AuraAbilitySystemLibrary | Damage Effect")
 	static FGameplayEffectContextHandle ApplyDamageEffect(const FDamageEffectParams DamageEffectParams);
 	
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static TArray<FRotator> EvenlySpaceRotators(const FVector& ForwardVector, const FVector& Axis, const float Spread, const int32 NumRotators);
 	
-	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Machanics")
+	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary | Gameplay Mechanics")
 	static TArray<FVector> EvenlyRotateVectors(const FVector& ForwardVector, const FVector& Axis, const float Spread, const int32 NumVectors);
 	
 	static int32 GetXPRewardForClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
-	
+
 private:
 	/**
 	 * Create a GameplayEffectContextHandle with SourceObject
