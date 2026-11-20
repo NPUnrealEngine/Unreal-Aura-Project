@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "ActorSphereDetector.generated.h"
 
@@ -24,6 +25,15 @@ public:
 	AActorSphereDetector();
 	
 public:
+	/**
+	 * Get detector radius
+	 * @param bScaled Whether to return radius by scaled 
+	 * if true then radius = radius / SphereCollisionComponent->GetShapeScale()
+	 * @return 
+	 */
+	float GetRadius(bool bScaled) const;
+	
+public:
 #if WITH_EDITOR
 	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 #endif
@@ -35,6 +45,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Detection", meta=(ExposeOnSpawn="true"))
 	float Radius = 5.f;
 
+	/**
+	 * Whether to use scaled radius
+	 */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Detection")
+	bool bUseScaledRadius = true;
+	
 	/**
 	 * Delegate called when an actor enter detection area
 	 */

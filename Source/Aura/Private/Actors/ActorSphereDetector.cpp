@@ -4,6 +4,7 @@
 #include "Actors/ActorSphereDetector.h"
 
 #include "Components/SphereComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 
 AActorSphereDetector::AActorSphereDetector()
@@ -13,8 +14,18 @@ AActorSphereDetector::AActorSphereDetector()
 	// Create sphere collision component
 	SphereCollisionComponent = CreateDefaultSubobject<USphereComponent>("SphereCollisionComponent");
 	SphereCollisionComponent->SetupAttachment(RootComponent);
-	SphereCollisionComponent->SetSphereRadius(Radius);
+	SphereCollisionComponent->SetSphereRadius(GetRadius(bUseScaledRadius));
 	SphereCollisionComponent->SetGenerateOverlapEvents(true);
+}
+
+float AActorSphereDetector::GetRadius(bool bScaled) const
+{
+	if (bScaled)
+	{
+		// Return scaled radius by dividing collision component's shape scale by radius 
+		return Radius / SphereCollisionComponent->GetShapeScale();
+	}
+	return Radius;
 }
 
 #if WITH_EDITOR
@@ -27,7 +38,7 @@ void AActorSphereDetector::PostEditChangeProperty(FPropertyChangedEvent& Propert
 	{
 		if (SphereCollisionComponent)
 		{
-			SphereCollisionComponent->SetSphereRadius(Radius);
+			SphereCollisionComponent->SetSphereRadius(GetRadius(bUseScaledRadius));
 		}
 	}
 }
@@ -50,9 +61,14 @@ void AActorSphereDetector::BeginPlay()
 	ActorsToIgnore.Empty();
 	ActorsToIgnore.AddUnique(this);
 	
+	if (ActorToFollow)
+	{
+		SetActorLocation(ActorToFollow->GetActorLocation());
+	}
+	
 	if (SphereCollisionComponent)
 	{
-		SphereCollisionComponent->SetSphereRadius(Radius);
+		SphereCollisionComponent->SetSphereRadius(GetRadius(bUseScaledRadius));
 		SphereCollisionComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
@@ -64,9 +80,14 @@ void AActorSphereDetector::EnableDetection(const TArray<AActor*>& InActorsToIgno
 	ActorsToIgnore.AddUnique(this);
 	ActorsToIgnore.Append(InActorsToIgnore);
 	
+	if (ActorToFollow)
+	{
+		SetActorLocation(ActorToFollow->GetActorLocation());
+	}
+	
 	if (SphereCollisionComponent)
 	{
-		SphereCollisionComponent->SetSphereRadius(Radius);
+		SphereCollisionComponent->SetSphereRadius(GetRadius(bUseScaledRadius));
 		SphereCollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AActorSphereDetector::OnBeginOverlap);
 		SphereCollisionComponent->OnComponentEndOverlap.AddDynamic(this, &AActorSphereDetector::OnEndOverlap);
 		SphereCollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
