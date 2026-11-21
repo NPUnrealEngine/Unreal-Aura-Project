@@ -217,6 +217,12 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_InputReleased, "Player.Block.InputRe
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_CursorTrace, "Player.Block.CursorTrace",
 	"Block trace under mouse cursor");
 
+/*
+ * Event
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Anim_ShockLoop, "Event.Anim.ShockLoop", 
+	"Animation event shock loop")
+
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
 	/*

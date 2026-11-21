@@ -243,6 +243,13 @@ protected:
 	 */
 	virtual void StunTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	/**
+	 * Callback function for shock loop tag changed 
+	 * @param CallbackTag 
+	 * @param NewCount 
+	 */
+	virtual void ShockLoopTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 private:
 	UPROPERTY(EditAnywhere, Category="Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> StartupAbilities;

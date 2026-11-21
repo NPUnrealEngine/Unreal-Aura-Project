@@ -8,10 +8,13 @@
 #include "Interface/PlayerInterface.h"
 #include "AuraCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnShcokLoopStateChangedSignature, bool, IsInShockLoop);
+
 class UGameplayCameraComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UNiagaraComponent;
+
 /**
  * 
  */
@@ -22,6 +25,13 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase, public IPlayerInterfa
 
 public:
 	AAuraCharacter();
+	
+public:
+	/**
+	 * Shock loop state changed delegate
+	 */
+	UPROPERTY(BlueprintAssignable)
+	FOnShcokLoopStateChangedSignature OnShcokLoopStateChangedDelegate;
 	
 public: // IPlayerInterface
 	virtual void AddToXP_Implementation(int32 InXP) override;
@@ -45,6 +55,9 @@ public: // Override
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
 	virtual void Tick(float DeltaTime) override;
+	
+public: // Override AuraCharacterBase
+	virtual void ShockLoopTagChanged(const FGameplayTag CallbackTag, int32 NewCount) override;
 	
 public: // CombatInterface
 	virtual int32 GetPlayerLevel_Implementation() override;

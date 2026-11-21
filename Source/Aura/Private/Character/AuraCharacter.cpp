@@ -208,6 +208,16 @@ void AAuraCharacter::Tick(float DeltaTime)
 	FacingTarget(DeltaTime);
 }
 
+void AAuraCharacter::ShockLoopTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	Super::ShockLoopTagChanged(CallbackTag, NewCount);
+	
+	if (OnShcokLoopStateChangedDelegate.IsBound())
+	{
+		OnShcokLoopStateChangedDelegate.Broadcast(NewCount > 0);
+	}
+}
+
 int32 AAuraCharacter::GetPlayerLevel_Implementation()
 {
 	const AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
@@ -231,6 +241,13 @@ void AAuraCharacter::InitAbilityActorInfo()
 		EGameplayTagEventType::NewOrRemoved
 	).AddUObject(this, &AAuraCharacter::StunTagChanged);
 	
+	// Listen for shock loop tag changed
+	AbilitySystemComponent->RegisterGameplayTagEvent(
+		Event_Anim_ShockLoop,
+		EGameplayTagEventType::NewOrRemoved
+	).AddUObject(this, &AAuraCharacter::ShockLoopTagChanged);
+	
+	// Init UI
 	if (AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController()))
 	{
 		if (AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD()))

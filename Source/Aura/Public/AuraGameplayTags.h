@@ -187,6 +187,11 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_InputHeld);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_InputReleased);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_CursorTrace);
 
+/*
+ * Event
+ */
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Anim_ShockLoop);
+
 /**
  * AuraGameplayTags
  *
