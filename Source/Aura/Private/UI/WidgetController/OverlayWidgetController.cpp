@@ -97,14 +97,12 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		AuraASC->EffectAssetTags.AddLambda(
 		[this](const FGameplayTagContainer& AssetTags)
 			{
-				// Get all tags under Message tag
-				FGameplayTag MessageTag = FGameplayTag::RequestGameplayTag(FName("Message"));
 				for (const FGameplayTag& Tag : AssetTags)
 				{
 					/*
-					 * Broadcast tag with information to widget if the tag is type of Message tag
+					 * Broadcast tag with information to widget if the tag is type of Message.Potion tag
 					 */
-					if (Tag.MatchesTag(MessageTag))
+					if (Tag.MatchesTag(Message_Potion))
 					{
 						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
 						MessageWidgetRowDelegate.Broadcast(*Row);

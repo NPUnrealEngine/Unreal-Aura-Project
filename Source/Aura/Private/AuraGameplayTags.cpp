@@ -221,7 +221,25 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Player_Block_CursorTrace, "Player.Block.CursorTra
  * Event
  */
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Anim_ShockLoop, "Event.Anim.ShockLoop", 
-	"Animation event shock loop")
+	"Animation event shock loop");
+
+/*
+ * Message
+ */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Ability, "Message.Ability", 
+	"For determine category only");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Ability_InvalidTarget, "Message.Ability.InvalidTarget", 
+	"Message for ability when invalid target is selected");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Potion, "Message.Potion", 
+	"For determine category only");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Potion_HealthCrystal, "Message.Potion.HealthCrystal", 
+	"Message for potion when obtain health crystal");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Potion_HealthPotion, "Message.Potion.HealthPotion", 
+	"Message for potion when obtain health potion");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Potion_ManaCrystal, "Message.Potion.ManaCrystal", 
+	"Message for potion when obtain mana crystal");
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Potion_ManaPotion, "Message.Potion.ManaPotion", 
+	"Message for potion when obtain mana potion");
 
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {

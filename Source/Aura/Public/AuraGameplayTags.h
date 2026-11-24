@@ -192,6 +192,20 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Player_Block_CursorTrace);
  */
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Anim_ShockLoop);
 
+/*
+ * Message
+ */
+// Use for category only
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Ability);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Ability_InvalidTarget);
+
+// Use for category only
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Potion);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Potion_HealthCrystal);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Potion_HealthPotion);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Potion_ManaCrystal);
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Potion_ManaPotion);
+
 /**
  * AuraGameplayTags
  *
