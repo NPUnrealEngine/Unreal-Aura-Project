@@ -195,6 +195,9 @@ UE_DECLARE_GAMEPLAY_TAG_EXTERN(Event_Anim_ShockLoop);
 /*
  * Message
  */
+//Use for category only
+UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message);
+
 // Use for category only
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Ability);
 UE_DECLARE_GAMEPLAY_TAG_EXTERN(Message_Ability_InvalidTarget);

@@ -226,6 +226,8 @@ UE_DEFINE_GAMEPLAY_TAG_COMMENT(Event_Anim_ShockLoop, "Event.Anim.ShockLoop",
 /*
  * Message
  */
+UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message, "Message", 
+	"For determine category only");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Ability, "Message.Ability", 
 	"For determine category only");
 UE_DEFINE_GAMEPLAY_TAG_COMMENT(Message_Ability_InvalidTarget, "Message.Ability.InvalidTarget", 

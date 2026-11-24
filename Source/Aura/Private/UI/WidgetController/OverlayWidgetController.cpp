@@ -100,9 +100,9 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 				for (const FGameplayTag& Tag : AssetTags)
 				{
 					/*
-					 * Broadcast tag with information to widget if the tag is type of Message.Potion tag
+					 * Broadcast tag with information to widget if the tag is type of Message tag
 					 */
-					if (Tag.MatchesTag(Message_Potion))
+					if (Tag.MatchesTag(Message))
 					{
 						const FUIWidgetRow* Row = GetDataTableRowByTag<FUIWidgetRow>(MessageWidgetDataTable, Tag);
 						MessageWidgetRowDelegate.Broadcast(*Row);
