@@ -30,51 +30,6 @@ class AURA_API UAuraBeamSpell : public UAuraDamageGameplayAbility
 {
 	GENERATED_BODY()
 	
-public:
-	UFUNCTION(BlueprintCallable)
-	void StoreMouseDataInfo(const FHitResult& HitResult);
-	
-	UFUNCTION(BlueprintCallable)
-	void StoreOwnerVariables();
-
-	/**
-	 * Fire a sphere trace toward the location and see if a target hit.
-	 * And then update mouse hit actor and mouse hit location
-	 * @param BeamTargetLocation 
-	 */
-	UFUNCTION(BlueprintCallable)
-	void TraceTarget(const FVector& BeamTargetLocation);
-	
-	UFUNCTION(BlueprintCallable)
-	void StoreAdditionalTargets(TArray<AActor*>& OutAdditionalTargets);
-	
-	UFUNCTION(BlueprintImplementableEvent)
-	void PrimaryTargetDied(AActor* DeadActor);
-	
-	UFUNCTION(BlueprintImplementableEvent)
-	void AdditionalTargetDied(AActor* DeadActor);
-
-	/**
-	 * Remove in future
-	 * 
-	 * Find secondary/additional targets from a location
-	 * 
-	 * Cast a sphere with a radius to find actors that overlapped then
-	 * filter out actors that didn't implement specific interface.
-	 * 
-	 * @param CenterLocation Center location of tracing
-	 * @param ActorToIgnored Actor to be ignored
-	 * @param ConformToInterface Found target must implement this interface to be considered as
-	 * target
-	 * @param ObjectTypes Array of type of object to query/trace. Default to ECC_Pawn
-	 * @param OutFoundTargets Output result of found targets
-	 * @param ActorClassToFilter If set, will only return results of this class or subclasses of it
-	 * @param DrawDebug If need to draw debug or not
-	 * @param DrawDebugDuration How long the drawing debug should be shown
-	 */
-	UFUNCTION(BlueprintCallable, meta=(AutoCreateRefTerm="ActorToIgnored, ObjectTypes", DeprecatedFunction, DeprecationMessage="Will be removed and replaced by ActorSphereDetector"))
-	void FindSecondaryTargets(const FVector CenterLocation, UPARAM(ref) TArray<AActor*>& ActorToIgnored, TSubclassOf<UInterface> ConformToInterface, UPARAM(ref) TArray<TEnumAsByte<EObjectTypeQuery>>& ObjectTypes, TArray<AActor*>& OutFoundTargets, UClass* ActorClassToFilter = nullptr, bool DrawDebug = false, float DrawDebugDuration = 5.f);
-	
 protected:
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
 	FVector MouseHitLocation;
@@ -87,9 +42,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category="Beam")
 	TObjectPtr<ACharacter> OwnerCharacter;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Beam")
-	int32 MaxNumShockTargets = 5;
 
 	/**
 	 * Beam range used to find primary target
